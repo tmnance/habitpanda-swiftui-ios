@@ -1,0 +1,96 @@
+//
+//  HabitListView.swift
+//  HabitPandaSwiftUI
+//
+//  Created by Tim Nance on 10/7/22.
+//
+
+import SwiftUI
+
+struct HabitListView: View {
+    @State private var isAddHabitViewPresented = false
+    @State private var isReorderHabitsViewPresented = false
+
+    @FetchRequest(
+        sortDescriptors: [NSSortDescriptor(keyPath: \Habit.order, ascending: true)],
+        animation: .none)
+    private var habits: FetchedResults<Habit>
+
+    var body: some View {
+        VStack {
+            if habits.isEmpty {
+                Text("🥺")
+                Text("No habits found").font(.title2)
+                Text("Tap the + button above to create your first habit!").font(.footnote)
+                Spacer()
+            } else {
+                List {
+                    ForEach(habits) { habit in
+                        NavigationLink((habit.name ?? "") + " (\(habit.order))", value: habit)
+//                        Text((habit.name ?? "") + " (\(habit.order))")
+                    }
+                    .onDelete(perform: delete(offsets:))
+                }
+                .navigationDestination(for: Habit.self) { habit in
+                    HabitDetailsView(habit: habit)
+                }
+                Spacer()
+            }
+        }
+        .toolbar {
+            #if DEBUG
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button(action: {
+                }) {
+                    NavigationLink(destination: AdminView()) {
+                        Text("Admin")
+                    }
+                }
+            }
+            #endif
+
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    isReorderHabitsViewPresented.toggle()
+                }) {
+                    Label("Reorder Habits", systemImage: "arrow.up.arrow.down")
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    isAddHabitViewPresented.toggle()
+                }) {
+                    Label("Add Habit", systemImage: "plus")
+                }
+            }
+        }
+        .navigationTitle("HabitPanda 🐼")
+        .navigationBarTitleDisplayMode(.inline)
+        .fullScreenCover(isPresented: $isAddHabitViewPresented) {
+            AddHabitView()
+        }
+        .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
+            ReorderHabitsView()
+        }
+    }
+
+    private func delete(offsets: IndexSet) {
+        withAnimation {
+            offsets.forEach { offset in
+                let habit = habits[offset]
+                do {
+                    try PersistenceController.shared.delete(habit)
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+            Habit.fixHabitOrder()
+        }
+    }
+}
+
+struct HabitListView_Previews: PreviewProvider {
+    static var previews: some View {
+        HabitListView()
+    }
+}
