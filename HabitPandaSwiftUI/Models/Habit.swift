@@ -74,4 +74,23 @@ public class Habit: NSManagedObject {
         )
         return checkIns.first?.checkInDate!.stripTime()
     }
+
+    static func getPreviewHabit(_ name: String? = nil) -> Habit {
+        let context = PersistenceController.preview.container.viewContext
+        let habit = Habit(context: context)
+        habit.createdAt = Date()
+        habit.uuid = UUID()
+        habit.name = name ?? "Test habit"
+        habit.frequencyPerWeek = Int32(5)
+        habit.order = Int32(0)
+
+        let checkIn = CheckIn(context: context)
+        checkIn.createdAt = Date()
+        checkIn.uuid = UUID()
+        checkIn.isSuccess = true
+        checkIn.checkInDate = Date().stripTime()
+        checkIn.habit = habit
+
+        return habit
+    }
 }

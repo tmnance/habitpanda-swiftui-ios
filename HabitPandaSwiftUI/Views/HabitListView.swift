@@ -34,6 +34,7 @@ struct HabitListView: View {
                 .navigationDestination(for: Habit.self) { habit in
                     HabitDetailsView(habit: habit)
                 }
+                .listStyle(.plain)
                 Spacer()
             }
         }

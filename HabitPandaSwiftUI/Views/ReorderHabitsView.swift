@@ -35,9 +35,8 @@ struct ReorderHabitsView: View {
                                 toOffset: newOffset
                             )
                         }
-
                     }
-
+                    .listStyle(.plain)
                     Spacer()
                 }
             }

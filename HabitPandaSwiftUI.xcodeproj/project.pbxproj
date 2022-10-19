@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */; };
+		1CA0B60228F60ED4002103EA /* HabitSummaryTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60128F60ED4002103EA /* HabitSummaryTabView.swift */; };
+		1CA0B60428F60EDF002103EA /* HabitCheckInsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60328F60EDF002103EA /* HabitCheckInsTabView.swift */; };
+		1CA0B60628F60EE9002103EA /* HabitRemindersTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60528F60EE9002103EA /* HabitRemindersTabView.swift */; };
+		1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60E28FF2D6E002103EA /* Router.swift */; };
 		1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */; };
 		1CDA4CB828F096B0007D02F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB728F096B0007D02F3 /* Assets.xcassets */; };
 		1CDA4CBB28F096B0007D02F3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CBA28F096B0007D02F3 /* Preview Assets.xcassets */; };
@@ -30,6 +34,10 @@
 
 /* Begin PBXFileReference section */
 		1CA0B5FF28F60680002103EA /* HabitPandaSwiftUI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HabitPandaSwiftUI.xcdatamodel; sourceTree = "<group>"; };
+		1CA0B60128F60ED4002103EA /* HabitSummaryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSummaryTabView.swift; sourceTree = "<group>"; };
+		1CA0B60328F60EDF002103EA /* HabitCheckInsTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitCheckInsTabView.swift; sourceTree = "<group>"; };
+		1CA0B60528F60EE9002103EA /* HabitRemindersTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitRemindersTabView.swift; sourceTree = "<group>"; };
+		1CA0B60E28FF2D6E002103EA /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		1CDA4CB028F096AD007D02F3 /* HabitPandaSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitPandaSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitPandaSwiftUIApp.swift; sourceTree = "<group>"; };
 		1CDA4CB728F096B0007D02F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -117,6 +125,9 @@
 				1CDA4CC628F09D04007D02F3 /* HabitListView.swift */,
 				1CDA4CCF28F0ACA9007D02F3 /* ReorderHabitsView.swift */,
 				1CDA4CDB28F11A57007D02F3 /* HabitDetailsView.swift */,
+				1CA0B60128F60ED4002103EA /* HabitSummaryTabView.swift */,
+				1CA0B60328F60EDF002103EA /* HabitCheckInsTabView.swift */,
+				1CA0B60528F60EE9002103EA /* HabitRemindersTabView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -127,8 +138,9 @@
 				1CDA4CE128F3B014007D02F3 /* Extensions */,
 				1CDA4CD828F0C605007D02F3 /* Helpers */,
 				1CDA4CB728F096B0007D02F3 /* Assets.xcassets */,
-				1CDA4CC928F09D67007D02F3 /* Persistence.swift */,
 				1CDA4CD128F0C2F7007D02F3 /* Constants.swift */,
+				1CDA4CC928F09D67007D02F3 /* Persistence.swift */,
+				1CA0B60E28FF2D6E002103EA /* Router.swift */,
 			);
 			path = SupportFiles;
 			sourceTree = "<group>";
@@ -234,8 +246,12 @@
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
 				1CDA4CE528F3B05E007D02F3 /* DateHelper.swift in Sources */,
 				1CDA4CE728F3B071007D02F3 /* DayOfWeek.swift in Sources */,
+				1CA0B60628F60EE9002103EA /* HabitRemindersTabView.swift in Sources */,
 				1CDA4CD028F0ACA9007D02F3 /* ReorderHabitsView.swift in Sources */,
+				1CA0B60228F60ED4002103EA /* HabitSummaryTabView.swift in Sources */,
+				1CA0B60428F60EDF002103EA /* HabitCheckInsTabView.swift in Sources */,
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
+				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
 				1CDA4CDC28F11A57007D02F3 /* HabitDetailsView.swift in Sources */,
 				1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */,
