@@ -72,9 +72,9 @@ struct HabitSummaryTabView: View {
         do {
             try PersistenceController.shared.delete(habit)
 
-//            Habit.fixHabitOrder()
-//            ReminderNotificationService.refreshNotificationsForAllReminders()
-//            ReminderNotificationService.removeOrphanedDeliveredNotifications()
+            Habit.fixHabitOrder()
+            ReminderNotificationService.refreshNotificationsForAllReminders()
+            ReminderNotificationService.removeOrphanedDeliveredNotifications()
 
             router.reset()
         } catch {

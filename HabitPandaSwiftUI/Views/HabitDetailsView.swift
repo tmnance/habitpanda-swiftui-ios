@@ -66,7 +66,7 @@ struct HabitDetailsView: View {
             }
             .padding()
 
-            Picker(selection: $selectedTab, label: Text("mylabel")) {
+            Picker("", selection: $selectedTab) {
                 Text("Summary").tag(TabOption.summary)
                 Text("Check-ins").tag(TabOption.checkIns)
                 Text("Reminders").tag(TabOption.reminders)
@@ -78,7 +78,7 @@ struct HabitDetailsView: View {
             case .checkIns:
                 HabitCheckInsTabView(habit: habit)
             case .reminders:
-                HabitRemindersTabView()
+                HabitRemindersTabView(habit: habit)
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)

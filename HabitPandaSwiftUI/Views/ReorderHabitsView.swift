@@ -24,7 +24,7 @@ struct ReorderHabitsView: View {
                     List {
                         ForEach(habits) { habit in
                             HStack {
-                                Text((habit.name ?? "") + " (\(habit.order))")
+                                Text(habit.name ?? "")
                                 Spacer()
                                 Image(systemName: "line.horizontal.3")
                             }
@@ -69,7 +69,7 @@ struct ReorderHabitsView: View {
 
         var order = 0
 
-        habits.forEach { (habit) in
+        habits.forEach { habit in
             let habitToSave = habit
             habitToSave.order = Int32(order)
             order += 1

@@ -11,39 +11,45 @@ struct DayOfWeek {
     enum WeekSubsetType: Int {
         case daily = 0, weekdays = 1, custom = 2
         var description: String {
-            var str: String
             switch self {
             case .daily:
-                str = "Daily"
+                return "Daily"
             case .weekdays:
-                str = "Weekdays"
+                return "Weekdays"
             case .custom:
-                str = "Custom"
+                return "Custom"
             }
-            return str
+        }
+        var frequencyDays: Set<Day> {
+            switch self {
+            case .daily:
+                return [.sun, .mon, .tue, .wed, .thu, .fri, .sat]
+            case .weekdays:
+                return [.mon, .tue, .wed, .thu, .fri]
+            case .custom:
+                return []
+            }
         }
     }
-    enum Day: Int {
+    enum Day: Int, CaseIterable {
         case sun = 0, mon = 1, tue = 2, wed = 3, thu = 4, fri = 5, sat = 6
         var description: String {
-            var str: String
             switch self {
             case .sun:
-                str = "Sun"
+                return "Sun"
             case .mon:
-                str = "Mon"
+                return "Mon"
             case .tue:
-                str = "Tue"
+                return "Tue"
             case .wed:
-                str = "Wed"
+                return "Wed"
             case .thu:
-                str = "Thu"
+                return "Thu"
             case .fri:
-                str = "Fri"
+                return "Fri"
             case .sat:
-                str = "Sat"
+                return "Sat"
             }
-            return str
         }
     }
 }

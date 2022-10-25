@@ -18,6 +18,10 @@ public class Reminder: NSManagedObject {
         return Int(hour * 60) + Int(minute)
     }
 
+    public func isActiveOnDay(_ offset: Int) -> Bool {
+        return (frequencyDays ?? []).contains(NSNumber(value: offset))
+    }
+
     public static func getAll(withLimit limit: Int? = nil) -> [Reminder] {
         let context = PersistenceController.shared.container.viewContext
         var reminders: [Reminder] = []
@@ -53,6 +57,21 @@ public class Reminder: NSManagedObject {
         } catch {
             print("Error fetching data from context, \(error)")
         }
+        return reminder
+    }
+
+    static func getPreviewReminder(_ name: String? = nil) -> Reminder {
+        let context = PersistenceController.preview.container.viewContext
+        let reminder = Reminder(context: context)
+        reminder.createdAt = Date()
+        reminder.uuid = UUID()
+        reminder.habit = Habit.getPreviewHabit()
+
+        reminder.hour = Int32(7)
+        reminder.minute = Int32(30)
+        reminder.frequencyDays =
+            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+
         return reminder
     }
 }

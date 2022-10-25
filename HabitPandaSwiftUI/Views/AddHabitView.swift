@@ -8,18 +8,24 @@
 import SwiftUI
 
 struct AddHabitView: View {
+//    private enum Field: Hashable {
+//        case name
+//    }
+
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var name: String = ""
+//    @State private var timer: Timer?
+//    @FocusState private var focusedField: Field?
+
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Habit Activity / Behavior").font(.title2)
-                    Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
-                    TextField("", text: $name)
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Habit Activity / Behavior").font(.title2)
+                Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
+                TextField("", text: $name)
 //                        .focused($focusedField, equals: .name)
 //                        .onAppear {
 //                            self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { (_) in
@@ -29,7 +35,6 @@ struct AddHabitView: View {
 //                                }
 //                            }
 //                        }
-                }
 
                 Spacer()
             }
@@ -37,18 +42,14 @@ struct AddHabitView: View {
             .textFieldStyle(.roundedBorder)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
+                    Button("Cancel") {
                         dismiss()
-                    } label: {
-                        Text("Cancel")
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
+                    Button("Save") {
                         save()
                         dismiss()
-                    } label: {
-                        Text("Save")
                     }
                     .disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
@@ -71,7 +72,7 @@ struct AddHabitView: View {
 
         do {
             try PersistenceController.shared.save()
-//            ReminderNotificationService.refreshNotificationsForAllReminders()
+            ReminderNotificationService.refreshNotificationsForAllReminders()
         } catch {
             print("Error saving context, \(error)")
         }

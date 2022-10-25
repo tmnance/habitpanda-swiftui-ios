@@ -54,7 +54,7 @@ public class Habit: NSManagedObject {
 
         var order = 0
 
-        habits.forEach { (habit) in
+        habits.forEach { habit in
             let habitToSave = habit
             habitToSave.order = Int32(order)
             order += 1
@@ -90,6 +90,24 @@ public class Habit: NSManagedObject {
         checkIn.isSuccess = true
         checkIn.checkInDate = Date().stripTime()
         checkIn.habit = habit
+
+        let reminder1 = Reminder(context: context)
+        reminder1.createdAt = Date()
+        reminder1.uuid = UUID()
+        reminder1.habit = habit
+        reminder1.hour = Int32(13)
+        reminder1.minute = Int32(11)
+        reminder1.frequencyDays =
+            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+
+        let reminder2 = Reminder(context: context)
+        reminder2.createdAt = Date()
+        reminder2.uuid = UUID()
+        reminder2.habit = habit
+        reminder2.hour = Int32(10)
+        reminder2.minute = Int32(44)
+        reminder2.frequencyDays =
+            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
 
         return habit
     }

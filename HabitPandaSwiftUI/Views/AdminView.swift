@@ -16,12 +16,58 @@ struct AdminView: View {
     @State private var showSeedTestDataAlert = false
     @State private var showDeleteAllDataAlert = false
 
+    @State private var pendingRequests: [UNNotificationRequest] = []
+    @State private var deliveredNotifications: [UNNotification] = []
+    @State private var reminders: [Reminder] = []
+
+    init() {
+        loadNotificationData()
+        loadRemindersData()
+    }
+
     var body: some View {
         VStack {
-            Button(action: {
+            Text("\(getAppVersionString())\n\n" +
+                 "\(getRemindersReportString())\n\n" +
+                 "\(getNotificationsReportString())"
+            ).font(.footnote)
+
+            Button("Remove all pending notifications") {
+                NotificationHelper.removeAllPendingNotifications()
+                self.loadNotificationData()
+                toastText = "Pending notifications removed"
+                showToast = true
+            }
+
+            Button("Remove all sent notifications") {
+                NotificationHelper.removeAllDeliveredNotifications()
+                self.loadNotificationData()
+                toastText = "Sent notifications removed"
+                showToast = true
+            }
+
+            Button("Remove orphaned sent notifications") {
+                ReminderNotificationService.removeOrphanedDeliveredNotifications()
+                self.loadNotificationData()
+                toastText = "Orphaned sent notifications removed"
+                showToast = true
+            }
+
+            Button("(Re)set all notifications") {
+                ReminderNotificationService.refreshNotificationsForAllReminders()
+                self.loadNotificationData()
+                toastText = "All notifications refreshed"
+                showToast = true
+            }
+
+            Button("Send test notification") {
+                ReminderNotificationService.sendTestNotification()
+                toastText = "Test notification sent"
+                showToast = true
+            }
+
+            Button("Seed test data") {
                 showSeedTestDataAlert = true
-            }) {
-                Text("Seed test data")
             }.alert(
                 isPresented: $showSeedTestDataAlert,
                 content: {
@@ -39,10 +85,8 @@ struct AdminView: View {
                 }
             )
 
-            Button(action: {
+            Button("Delete all data") {
                 showDeleteAllDataAlert = true
-            }) {
-                Text("Delete all data")
             }.alert(
                 isPresented: $showDeleteAllDataAlert,
                 content: {
@@ -74,8 +118,8 @@ struct AdminView: View {
 
     private func seedTestData() {
         createSeedTestHabits()
-//        ReminderNotificationService.refreshNotificationsForAllReminders()
-//        self.loadNotificationData()
+        ReminderNotificationService.refreshNotificationsForAllReminders()
+        self.loadNotificationData()
         toastText = "Test data seeded"
         showToast = true
     }
@@ -142,7 +186,7 @@ struct AdminView: View {
             to: Date()
         )!
 
-        seedHabits.enumerated().forEach{ (i, seedHabit) in
+        seedHabits.enumerated().forEach { i, seedHabit in
             let newHabit = createSeedHabit(
                 withName: seedHabit["name"] as? String ?? "",
                 withFrequencyPerWeek: seedHabit["frequencyPerWeek"] as? Int ?? 1,
@@ -155,7 +199,7 @@ struct AdminView: View {
             )
 
             Array(seedHabit["checkInHistory"] as? String ?? "").reversed().enumerated()
-                .forEach{ (dayOffset, checkInState) in
+                .forEach { dayOffset, checkInState in
                     let checkInCount: Int = {
                         switch checkInState {
                         case " ":
@@ -173,14 +217,14 @@ struct AdminView: View {
                             value: -1 * dayOffset,
                             to: Date()
                         )!
-                        (0..<checkInCount).forEach{ _ in
+                        (0..<checkInCount).forEach { _ in
                             let _ = createSeedCheckIn(forHabit: newHabit, forDate: checkInDate)
                         }
                     }
                 }
 
             if let seedReminders = seedHabit["reminders"] as? [[String:Any]] {
-                seedReminders.forEach{ (seedReminder) in
+                seedReminders.forEach { seedReminder in
                     let _ = createSeedReminder(
                         forHabit: newHabit,
                         withHour: seedReminder["hour"] as? Int ?? 0,
@@ -239,21 +283,21 @@ struct AdminView: View {
         reminderToSave.hour = Int32(hour)
         reminderToSave.minute = Int32(minute)
         reminderToSave.frequencyDays =
-            Array(frequencyDays).enumerated().filter{ $0.1 != " " }.map{ $0.0 as NSNumber }
+            Array(frequencyDays).enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
 
         return reminderToSave
     }
 
     private func deleteAllData() {
         deleteAllHabits()
-//        ReminderNotificationService.refreshNotificationsForAllReminders()
-//        self.loadNotificationData()
+        ReminderNotificationService.refreshNotificationsForAllReminders()
+        self.loadNotificationData()
         toastText = "All habit data deleted"
         showToast = true
     }
 
     private func deleteAllHabits() {
-        Habit.getAll().forEach({ viewContext.delete($0) })
+        Habit.getAll().forEach { viewContext.delete($0) }
 
         do {
             try viewContext.save()
@@ -266,5 +310,108 @@ struct AdminView: View {
 struct AdminView_Previews: PreviewProvider {
     static var previews: some View {
         AdminView()
+    }
+}
+
+
+// MARK: - UI Update Methods
+extension AdminView {
+    func loadNotificationData() {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+            // send to main thread
+            DispatchQueue.main.async {
+                self.pendingRequests = requests
+            }
+        }
+
+        UNUserNotificationCenter.current().getDeliveredNotifications { notifications in
+            // send to main thread
+            DispatchQueue.main.async {
+                self.deliveredNotifications = notifications
+            }
+        }
+    }
+
+    func getNotificationsReportString() -> String {
+        return "Notifications:\n" +
+            "- \(pendingRequests.count) pending notification(s) set\n" +
+            "- \(deliveredNotifications.count) delivered notification(s)"
+    }
+}
+
+
+extension AdminView {
+    private func loadRemindersData() {
+        reminders = Reminder.getAll()
+    }
+
+    func getRemindersReportString() -> String {
+        var notificationCount = 0
+        var habitUUIDs = Set<UUID>()
+
+        let remindersByDay = ReminderNotificationService.RemindersForWeek(forReminders: reminders)
+
+        let currentWeekdayIndex = ReminderNotificationService.getCurrentWeekdayIndex()
+        let weekdayIndexLoop = ReminderNotificationService.getNext7DayWeekdayIndexLoop()
+        let currentTimeInMinutes = TimeOfDay.generateFromCurrentTime().getTimeInMinutes()
+
+        for (i, weekdayIndex) in weekdayIndexLoop.enumerated() {
+            let remindersForDay = remindersByDay.getForWeekdayIndex(weekdayIndex)
+            let sortedTimes = remindersForDay.getSortedTimes()
+
+            for time in sortedTimes {
+                if i == 0 && weekdayIndex == currentWeekdayIndex && time <= currentTimeInMinutes {
+                    continue
+                }
+                let remindersForDayAndTime = remindersForDay.getForTime(time)
+                for reminder in remindersForDayAndTime {
+                    notificationCount += 1
+                    habitUUIDs.insert(reminder.habit!.uuid!)
+                }
+            }
+        }
+
+        return "Reminders:\n" +
+            "- currentWeekdayIndex = \(currentWeekdayIndex)\n" +
+            "- weekdayIndexLoop = \(weekdayIndexLoop)\n" +
+            "- currentTimeInMinutes = \(currentTimeInMinutes)\n" +
+            "- \(notificationCount) notification\(notificationCount == 1 ? "" : "s") " +
+            "will be needed across \(habitUUIDs.count) habit\(habitUUIDs.count == 1 ? "" : "s")"
+    }
+}
+
+
+extension AdminView {
+    func getAppVersionString() -> String {
+        let dictionary = Bundle.main.infoDictionary!
+        let version = dictionary["CFBundleShortVersionString"] as! String
+        let build = dictionary["CFBundleVersion"] as! String
+        let appName = dictionary["CFBundleName"] as! String
+
+        return "App version: \(appName) v\(version) (Build \(build))\n" +
+            "- buildDate = \(getDateAsString(buildDate))"
+    }
+
+    func getDateAsString(_ date: Date) -> String {
+        let df = DateFormatter()
+
+        df.dateFormat = "EEE, MMMM d"
+        let displayDate = df.string(from: date)
+
+        df.dateFormat = "h:mm a"
+        let displayTime = df.string(from: date)
+
+        return "\(displayDate) at \(displayTime)"
+    }
+
+    var buildDate:Date
+    {
+        if let infoPath = Bundle.main.path(forResource: "Info.plist", ofType: nil),
+            let infoAttr = try? FileManager.default.attributesOfItem(atPath: infoPath),
+            let infoDate = infoAttr[FileAttributeKey.creationDate] as? Date
+            {
+                return infoDate
+            }
+        return Date()
     }
 }

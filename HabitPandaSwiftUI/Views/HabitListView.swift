@@ -26,8 +26,7 @@ struct HabitListView: View {
             } else {
                 List {
                     ForEach(habits) { habit in
-                        NavigationLink((habit.name ?? "") + " (\(habit.order))", value: habit)
-//                        Text((habit.name ?? "") + " (\(habit.order))")
+                        NavigationLink(habit.name ?? "", value: habit)
                     }
                     .onDelete(perform: delete(offsets:))
                 }
