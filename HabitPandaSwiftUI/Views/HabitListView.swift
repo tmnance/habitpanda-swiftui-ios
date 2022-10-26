@@ -26,7 +26,7 @@ struct HabitListView: View {
             } else {
                 List {
                     ForEach(habits) { habit in
-                        NavigationLink(habit.name ?? "", value: habit)
+                        NavigationLink((habit.name ?? "") + " (🎯\(habit.frequencyPerWeek)x/wk)", value: habit)
                     }
                     .onDelete(perform: delete(offsets:))
                 }
