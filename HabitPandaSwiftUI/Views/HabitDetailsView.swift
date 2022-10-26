@@ -14,10 +14,13 @@ struct HabitDetailsView: View {
     }
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var router: Router
-    @State var habit: Habit
+
+    @ObservedObject var habit: Habit
     @State var selectedTab: TabOption = .summary
     @State private var showToast = false
     @State private var toastText = ""
+    @State private var isEditHabitViewPresented = false
+
     private var checkInDateOptions: [Date] {
         let today = Date().stripTime()
         var dateArray = [today]
@@ -84,6 +87,16 @@ struct HabitDetailsView: View {
         .frame(maxHeight: .infinity, alignment: .top)
         .toast(isPresenting: $showToast, duration: 2, tapToDismiss: true) {
             AlertToast(type: .complete(.green), title: toastText)
+        }
+        .fullScreenCover(isPresented: $isEditHabitViewPresented) {
+            AddEditHabitView(habitToEdit: habit)
+        }
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Edit") {
+                    isEditHabitViewPresented.toggle()
+                }
+            }
         }
         .navigationTitle("Habit Details")
     }

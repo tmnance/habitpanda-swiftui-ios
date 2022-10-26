@@ -45,7 +45,8 @@ struct AddEditReminderView: View {
                 .datePickerStyle(.wheel)
                 .labelsHidden()
                 .onAppear {
-                    // TODO: refactor into something that doesn't clobber all datepickers (e.g. https://d1v1b.com/en/swiftui/datepicker)
+                    // TODO: refactor into something that doesn't clobber all datepickers
+                    // (e.g. https://d1v1b.com/en/swiftui/datepicker)
                     UIDatePicker.appearance().minuteInterval = Constants.TimePicker.minuteInterval
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
@@ -60,7 +61,9 @@ struct AddEditReminderView: View {
                 }
                 .pickerStyle(.segmented)
                 .onChange(of: selectedFrequencyOption) { _ in
-                    /// Only change the day toggle values if they don't currently match the new picker option (in effect was the change triggered by the user changing the frequency picker value or programatically by changing active days)
+                    // Only change the day toggle values if they don't currently match the new picker option
+                    // (in effect was the change triggered by the user changing the frequency picker value or
+                    // programatically by changing active days)
                     if selectedFrequencyOption != getCurrentFrequencyOptionFromActiveDays() {
                         updateFrequencyDays(forOption: selectedFrequencyOption)
                     }
@@ -105,7 +108,12 @@ struct AddEditReminderView: View {
             guard let reminderToEdit = reminderToEdit else { return }
             guard interactionMode == .edit else { return }
 
-            time = Calendar.current.date(bySettingHour: Int(reminderToEdit.hour), minute: Int(reminderToEdit.minute), second: 0, of: Date())!
+            time = Calendar.current.date(
+                bySettingHour: Int(reminderToEdit.hour),
+                minute: Int(reminderToEdit.minute),
+                second: 0,
+                of: Date()
+            )!
 
             let frequencyDays = (reminderToEdit.frequencyDays ?? [])
                 .compactMap { FrequencyDay(rawValue: $0.intValue) }

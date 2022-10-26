@@ -67,7 +67,7 @@ struct HabitListView: View {
         .navigationTitle("HabitPanda 🐼")
         .navigationBarTitleDisplayMode(.inline)
         .fullScreenCover(isPresented: $isAddHabitViewPresented) {
-            AddHabitView()
+            AddEditHabitView()
         }
         .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
             ReorderHabitsView()

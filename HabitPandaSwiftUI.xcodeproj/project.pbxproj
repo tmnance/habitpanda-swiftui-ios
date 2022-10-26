@@ -22,7 +22,7 @@
 		1CDA4CBB28F096B0007D02F3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CBA28F096B0007D02F3 /* Preview Assets.xcassets */; };
 		1CDA4CC728F09D04007D02F3 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC928F09D67007D02F3 /* Persistence.swift */; };
-		1CDA4CCC28F0A103007D02F3 /* AddHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCB28F0A103007D02F3 /* AddHabitView.swift */; };
+		1CDA4CCC28F0A103007D02F3 /* AddEditHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */; };
 		1CDA4CCE28F0AB2C007D02F3 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCD28F0AB2C007D02F3 /* Habit.swift */; };
 		1CDA4CD028F0ACA9007D02F3 /* ReorderHabitsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCF28F0ACA9007D02F3 /* ReorderHabitsView.swift */; };
 		1CDA4CD228F0C2F7007D02F3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CD128F0C2F7007D02F3 /* Constants.swift */; };
@@ -54,7 +54,7 @@
 		1CDA4CBA28F096B0007D02F3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1CDA4CC628F09D04007D02F3 /* HabitListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitListView.swift; sourceTree = "<group>"; };
 		1CDA4CC928F09D67007D02F3 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
-		1CDA4CCB28F0A103007D02F3 /* AddHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddHabitView.swift; sourceTree = "<group>"; };
+		1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditHabitView.swift; sourceTree = "<group>"; };
 		1CDA4CCD28F0AB2C007D02F3 /* Habit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Habit.swift; sourceTree = "<group>"; };
 		1CDA4CCF28F0ACA9007D02F3 /* ReorderHabitsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReorderHabitsView.swift; sourceTree = "<group>"; };
 		1CDA4CD128F0C2F7007D02F3 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -129,8 +129,8 @@
 		1CDA4CC528F09CE7007D02F3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */,
 				1C8515952905A572009FC9B3 /* AddEditReminderView.swift */,
-				1CDA4CCB28F0A103007D02F3 /* AddHabitView.swift */,
 				1CDA4CD328F0C4FE007D02F3 /* AdminView.swift */,
 				1CA0B60328F60EDF002103EA /* HabitCheckInsTabView.swift */,
 				1CDA4CDB28F11A57007D02F3 /* HabitDetailsView.swift */,
@@ -275,7 +275,7 @@
 				1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */,
 				1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */,
 				1CDA4CE928F3B087007D02F3 /* TimeOfDay.swift in Sources */,
-				1CDA4CCC28F0A103007D02F3 /* AddHabitView.swift in Sources */,
+				1CDA4CCC28F0A103007D02F3 /* AddEditHabitView.swift in Sources */,
 				1CDA4CD228F0C2F7007D02F3 /* Constants.swift in Sources */,
 				1CDA4CD428F0C4FE007D02F3 /* AdminView.swift in Sources */,
 				1CA0B6152901CF00002103EA /* AppDelegate.swift in Sources */,

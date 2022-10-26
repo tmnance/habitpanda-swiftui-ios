@@ -1,5 +1,5 @@
 //
-//  AddHabitView.swift
+//  AddEditHabitView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/7/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddHabitView: View {
+struct AddEditHabitView: View {
     private enum Field: Hashable {
         case name, frequencyOverflow
     }
@@ -21,8 +21,10 @@ struct AddHabitView: View {
     @State private var frequencyOverflow = ""
     @FocusState private var focusedField: Field?
 //    @State private var timer: Timer?
+    @State private var interactionMode: Constants.ViewInteractionMode = .add
 
     let frequencySliderOverflowThreshold = 8
+    var habitToEdit: Habit? = nil
 
     var body: some View {
         NavigationView {
@@ -120,8 +122,25 @@ struct AddHabitView: View {
                     .disabled(!isValidInput())
                 }
             }
-            .navigationTitle("Create a New Habit")
+            .navigationTitle(interactionMode == .add ? "Create a New Habit" : "Edit Habit")
             .navigationBarTitleDisplayMode(.inline)
+        }
+        .onAppear {
+            interactionMode = habitToEdit == nil ? .add : .edit
+            guard let habitToEdit = habitToEdit else { return }
+            guard interactionMode == .edit else { return }
+
+            name = habitToEdit.name ?? ""
+            frequencyPerWeek = Int(habitToEdit.frequencyPerWeek)
+
+            if frequencyPerWeek >= frequencySliderOverflowThreshold {
+                frequencySliderValue = Float(frequencySliderOverflowThreshold)
+                isSliderOverflowActive = true
+                frequencyOverflow = String(frequencyPerWeek)
+            }
+            else {
+                frequencySliderValue = Float(frequencyPerWeek)
+            }
         }
     }
 
@@ -145,11 +164,14 @@ struct AddHabitView: View {
     }
 
     func save() {
-        let habitToSave = Habit(context: viewContext)
+        let isNew = interactionMode == .add
+        let habitToSave = isNew ? Habit(context: viewContext) : habitToEdit!
 
-        habitToSave.createdAt = Date()
-        habitToSave.uuid = UUID()
-        habitToSave.order = Int32(Habit.getCount() - 1)
+        if isNew {
+            habitToSave.createdAt = Date()
+            habitToSave.uuid = UUID()
+            habitToSave.order = Int32(Habit.getCount() - 1)
+        }
 
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
@@ -165,6 +187,6 @@ struct AddHabitView: View {
 
 struct AddHabitView_Previews: PreviewProvider {
     static var previews: some View {
-        AddHabitView()
+        AddEditHabitView()
     }
 }
