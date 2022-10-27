@@ -170,7 +170,7 @@ struct AddEditHabitView: View {
         if isNew {
             habitToSave.createdAt = Date()
             habitToSave.uuid = UUID()
-            habitToSave.order = Int32(Habit.getCount() - 1)
+            habitToSave.order = Int32(Habit.getCount(context: viewContext) - 1)
         }
 
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -188,5 +188,6 @@ struct AddEditHabitView: View {
 struct AddHabitView_Previews: PreviewProvider {
     static var previews: some View {
         AddEditHabitView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

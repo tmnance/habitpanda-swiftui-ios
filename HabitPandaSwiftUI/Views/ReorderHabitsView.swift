@@ -11,7 +11,7 @@ struct ReorderHabitsView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
 
-    @State var habits: [Habit] = Habit.getAll(sortedBy: [("order", .asc)])
+    @State var habits: [Habit] = []
     @State var isHovering: Bool = false
 
     var body: some View {
@@ -39,6 +39,12 @@ struct ReorderHabitsView: View {
                     .listStyle(.plain)
                     Spacer()
                 }
+            }
+            .onAppear {
+                habits = Habit.getAll(
+                    sortedBy: [("order", .asc)],
+                    context: viewContext
+                )
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -86,5 +92,6 @@ struct ReorderHabitsView: View {
 struct ReorderHabitsView_Previews: PreviewProvider {
     static var previews: some View {
         ReorderHabitsView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

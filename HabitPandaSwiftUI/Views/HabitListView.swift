@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HabitListView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     @State private var isAddHabitViewPresented = false
     @State private var isReorderHabitsViewPresented = false
 
@@ -78,19 +80,23 @@ struct HabitListView: View {
         withAnimation {
             offsets.forEach { offset in
                 let habit = habits[offset]
-                do {
-                    try PersistenceController.shared.delete(habit)
-                } catch {
-                    print(error.localizedDescription)
-                }
+                viewContext.delete(habit)
             }
-            Habit.fixHabitOrder()
+            do {
+                try viewContext.save()
+            } catch {
+                print("Error saving context, \(error)")
+            }
+            Habit.fixHabitOrder(context: viewContext)
         }
     }
 }
 
 struct HabitListView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitListView()
+        NavigationStack {
+            HabitListView()
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        }
     }
 }

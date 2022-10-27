@@ -99,6 +99,7 @@ struct HabitDetailsView: View {
             }
         }
         .navigationTitle("Habit Details")
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     func addCheckIn(forDate date: Date) {
@@ -124,7 +125,9 @@ struct HabitDetailsView: View {
 
 struct HabitDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitDetailsView(habit: Habit.getPreviewHabit())
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        NavigationStack {
+            HabitDetailsView(habit: Habit.example)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        }
     }
 }

@@ -172,7 +172,7 @@ struct AddEditReminderView: View {
 
 struct AddReminderView_Previews: PreviewProvider {
     static var previews: some View {
-        AddEditReminderView(habit: Habit.getPreviewHabit())
+        AddEditReminderView(habit: Habit.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

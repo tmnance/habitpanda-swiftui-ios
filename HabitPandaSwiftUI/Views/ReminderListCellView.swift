@@ -51,7 +51,7 @@ struct ReminderListCellView: View {
 
 struct ReminderListCellView_Previews: PreviewProvider {
     static var previews: some View {
-        ReminderListCellView(reminder: Reminder.getPreviewReminder())
+        ReminderListCellView(reminder: Reminder.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

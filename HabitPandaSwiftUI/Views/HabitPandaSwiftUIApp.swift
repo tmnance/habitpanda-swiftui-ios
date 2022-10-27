@@ -10,22 +10,27 @@ import SwiftUI
 @main
 struct HabitPandaSwiftUIApp: App {
     @StateObject var router = Router.shared
-    let persistenceController = PersistenceController.shared
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
-    init() {
-        NotificationHelper.requestAuthorization()
-    }
+//    init() {
+//        NotificationHelper.requestAuthorization()
+//    }
 
     var body: some Scene {
         WindowGroup {
             NavigationStack(path: $router.path) {
                 HabitListView()
             }
-            .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
             .environmentObject(router)
-//            .task { // task to open the first habit details view on app load
-//                if let firstHabit = Habit.getAll().first {
+            .onAppear {
+                NotificationHelper.requestAuthorization()
+            }
+//            .task { // task to open the first habit details view on app load (used for testing)
+//                if let firstHabit = Habit.getAll(
+//                    sortedBy: [("order", .asc)],
+//                    context: PersistenceController.shared.container.viewContext
+//                ).first {
 //                    router.reset()
 //                    router.path.append(firstHabit)
 //                }

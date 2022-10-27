@@ -11,9 +11,9 @@ import CoreData
 //@objc(Habit)
 public class Habit: NSManagedObject {
     public static func getAll(
-        sortedBy sortKeys: [(String, Constants.SortDir)] = [("name", .asc)]
+        sortedBy sortKeys: [(String, Constants.SortDir)] = [("name", .asc)],
+        context: NSManagedObjectContext
     ) -> [Habit] {
-        let context = PersistenceController.shared.container.viewContext
         var habits: [Habit] = []
 
         let request: NSFetchRequest<Habit> = Habit.fetchRequest()
@@ -30,11 +30,9 @@ public class Habit: NSManagedObject {
         return habits
     }
 
-    public static func getCount() -> Int {
-        let context = PersistenceController.shared.container.viewContext
-        var count = 0
-
+    public static func getCount(context: NSManagedObjectContext) -> Int {
         let request: NSFetchRequest<Habit> = Habit.fetchRequest()
+        var count = 0
 
         do {
             count = try context.count(for: request)
@@ -45,12 +43,12 @@ public class Habit: NSManagedObject {
         return count
     }
 
-    public static func fixHabitOrder() {
-        let context = PersistenceController.shared.container.viewContext
-        let habits = Habit.getAll(sortedBy: [("order", .asc), ("createdAt", .asc)])
-        guard habits.count > 0 else {
-            return
-        }
+    public static func fixHabitOrder(context: NSManagedObjectContext) {
+        let habits = Habit.getAll(
+            sortedBy: [("order", .asc), ("createdAt", .asc)],
+            context: context
+        )
+        guard habits.count > 0 else { return }
 
         var order = 0
 
@@ -68,47 +66,27 @@ public class Habit: NSManagedObject {
     }
 
     func getFirstCheckInDate() -> Date? {
+        guard let context = managedObjectContext else { return nil }
         let checkIns = CheckIn.getAll(
             forHabitUUIDs: [uuid!],
-            withLimit: 1
+            withLimit: 1,
+            context: context
         )
         return checkIns.first?.checkInDate!.stripTime()
     }
+}
 
-    static func getPreviewHabit(_ name: String? = nil) -> Habit {
+
+// MARK: - Xcode preview content
+extension Habit {
+    static var example: Habit {
         let context = PersistenceController.preview.container.viewContext
-        let habit = Habit(context: context)
-        habit.createdAt = Date()
-        habit.uuid = UUID()
-        habit.name = name ?? "Test habit"
-        habit.frequencyPerWeek = Int32(5)
-        habit.order = Int32(0)
 
-        let checkIn = CheckIn(context: context)
-        checkIn.createdAt = Date()
-        checkIn.uuid = UUID()
-        checkIn.isSuccess = true
-        checkIn.checkInDate = Date().stripTime()
-        checkIn.habit = habit
+        let fetchRequest: NSFetchRequest<Habit> = Habit.fetchRequest()
+        fetchRequest.fetchLimit = 1
 
-        let reminder1 = Reminder(context: context)
-        reminder1.createdAt = Date()
-        reminder1.uuid = UUID()
-        reminder1.habit = habit
-        reminder1.hour = Int32(13)
-        reminder1.minute = Int32(11)
-        reminder1.frequencyDays =
-            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+        let results = try? context.fetch(fetchRequest)
 
-        let reminder2 = Reminder(context: context)
-        reminder2.createdAt = Date()
-        reminder2.uuid = UUID()
-        reminder2.habit = habit
-        reminder2.hour = Int32(10)
-        reminder2.minute = Int32(44)
-        reminder2.frequencyDays =
-            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
-
-        return habit
+        return (results?.first!)!
     }
 }

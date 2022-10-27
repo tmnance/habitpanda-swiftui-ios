@@ -10,20 +10,10 @@ import CoreData
 
 //@objc(Reminder)
 public class Reminder: NSManagedObject {
-    public func getTimeOfDay() -> TimeOfDay {
-        return TimeOfDay(hour: Int(hour), minute: Int(minute))
-    }
-
-    public func getTimeInMinutes() -> Int {
-        return Int(hour * 60) + Int(minute)
-    }
-
-    public func isActiveOnDay(_ offset: Int) -> Bool {
-        return (frequencyDays ?? []).contains(NSNumber(value: offset))
-    }
-
-    public static func getAll(withLimit limit: Int? = nil) -> [Reminder] {
-        let context = PersistenceController.shared.container.viewContext
+    public static func getAll(
+        withLimit limit: Int? = nil,
+        context: NSManagedObjectContext
+    ) -> [Reminder] {
         var reminders: [Reminder] = []
 
         let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
@@ -45,8 +35,10 @@ public class Reminder: NSManagedObject {
         return reminders
     }
 
-    public static func get(withUUID uuid: UUID) -> Reminder? {
-        let context = PersistenceController.shared.container.viewContext
+    public static func get(
+        withUUID uuid: UUID,
+        context: NSManagedObjectContext
+    ) -> Reminder? {
         var reminder: Reminder? = nil
 
         let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
@@ -60,18 +52,30 @@ public class Reminder: NSManagedObject {
         return reminder
     }
 
-    static func getPreviewReminder(_ name: String? = nil) -> Reminder {
+    public func getTimeOfDay() -> TimeOfDay {
+        return TimeOfDay(hour: Int(hour), minute: Int(minute))
+    }
+
+    public func getTimeInMinutes() -> Int {
+        return Int(hour * 60) + Int(minute)
+    }
+
+    public func isActiveOnDay(_ offset: Int) -> Bool {
+        return (frequencyDays ?? []).contains(NSNumber(value: offset))
+    }
+}
+
+
+// MARK: - Xcode preview content
+extension Reminder {
+    static var example: Reminder {
         let context = PersistenceController.preview.container.viewContext
-        let reminder = Reminder(context: context)
-        reminder.createdAt = Date()
-        reminder.uuid = UUID()
-        reminder.habit = Habit.getPreviewHabit()
 
-        reminder.hour = Int32(7)
-        reminder.minute = Int32(30)
-        reminder.frequencyDays =
-            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+        let fetchRequest: NSFetchRequest<Reminder> = Reminder.fetchRequest()
+        fetchRequest.fetchLimit = 1
 
-        return reminder
+        let results = try? context.fetch(fetchRequest)
+
+        return (results?.first!)!
     }
 }

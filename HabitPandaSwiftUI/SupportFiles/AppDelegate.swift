@@ -49,7 +49,10 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         if
             let reminderUUID = UUID(uuidString: userInfo["reminderUUID"] as? String ?? ""),
-            let reminder = Reminder.get(withUUID: reminderUUID),
+            let reminder = Reminder.get(
+                withUUID: reminderUUID,
+                context: PersistenceController.shared.container.viewContext
+            ),
             let habit = reminder.habit
             {
             // TODO: find a way to do this without relying on a class singleton

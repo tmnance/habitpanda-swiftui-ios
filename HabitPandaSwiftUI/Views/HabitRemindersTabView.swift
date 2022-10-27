@@ -51,7 +51,7 @@ struct HabitRemindersTabView: View {
 
 struct HabitRemindersTabView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitRemindersTabView(habit: Habit.getPreviewHabit())
+        HabitRemindersTabView(habit: Habit.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

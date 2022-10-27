@@ -20,11 +20,6 @@ struct AdminView: View {
     @State private var deliveredNotifications: [UNNotification] = []
     @State private var reminders: [Reminder] = []
 
-    init() {
-        loadNotificationData()
-        loadRemindersData()
-    }
-
     var body: some View {
         VStack {
             Text("\(getAppVersionString())\n\n" +
@@ -111,7 +106,10 @@ struct AdminView: View {
         .toast(isPresenting: $showToast, duration: 2, tapToDismiss: true) {
             AlertToast(type: .regular, title: toastText)
         }
-
+        .onAppear {
+            loadNotificationData()
+            loadRemindersData()
+        }
         .navigationTitle("Admin")
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -297,7 +295,7 @@ struct AdminView: View {
     }
 
     private func deleteAllHabits() {
-        Habit.getAll().forEach { viewContext.delete($0) }
+        Habit.getAll(context: viewContext).forEach { viewContext.delete($0) }
 
         do {
             try viewContext.save()
@@ -310,6 +308,7 @@ struct AdminView: View {
 struct AdminView_Previews: PreviewProvider {
     static var previews: some View {
         AdminView()
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
 
@@ -342,7 +341,7 @@ extension AdminView {
 
 extension AdminView {
     private func loadRemindersData() {
-        reminders = Reminder.getAll()
+        reminders = Reminder.getAll(context: viewContext)
     }
 
     func getRemindersReportString() -> String {

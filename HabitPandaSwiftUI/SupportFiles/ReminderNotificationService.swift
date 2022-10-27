@@ -164,7 +164,7 @@ extension ReminderNotificationService {
         // TODO: may eventually have other non-reminder notifications that shouldn't be cleared
         NotificationHelper.removeAllPendingNotifications()
 
-        setupNotificationsForReminders(Reminder.getAll())
+        setupNotificationsForReminders(Reminder.getAll(context: PersistenceController.shared.container.viewContext))
     }
 
     static func removeOrphanedDeliveredNotifications() {
@@ -177,7 +177,10 @@ extension ReminderNotificationService {
                     let userInfo = notification.request.content.userInfo
                     guard
                         let reminderUUID = UUID(uuidString: userInfo["reminderUUID"] as? String ?? ""),
-                        let _ = Reminder.get(withUUID: reminderUUID)
+                        let _ = Reminder.get(
+                            withUUID: reminderUUID,
+                            context: PersistenceController.shared.container.viewContext
+                        )
                         else {
                             identifiersToRemove.append(notification.request.identifier)
                             return
@@ -199,7 +202,10 @@ extension ReminderNotificationService {
 extension ReminderNotificationService {
     static func sendTestNotification() {
         print("sendTestNotification() -> 1")
-        guard let reminder = Reminder.getAll(withLimit: 1).first else {
+        guard let reminder = Reminder.getAll(
+            withLimit: 1,
+            context: PersistenceController.shared.container.viewContext
+        ).first else {
             return
         }
 

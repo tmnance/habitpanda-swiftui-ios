@@ -68,9 +68,7 @@ struct HabitCheckInsTabView: View {
 
 struct HabitCheckInsTabView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitCheckInsTabView(habit: Habit.getPreviewHabit())
+        HabitCheckInsTabView(habit: Habit.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-//        HabitDetailsView(habit: Habit.getPreviewHabit(), selectedTab: .checkIns)
-//            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
