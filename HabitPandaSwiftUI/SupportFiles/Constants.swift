@@ -36,6 +36,11 @@ public struct Constants {
             patternImage: UIImage(named: "disabled-diag-stripe")!
         ).withAlphaComponent(0.05)
 
+        static let checkInButtonBorder = UIColor(named: "checkInButtonBorder")!
+        static let checkInButtonText = UIColor(named: "checkInButtonText")!
+        static let deleteButtonBorder = UIColor(named: "deleteButtonBorder")!
+        static let deleteButtonText = UIColor(named: "deleteButtonText")!
+
         static let toastText = UIColor(named: "toastText")!
         static let toastSuccessBg = UIColor(named: "toastSuccessBg")!
         static let toastErrorBg = UIColor(named: "toastErrorBg")!

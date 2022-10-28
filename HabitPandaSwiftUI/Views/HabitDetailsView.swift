@@ -35,7 +35,8 @@ struct HabitDetailsView: View {
         VStack {
             HStack {
                 Text(habit.name ?? "")
-                    .lineLimit(1)
+                    .font(.system(size: 20))
+                    .lineLimit(3)
                 Spacer()
                 Menu {
                     Section(header: Text("Select a Check-in Date")) {
@@ -59,11 +60,13 @@ struct HabitDetailsView: View {
                 }
                 label: {
                     Text("Check In!")
-                        .foregroundColor(.blue)
-                        .padding(6)
+                        .font(.system(size: 15))
+                        .foregroundColor(Color(Constants.Colors.checkInButtonText))
+                        .padding(12)
+                        .frame(height: 46)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.blue, lineWidth: 1)
+                            RoundedRectangle(cornerRadius: 15)
+                                .stroke(Color(Constants.Colors.checkInButtonBorder), lineWidth: 1)
                         )
                 }
             }

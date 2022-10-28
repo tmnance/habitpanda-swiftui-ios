@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* AddEditReminderView.swift */; };
+		1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */; };
 		1CA0B60228F60ED4002103EA /* HabitSummaryTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60128F60ED4002103EA /* HabitSummaryTabView.swift */; };
 		1CA0B60428F60EDF002103EA /* HabitCheckInsTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B60328F60EDF002103EA /* HabitCheckInsTabView.swift */; };
@@ -20,7 +21,6 @@
 		1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */; };
 		1CDA4CB828F096B0007D02F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB728F096B0007D02F3 /* Assets.xcassets */; };
 		1CDA4CBB28F096B0007D02F3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CBA28F096B0007D02F3 /* Preview Assets.xcassets */; };
-		1CDA4CC728F09D04007D02F3 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC928F09D67007D02F3 /* Persistence.swift */; };
 		1CDA4CCC28F0A103007D02F3 /* AddEditHabitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */; };
 		1CDA4CCE28F0AB2C007D02F3 /* Habit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCD28F0AB2C007D02F3 /* Habit.swift */; };
@@ -258,7 +258,6 @@
 				1CA0B61129005657002103EA /* ReminderNotificationService.swift in Sources */,
 				1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */,
 				1CDA4CE328F3B02D007D02F3 /* Date+Rounding.swift in Sources */,
-				1CDA4CC728F09D04007D02F3 /* HabitListView.swift in Sources */,
 				1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */,
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
 				1CDA4CE528F3B05E007D02F3 /* DateHelper.swift in Sources */,
@@ -271,6 +270,7 @@
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
+				1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */,
 				1CDA4CDC28F11A57007D02F3 /* HabitDetailsView.swift in Sources */,
 				1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */,
 				1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */,

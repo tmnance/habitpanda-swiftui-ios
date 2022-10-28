@@ -45,7 +45,6 @@ struct HabitPandaSwiftUIApp: App {
 //                print("info")
 //                print(info)
 //            }
-
         }
     }
 }

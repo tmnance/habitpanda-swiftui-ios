@@ -72,8 +72,8 @@ struct HabitSummaryTabView: View {
         VStack {
             let chartData = chartData // prevent recalculations within the same view draw
             Text("7-Day Rolling Average")
+                .font(.system(size: 20))
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title2)
                 .padding()
 
             Chart {
@@ -167,12 +167,14 @@ struct HabitSummaryTabView: View {
                 showDeleteHabitAlert = true
             }) {
                 Text("Delete Habit")
-                    .foregroundColor(.red)
-                    .padding(12)
+                    .font(.system(size: 15))
+                    .foregroundColor(Color(Constants.Colors.deleteButtonText))
                     .frame(maxWidth: .infinity)
+                    .padding(12)
+                    .frame(height: 46)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
-                            .stroke(Color.red, lineWidth: 1)
+                            .stroke(Color(Constants.Colors.deleteButtonBorder), lineWidth: 1)
                     )
             }
             .padding()//.horizontal, 16)
@@ -291,7 +293,7 @@ extension HabitSummaryTabView {
     ) -> [Int: Int] {
         var startDateOffsetCheckInCountMap: [Int: Int] = [:]
 
-        checkIns.forEach{ (checkIn) in
+        checkIns.forEach { (checkIn) in
             let checkInDate = checkIn.checkInDate!.stripTime()
             let startDateOffset = Calendar.current.dateComponents(
                 [.day],
