@@ -14,6 +14,7 @@ struct AdminView: View {
     @State private var showToast = false
     @State private var toastText = ""
     @State private var showSeedTestDataAlert = false
+    @State private var showSeedTestDataLargeAlert = false
     @State private var showDeleteAllDataAlert = false
 
     @State private var pendingRequests: [UNNotificationRequest] = []
@@ -21,88 +22,109 @@ struct AdminView: View {
     @State private var reminders: [Reminder] = []
 
     var body: some View {
-        VStack {
-            Text("\(getAppVersionString())\n\n" +
-                 "\(getRemindersReportString())\n\n" +
-                 "\(getNotificationsReportString())"
-            ).font(.footnote)
+        ScrollView {
+            VStack {
+                Text("\(getAppVersionString())\n\n" +
+                     "\(getRemindersReportString())\n\n" +
+                     "\(getNotificationsReportString())"
+                ).font(.footnote)
 
-            Button("Remove all pending notifications") {
-                NotificationHelper.removeAllPendingNotifications()
-                self.loadNotificationData()
-                toastText = "Pending notifications removed"
-                showToast = true
-            }
-
-            Button("Remove all sent notifications") {
-                NotificationHelper.removeAllDeliveredNotifications()
-                self.loadNotificationData()
-                toastText = "Sent notifications removed"
-                showToast = true
-            }
-
-            Button("Remove orphaned sent notifications") {
-                ReminderNotificationService.removeOrphanedDeliveredNotifications()
-                self.loadNotificationData()
-                toastText = "Orphaned sent notifications removed"
-                showToast = true
-            }
-
-            Button("(Re)set all notifications") {
-                ReminderNotificationService.refreshNotificationsForAllReminders()
-                self.loadNotificationData()
-                toastText = "All notifications refreshed"
-                showToast = true
-            }
-
-            Button("Send test notification") {
-                ReminderNotificationService.sendTestNotification()
-                toastText = "Test notification sent"
-                showToast = true
-            }
-
-            Button("Seed test data") {
-                showSeedTestDataAlert = true
-            }.alert(
-                isPresented: $showSeedTestDataAlert,
-                content: {
-                    Alert(
-                        title: Text("Confirm Seed Data"),
-                        message: Text("Warning: seeding test data will clear all existing data"),
-                        primaryButton: .default(
-                            Text("Cancel")
-                        ),
-                        secondaryButton: .destructive(
-                            Text("Confirm"),
-                            action: seedTestData
-                        )
-                    )
+                Button("Remove all pending notifications") {
+                    NotificationHelper.removeAllPendingNotifications()
+                    self.loadNotificationData()
+                    toastText = "Pending notifications removed"
+                    showToast = true
                 }
-            )
 
-            Button("Delete all data") {
-                showDeleteAllDataAlert = true
-            }.alert(
-                isPresented: $showDeleteAllDataAlert,
-                content: {
-                    Alert(
-                        title: Text("Delete All Data"),
-                        message: Text("Warning: this will clear all existing data"),
-                        primaryButton: .default(
-                            Text("Cancel")
-                        ),
-                        secondaryButton: .destructive(
-                            Text("Confirm"),
-                            action: deleteAllData
-                        )
-                    )
+                Button("Remove all sent notifications") {
+                    NotificationHelper.removeAllDeliveredNotifications()
+                    self.loadNotificationData()
+                    toastText = "Sent notifications removed"
+                    showToast = true
                 }
-            )
 
-            Spacer()
+                Button("Remove orphaned sent notifications") {
+                    ReminderNotificationService.removeOrphanedDeliveredNotifications()
+                    self.loadNotificationData()
+                    toastText = "Orphaned sent notifications removed"
+                    showToast = true
+                }
+
+                Button("(Re)set all notifications") {
+                    ReminderNotificationService.refreshNotificationsForAllReminders()
+                    self.loadNotificationData()
+                    toastText = "All notifications refreshed"
+                    showToast = true
+                }
+
+                Button("Send test notification") {
+                    ReminderNotificationService.sendTestNotification()
+                    toastText = "Test notification sent"
+                    showToast = true
+                }
+
+                Button("Seed test data (normal)") {
+                    showSeedTestDataAlert = true
+                }.alert(
+                    isPresented: $showSeedTestDataAlert,
+                    content: {
+                        Alert(
+                            title: Text("Confirm Seed Data"),
+                            message: Text("Warning: seeding test data will clear all existing data"),
+                            primaryButton: .default(
+                                Text("Cancel")
+                            ),
+                            secondaryButton: .destructive(
+                                Text("Confirm"),
+                                action: seedTestData
+                            )
+                        )
+                    }
+                )
+
+                Button("Seed test data (large dataset)") {
+                    showSeedTestDataLargeAlert = true
+                }.alert(
+                    isPresented: $showSeedTestDataLargeAlert,
+                    content: {
+                        Alert(
+                            title: Text("Confirm Seed Data (large dataset)"),
+                            message: Text("Warning: seeding test data will clear all existing data"),
+                            primaryButton: .default(
+                                Text("Cancel")
+                            ),
+                            secondaryButton: .destructive(
+                                Text("Confirm"),
+                                action: seedTestDataLarge
+                            )
+                        )
+                    }
+                )
+
+                Button("Delete all data") {
+                    showDeleteAllDataAlert = true
+                }.alert(
+                    isPresented: $showDeleteAllDataAlert,
+                    content: {
+                        Alert(
+                            title: Text("Delete All Data"),
+                            message: Text("Warning: this will clear all existing data"),
+                            primaryButton: .default(
+                                Text("Cancel")
+                            ),
+                            secondaryButton: .destructive(
+                                Text("Confirm"),
+                                action: deleteAllData
+                            )
+                        )
+                    }
+                )
+
+                Spacer()
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.large)
         }
-        .buttonStyle(.bordered)
-        .controlSize(.large)
         .toast(isPresenting: $showToast, duration: 2, tapToDismiss: true) {
             AlertToast(type: .regular, title: toastText)
         }
@@ -121,11 +143,18 @@ struct AdminView: View {
         toastText = "Test data seeded"
         showToast = true
     }
+    private func seedTestDataLarge() {
+        createSeedTestHabits(useLargeDataSet: true)
+        ReminderNotificationService.refreshNotificationsForAllReminders()
+        self.loadNotificationData()
+        toastText = "Test data seeded"
+        showToast = true
+    }
 
-    private func createSeedTestHabits() {
+    private func createSeedTestHabits(useLargeDataSet: Bool = false) {
         deleteAllHabits()
 
-        let seedHabits:[[String:Any]] = [
+        var seedHabits: [[String:Any]] = [
             [
                 "name": "Call mom",
                 "frequencyPerWeek": 1,
@@ -177,6 +206,20 @@ struct AdminView: View {
                 "checkInHistory": "XX XXXXXXXXXX XXXXXX"
             ],
         ]
+
+        if useLargeDataSet {
+            for i in 0..<14 {
+                let frequencyPerWeek = i + 1
+                let checkInHistory = Array(repeating: "", count: 30)
+                    .map { _ in ["X", " "][Int.random(in: 0...frequencyPerWeek) == 0 ? 0 : 1] }
+                    .joined(separator: "")
+                seedHabits.append([
+                    "name": "Test Habit \(i + 1)",
+                    "frequencyPerWeek": frequencyPerWeek,
+                    "checkInHistory": checkInHistory
+                ])
+            }
+        }
 
         let createdAtDate = Calendar.current.date(
             byAdding: .day,
