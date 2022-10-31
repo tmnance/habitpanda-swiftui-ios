@@ -69,6 +69,9 @@ struct HabitDetailsView: View {
                                 .stroke(Color(Constants.Colors.checkInButtonBorder), lineWidth: 1)
                         )
                 }
+                // fixes layout bug with keyboard dismiss on the habit edit view
+                // TODO: confirm this is still necessary on newer versions of iOS (>16)
+                .frame(height: Constants.comfortableTappableDimension)
             }
             .padding()
 
