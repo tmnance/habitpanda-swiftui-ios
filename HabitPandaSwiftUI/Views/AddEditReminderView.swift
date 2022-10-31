@@ -91,12 +91,16 @@ struct AddEditReminderView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         save()
                         dismiss()
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                     .disabled(frequencyDaysToggleStates.filter { $0.isActive }.count == 0)
                 }
             }

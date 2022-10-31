@@ -171,7 +171,7 @@ struct HabitSummaryTabView: View {
                     .foregroundColor(Color(Constants.Colors.deleteButtonText))
                     .frame(maxWidth: .infinity)
                     .padding(12)
-                    .frame(height: 46)
+                    .frame(height: Constants.comfortableTappableDimension)
                     .overlay(
                         RoundedRectangle(cornerRadius: 10)
                             .stroke(Color(Constants.Colors.deleteButtonBorder), lineWidth: 1)

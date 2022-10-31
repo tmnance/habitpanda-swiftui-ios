@@ -8,6 +8,9 @@
 import UIKit
 
 public struct Constants {
+    static let minTappableDimension: CGFloat = 44
+    static let comfortableTappableDimension: CGFloat = 46
+
     struct Colors {
         static let clear = UIColor.clear
         static let label = UIColor(named: "label")!

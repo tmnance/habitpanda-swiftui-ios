@@ -98,7 +98,7 @@ struct AddEditHabitView: View {
                             .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
                     }
                 }
-                .frame(height: 46, alignment: .center)
+                .frame(height: Constants.comfortableTappableDimension, alignment: .center)
 
                 Spacer()
             }
@@ -113,12 +113,16 @@ struct AddEditHabitView: View {
                     Button("Cancel") {
                         dismiss()
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
                         save()
                         dismiss()
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                     .disabled(!isValidInput())
                 }
             }

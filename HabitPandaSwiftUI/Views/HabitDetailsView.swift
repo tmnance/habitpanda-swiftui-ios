@@ -63,7 +63,7 @@ struct HabitDetailsView: View {
                         .font(.system(size: 15))
                         .foregroundColor(Color(Constants.Colors.checkInButtonText))
                         .padding(12)
-                        .frame(height: 46)
+                        .frame(height: Constants.comfortableTappableDimension)
                         .overlay(
                             RoundedRectangle(cornerRadius: 15)
                                 .stroke(Color(Constants.Colors.checkInButtonBorder), lineWidth: 1)
@@ -99,6 +99,8 @@ struct HabitDetailsView: View {
                 Button("Edit") {
                     isEditHabitViewPresented.toggle()
                 }
+                .frame(minWidth: Constants.minTappableDimension)
+                .frame(height: Constants.minTappableDimension)
             }
         }
         .navigationTitle("Habit Details")

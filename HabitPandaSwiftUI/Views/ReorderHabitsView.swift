@@ -48,19 +48,19 @@ struct ReorderHabitsView: View {
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
+                    Button("Cancel") {
                         dismiss()
-                    }) {
-                        Text("Cancel")
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
+                    Button("Done") {
                         updateHabitOrder()
                         dismiss()
-                    }) {
-                        Text("Done")
                     }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                 }
             }
             .navigationTitle("Reorder Habits")

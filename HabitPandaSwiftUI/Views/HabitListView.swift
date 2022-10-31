@@ -59,24 +59,28 @@ struct HabitListView: View {
                 }) {
                     NavigationLink(destination: AdminView()) {
                         Text("Admin")
+                            .frame(minWidth: Constants.minTappableDimension)
+                            .frame(height: Constants.minTappableDimension)
                     }
                 }
             }
             #endif
 
-            ToolbarItem(placement: .navigationBarTrailing) {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(action: {
                     isReorderHabitsViewPresented.toggle()
                 }) {
                     Label("Reorder Habits", systemImage: "arrow.up.arrow.down")
                 }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
+                .frame(minWidth: Constants.minTappableDimension)
+                .frame(height: Constants.minTappableDimension)
                 Button(action: {
                     isAddHabitViewPresented.toggle()
                 }) {
                     Label("Add Habit", systemImage: "plus")
                 }
+                .frame(minWidth: Constants.minTappableDimension)
+                .frame(height: Constants.minTappableDimension)
             }
         }
         .navigationTitle("HabitPanda 🐼")
@@ -259,7 +263,7 @@ extension HabitListView {
                 Text(habit.name ?? "")
                     .font(.system(size: 15))
                     .lineLimit(2)
-                    .frame(height: 44)
+                    .frame(height: Constants.minTappableDimension)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
                     .padding(.leading, 10)
