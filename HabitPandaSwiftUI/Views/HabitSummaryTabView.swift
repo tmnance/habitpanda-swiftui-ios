@@ -12,7 +12,6 @@ struct HabitSummaryTabView: View {
     @EnvironmentObject var router: Router
 
     @ObservedObject var habit: Habit
-    var checkIns: [CheckIn] = []
     @State private var showDeleteHabitAlert = false
 
     var body: some View {
@@ -63,12 +62,10 @@ struct HabitSummaryTabView: View {
 
     private func deleteHabit() {
         do {
-            try PersistenceController.shared.delete(habit)
-
+            try PersistenceController.delete(habit, context: viewContext)
             Habit.fixHabitOrder(context: viewContext)
             ReminderNotificationService.refreshNotificationsForAllReminders()
             ReminderNotificationService.removeOrphanedDeliveredNotifications()
-
             router.reset()
         } catch {
             print(error.localizedDescription)

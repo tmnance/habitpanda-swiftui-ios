@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HabitCheckInsTabView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     @ObservedObject var habit: Habit
     @FetchRequest var checkIns: FetchedResults<CheckIn>
 
@@ -57,7 +59,7 @@ struct HabitCheckInsTabView: View {
             offsets.forEach { offset in
                 let checkIn = checkIns[offset]
                 do {
-                    try PersistenceController.shared.delete(checkIn)
+                    try PersistenceController.delete(checkIn, context: viewContext)
                 } catch {
                     print(error.localizedDescription)
                 }

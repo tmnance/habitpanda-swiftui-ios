@@ -121,12 +121,10 @@ struct HabitDetailsView: View {
         checkInToSave.isSuccess = true
 
         do {
-            // TODO: not the right way to handle preview save
-//            try viewContext.save() // use this one?
-            try PersistenceController.shared.save()
-//            ReminderNotificationService.refreshNotificationsForAllReminders()
+            try PersistenceController.save(context: viewContext)
+            ReminderNotificationService.refreshNotificationsForAllReminders()
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 }

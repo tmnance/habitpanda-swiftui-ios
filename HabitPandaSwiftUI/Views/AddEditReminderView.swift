@@ -166,10 +166,10 @@ struct AddEditReminderView: View {
             .map { $0 as NSNumber }
 
         do {
-            try PersistenceController.shared.save()
+            try PersistenceController.save(context: viewContext)
             ReminderNotificationService.refreshNotificationsForAllReminders()
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 }

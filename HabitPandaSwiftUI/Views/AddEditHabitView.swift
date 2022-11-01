@@ -181,10 +181,10 @@ struct AddEditHabitView: View {
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
 
         do {
-            try PersistenceController.shared.save()
+            try PersistenceController.save(context: viewContext)
             ReminderNotificationService.refreshNotificationsForAllReminders()
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 }

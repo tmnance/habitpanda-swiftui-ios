@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ReminderListCellView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     @ObservedObject var reminder: Reminder
     @State private var isEditReminderViewPresented = false
 
@@ -40,8 +42,7 @@ struct ReminderListCellView: View {
 
     private func deleteReminder() {
         do {
-            try PersistenceController.shared.delete(reminder)
-
+            try PersistenceController.delete(reminder, context: viewContext)
             ReminderNotificationService.refreshNotificationsForAllReminders()
         } catch {
             print(error.localizedDescription)

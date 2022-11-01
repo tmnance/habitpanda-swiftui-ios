@@ -59,9 +59,9 @@ public class Habit: NSManagedObject {
         }
 
         do {
-            try context.save()
+            try PersistenceController.save(context: context)
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 

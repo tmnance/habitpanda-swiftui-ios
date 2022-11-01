@@ -39,9 +39,7 @@ struct HabitPandaSwiftUIApp: App {
 //            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("testIdentifier"))) { data in
 //                print("onReceive")
 //               // Change key as per your "UserLogs"
-//                guard let userInfo = data.userInfo, let info = userInfo["UserInfo"] else {
-//                    return
-//                }
+//                guard let userInfo = data.userInfo, let info = userInfo["UserInfo"] else { return }
 //                print("info")
 //                print(info)
 //            }

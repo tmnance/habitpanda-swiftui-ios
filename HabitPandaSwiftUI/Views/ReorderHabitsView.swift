@@ -69,12 +69,8 @@ struct ReorderHabitsView: View {
     }
 
     func updateHabitOrder() {
-        guard habits.count > 0 else {
-            return
-        }
-
+        guard habits.count > 0 else { return }
         var order = 0
-
         habits.forEach { habit in
             let habitToSave = habit
             habitToSave.order = Int32(order)
@@ -82,9 +78,9 @@ struct ReorderHabitsView: View {
         }
 
         do {
-            try PersistenceController.shared.save()
+            try PersistenceController.save(context: viewContext)
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 }

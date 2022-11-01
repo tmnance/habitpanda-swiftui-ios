@@ -277,9 +277,9 @@ struct AdminView: View {
         }
 
         do {
-            try viewContext.save()
+            try PersistenceController.save(context: viewContext)
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 
@@ -339,11 +339,10 @@ struct AdminView: View {
 
     private func deleteAllHabits() {
         Habit.getAll(context: viewContext).forEach { viewContext.delete($0) }
-
         do {
-            try viewContext.save()
+            try PersistenceController.save(context: viewContext)
         } catch {
-            print("Error saving context, \(error)")
+            print(error.localizedDescription)
         }
     }
 }

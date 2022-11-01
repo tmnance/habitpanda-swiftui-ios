@@ -55,8 +55,9 @@ struct PersistenceController {
             Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
 
         do {
-            try viewContext.save()
+            try PersistenceController.save(context: viewContext)
         } catch {
+            print(error.localizedDescription)
             // Replace this implementation with code to handle the error appropriately.
             // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
             let nsError = error as NSError
@@ -92,16 +93,14 @@ struct PersistenceController {
         }
     }
 
-    func save() throws {
-        let context = container.viewContext
+    static func save(context: NSManagedObjectContext) throws {
         if context.hasChanges {
             try context.save()
         }
     }
 
-    func delete(_ object: NSManagedObject) throws {
-        let context = container.viewContext
+    static func delete(_ object: NSManagedObject, context: NSManagedObjectContext) throws {
         context.delete(object)
-        try save()
+        try PersistenceController.save(context: context)
     }
 }

@@ -98,7 +98,6 @@ struct HabitListView: View {
 // MARK: - Load Data Methods
 extension HabitListView {
     func reloadData() {
-        print("reloadData()")
         if currentDate != Date().stripTime() {
             // only update when changed
             currentDate = Date().stripTime()
