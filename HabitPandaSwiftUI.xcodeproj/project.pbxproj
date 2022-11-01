@@ -18,6 +18,7 @@
 		1CA0B613290056EB002103EA /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B612290056EB002103EA /* NotificationHelper.swift */; };
 		1CA0B6152901CF00002103EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B6142901CF00002103EA /* AppDelegate.swift */; };
 		1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B61629045F2C002103EA /* ReminderListCellView.swift */; };
+		1CBA7F82291151F400DA56AA /* HabitSummaryChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBA7F81291151F400DA56AA /* HabitSummaryChartView.swift */; };
 		1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */; };
 		1CDA4CB828F096B0007D02F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB728F096B0007D02F3 /* Assets.xcassets */; };
 		1CDA4CBB28F096B0007D02F3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1CDA4CBA28F096B0007D02F3 /* Preview Assets.xcassets */; };
@@ -48,6 +49,7 @@
 		1CA0B612290056EB002103EA /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		1CA0B6142901CF00002103EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CA0B61629045F2C002103EA /* ReminderListCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListCellView.swift; sourceTree = "<group>"; };
+		1CBA7F81291151F400DA56AA /* HabitSummaryChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitSummaryChartView.swift; sourceTree = "<group>"; };
 		1CDA4CB028F096AD007D02F3 /* HabitPandaSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitPandaSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitPandaSwiftUIApp.swift; sourceTree = "<group>"; };
 		1CDA4CB728F096B0007D02F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -137,6 +139,7 @@
 				1CDA4CC628F09D04007D02F3 /* HabitListView.swift */,
 				1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */,
 				1CA0B60528F60EE9002103EA /* HabitRemindersTabView.swift */,
+				1CBA7F81291151F400DA56AA /* HabitSummaryChartView.swift */,
 				1CA0B60128F60ED4002103EA /* HabitSummaryTabView.swift */,
 				1CA0B61629045F2C002103EA /* ReminderListCellView.swift */,
 				1CDA4CCF28F0ACA9007D02F3 /* ReorderHabitsView.swift */,
@@ -276,6 +279,7 @@
 				1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */,
 				1CDA4CE928F3B087007D02F3 /* TimeOfDay.swift in Sources */,
 				1CDA4CCC28F0A103007D02F3 /* AddEditHabitView.swift in Sources */,
+				1CBA7F82291151F400DA56AA /* HabitSummaryChartView.swift in Sources */,
 				1CDA4CD228F0C2F7007D02F3 /* Constants.swift in Sources */,
 				1CDA4CD428F0C4FE007D02F3 /* AdminView.swift in Sources */,
 				1CA0B6152901CF00002103EA /* AppDelegate.swift in Sources */,
