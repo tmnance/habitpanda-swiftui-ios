@@ -187,60 +187,57 @@ extension HabitListView {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
                 ScrollView([.horizontal, .vertical]) {
-                    //                ScrollView(.vertical) {
-                    ZStack(alignment: .topLeading) {
-                        LazyVGrid(
-                            columns: [GridItem(.flexible())],
-                            spacing: 0,
-                            pinnedViews: [.sectionHeaders]
-                        ) {
-                            Section(header: checkInHeaderRow()) {
-                                ForEach(Array(habits.enumerated()), id: \.element) { i, habit in
-                                    LazyVGrid(
-                                        columns: Array(repeating: GridItem(.fixed(50), spacing: 0, alignment: .center), count: HabitListView.numDates),
-                                        spacing: 0
-                                    ) {
-                                        ForEach(0 ..< HabitListView.numDates, id: \.self) { dateOffset in
-                                            checkInContentCell(
-                                                checkInCount: getCheckInCount(forHabit: habit, forDateOffset: dateOffset)
-                                            )
-                                            .id("checkInContentCell-\(i)-\(dateOffset)")
-                                            .frame(width: 50, height: 88, alignment: .bottom)
-                                            .background(Color(getCellBgColor(forIndex: dateOffset)))
-                                        }
+                    LazyVGrid(
+                        columns: [GridItem(.flexible())],
+                        spacing: 0,
+                        pinnedViews: [.sectionHeaders]
+                    ) {
+                        Section(header: checkInHeaderRow()) {
+                            ForEach(Array(habits.enumerated()), id: \.element) { i, habit in
+                                HStack(spacing: 0) {
+                                    ForEach(0 ..< HabitListView.numDates, id: \.self) { dateOffset in
+                                        checkInContentCell(
+                                            checkInCount: getCheckInCount(forHabit: habit, forDateOffset: dateOffset)
+                                        )
+                                        .id("checkInContentCell-\(i)-\(dateOffset)")
+                                        .frame(width: 50, height: 88, alignment: .bottom)
+                                        .background(Color(getCellBgColor(forIndex: dateOffset)))
                                     }
-                                    .overlay(
-                                        Divider()
-                                            .frame(maxWidth: .infinity, maxHeight:1)
-                                            .background(Color(Constants.Colors.listBorder)),
-                                        alignment: .bottom
-                                    )
-                                    .overlay(
-                                        GeometryReader { geometryInner in
-                                            VStack {
-                                                checkInGridRowTitleCell(habit: habit)
-                                                    .id("checkInGridRowTitleCell-\(i)")
-                                                    .frame(width: geometry.size.width)
-                                                    .offset(x: getTitleRowOffset(
-                                                        scrollGeo: geometryInner.frame(in: .named("ScrollViewSpace")),
-                                                        scrollWindowWidth: geometry.size.width
-                                                    ))
-                                            }
-                                        },
-                                        alignment: .topTrailing
-                                    )
                                 }
+                                .overlay(
+                                    Divider()
+                                        .frame(maxWidth: .infinity, maxHeight:1)
+                                        .background(Color(Constants.Colors.listBorder)),
+                                    alignment: .bottom
+                                )
+                                .overlay(
+                                    GeometryReader { geometryInner in
+                                        VStack {
+                                            checkInGridRowTitleCell(habit: habit)
+                                                .id("checkInGridRowTitleCell-\(i)")
+                                                .frame(width: geometry.size.width)
+                                                .offset(x: getTitleRowOffset(
+                                                    scrollGeo: geometryInner.frame(in: .named("ScrollViewSpace")),
+                                                    scrollWindowWidth: geometry.size.width
+                                                ))
+                                        }
+                                    },
+                                    alignment: .topTrailing
+                                )
                             }
                         }
-                        .frame(minHeight: geometry.size.height, alignment: .top)
                     }
+                    .frame(minHeight: geometry.size.height, alignment: .top)
                     .id("checkInGrid")
                 }
                 .coordinateSpace(name: "ScrollViewSpace")
                 .onAppear {
                     // grid should initially appear scrolled all the way to the right to show the current date
-                    // TODO: move somewhere else?
-                    proxy.scrollTo("checkInGrid", anchor: .topTrailing)
+                    // TODO: look into if there is a cleaner way to prevent this (race condition?)
+                    // send to main thread, fixes a bug where this will occasionally not work properly
+                    DispatchQueue.main.async {
+                        proxy.scrollTo("checkInGrid", anchor: .topTrailing)
+                    }
                 }
             }
         }
@@ -276,10 +273,7 @@ extension HabitListView {
     }
 
     @ViewBuilder func checkInHeaderRow() -> some View {
-        LazyVGrid(
-            columns: Array(repeating: GridItem(.fixed(50), spacing: 0, alignment: .center), count: HabitListView.numDates),
-            spacing: 0
-        ) {
+        HStack(spacing: 0) {
             ForEach(0 ..< HabitListView.numDates, id: \.self) {
                 checkInHeaderCell(
                     date:
