@@ -29,4 +29,8 @@ struct DateHelper {
 
         return displayDate
     }
+
+    static func getDaysBetween(startDate: Date, endDate: Date) -> Int {
+        return Calendar.current.dateComponents([.day], from: startDate, to: endDate).day!
+    }
 }
