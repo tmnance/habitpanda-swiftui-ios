@@ -12,6 +12,7 @@ struct HabitListCheckInGridView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @State private var habitCheckInGridOffsetMap: [UUID: CheckInGridOffsetMap] = [:]
+    @State private var habitFirstCheckInOffsetMap: [UUID: Int?] = [:]
     @State private var isFirstLoad = true
 
     @FetchRequest(
@@ -83,10 +84,17 @@ struct HabitListCheckInGridView: View {
 }
 
 
-// MARK: - Grid Helper Methods
+// MARK: - Grid Shared
 extension HabitListCheckInGridView {
+    @ViewBuilder func rowDivider() -> some View {
+        Divider()
+            .frame(maxWidth: .infinity, maxHeight:1)
+            .background(Color(Constants.Colors.listBorder))
+    }
+
     func buildHabitCheckInMaps() {
         habitCheckInGridOffsetMap = [:]
+        habitFirstCheckInOffsetMap = [:]
 
         let checkIns = CheckIn.getAll(
             forHabitUUIDs: habits.map { $0.uuid! },
@@ -96,23 +104,30 @@ extension HabitListCheckInGridView {
 
         checkIns.forEach { (checkIn) in
             let habitUUID = checkIn.habit!.uuid!
-            let date = checkIn.checkInDate!.stripTime()
-            let dateOffset = Calendar.current.dateComponents(
-                [.day],
-                from: startDate,
-                to: date
-            ).day ?? 0
+            let checkInDate = checkIn.checkInDate!.stripTime()
+            let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
+            habitCheckInGridOffsetMap[habitUUID] = habitCheckInGridOffsetMap[habitUUID] ?? [:]
+            habitCheckInGridOffsetMap[habitUUID]![checkInDateOffset] =
+                (habitCheckInGridOffsetMap[habitUUID]![checkInDateOffset] ?? 0) + 1
+        }
 
-            habitCheckInGridOffsetMap[habitUUID] =
-                habitCheckInGridOffsetMap[habitUUID] ?? [:]
-            habitCheckInGridOffsetMap[habitUUID]![dateOffset] =
-                (habitCheckInGridOffsetMap[habitUUID]![dateOffset] ?? 0) + 1
+        habits.forEach { (habit) in
+            if let firstCheckInDate = habit.getFirstCheckInDate() {
+                habitFirstCheckInOffsetMap[habit.uuid!] =
+                    (Calendar.current.dateComponents([.day], from: startDate, to: firstCheckInDate).day ?? 0)
+            } else {
+                habitFirstCheckInOffsetMap[habit.uuid!] = nil
+            }
         }
     }
 
-    func getCheckInCount(forHabit habit: Habit, forDateOffset dateOffset: Int) -> Int {
-        let uuid = habit.uuid!
-        return habitCheckInGridOffsetMap[uuid]?[dateOffset] ?? 0
+    func getCheckInCount(habit: Habit, dateOffset: Int) -> Int {
+        return habitCheckInGridOffsetMap[habit.uuid!]?[dateOffset] ?? 0
+    }
+
+    func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: Int) -> Bool {
+        guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
+        return dateOffset < firstCheckInOffset
     }
 
     func getCellBgColor(forIndex index: Int) -> UIColor {
@@ -130,30 +145,26 @@ extension HabitListCheckInGridView {
 }
 
 
-// MARK: - Grid Header Views
+// MARK: - Grid Header
 extension HabitListCheckInGridView {
     @ViewBuilder func checkInHeaderRow() -> some View {
         HStack(spacing: 0) {
-            ForEach(0 ..< dateCount, id: \.self) {
+            ForEach(0 ..< dateCount, id: \.self) { dateOffset in
                 checkInHeaderCell(
-                    date: Calendar.current.date(byAdding: .day, value: $0, to: startDate)!
+                    date: Calendar.current.date(byAdding: .day, value: dateOffset, to: startDate)!,
+                    dateOffset: dateOffset
                 )
-                .frame(width: 50, height: 50)
-                .background(Color(getCellBgColor(forIndex: $0)))
             }
-            .overlay(
-                Divider()
-                    .frame(maxWidth: .infinity, maxHeight:1)
-                    .background(Color(Constants.Colors.listBorder)),
-                alignment: .bottom
-            )
+            .overlay(rowDivider(), alignment: .bottom)
         }
     }
 
-    @ViewBuilder func checkInHeaderCell(date: Date) -> some View {
+    @ViewBuilder func checkInHeaderCell(date: Date, dateOffset: Int) -> some View {
         Text(getHeaderDisplayDate(date))
             .font(.system(size: 15))
             .multilineTextAlignment(.center)
+            .frame(width: 50, height: 50)
+            .background(Color(getCellBgColor(forIndex: dateOffset)))
     }
 
     private func getHeaderDisplayDate(_ date: Date) -> String {
@@ -164,30 +175,23 @@ extension HabitListCheckInGridView {
 }
 
 
-// MARK: - Grid Content Views
+// MARK: - Grid Content
 extension HabitListCheckInGridView {
     @ViewBuilder func checkInContentRow(habit: Habit, rowIndex: Int, scrollWindowWidth: CGFloat) -> some View {
         HStack(spacing: 0) {
             ForEach(0 ..< dateCount, id: \.self) { dateOffset in
                 checkInContentCell(
-                    checkInCount: getCheckInCount(forHabit: habit, forDateOffset: dateOffset)
+                    checkInCount: getCheckInCount(habit: habit, dateOffset: dateOffset),
+                    isBeforeHabitFirstCheckIn: getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset),
+                    dateOffset: dateOffset
                 )
-                .id("checkInContentCell-\(rowIndex)-\(dateOffset)")
-                .frame(width: 50, height: 88, alignment: .bottom)
-                .background(Color(getCellBgColor(forIndex: dateOffset)))
             }
         }
-        .overlay(
-            Divider()
-                .frame(maxWidth: .infinity, maxHeight:1)
-                .background(Color(Constants.Colors.listBorder)),
-            alignment: .bottom
-        )
+        .overlay(rowDivider(), alignment: .bottom)
         .overlay(
             GeometryReader { geometryInner in
                 VStack {
                     checkInContentRowTitleCell(habit: habit)
-                        .id("checkInGridRowTitleCell-\(rowIndex)")
                         .frame(width: scrollWindowWidth)
                         .offset(x: getTitleRowOffset(
                             scrollGeo: geometryInner.frame(in: .named("ScrollViewSpace")),
@@ -218,9 +222,13 @@ extension HabitListCheckInGridView {
         .background(Color(Constants.Colors.listRowOverlayBg))
     }
 
-    @ViewBuilder func checkInContentCell(checkInCount: Int) -> some View {
-        if checkInCount > 0 {
-            ZStack {
+    @ViewBuilder func checkInContentCell(
+        checkInCount: Int,
+        isBeforeHabitFirstCheckIn: Bool,
+        dateOffset: Int
+    ) -> some View {
+        ZStack {
+            if checkInCount > 0 {
                 Image("checkmark")
                     .resizable()
                     .scaledToFit()
@@ -231,10 +239,18 @@ extension HabitListCheckInGridView {
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
                     .padding(.bottom, 5)
+            } else {
+                Text("")
             }
-        } else {
-            Text("")
         }
+        .frame(width: 50, height: 88, alignment: .bottom)
+        .background(alignment: .bottom) {
+            Image("disabled-diag-stripe")
+                .resizable(resizingMode: .tile)
+                .frame(width: 50, height: 44)
+                .opacity(isBeforeHabitFirstCheckIn ? 0.05 : 0)
+        }
+        .background(Color(getCellBgColor(forIndex: dateOffset)))
     }
 
     func getTitleRowOffset(scrollGeo: CGRect, scrollWindowWidth: CGFloat) -> CGFloat {

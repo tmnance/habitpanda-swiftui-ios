@@ -35,9 +35,6 @@ public struct Constants {
         static let listCheckmark = UIColor(named: "listCheckmark")!
         static let listRowOverlayBg = UIColor(named: "listRowOverlayBg")!
         static let listBorder = UIColor(named: "listBorder")!
-        static let listDisabledCellOverlay = UIColor(
-            patternImage: UIImage(named: "disabled-diag-stripe")!
-        ).withAlphaComponent(0.05)
 
         static let checkInButtonBorder = UIColor(named: "checkInButtonBorder")!
         static let checkInButtonText = UIColor(named: "checkInButtonText")!

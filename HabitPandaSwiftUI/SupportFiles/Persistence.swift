@@ -15,14 +15,14 @@ struct PersistenceController {
 
         let viewContext = result.container.viewContext
 
-        let habit = Habit(context: viewContext)
-        habit.createdAt = Date()
-        habit.uuid = UUID()
-        habit.name = "Test habit"
-        habit.frequencyPerWeek = Int32(5)
-        habit.order = Int32(0)
+        let habit1 = Habit(context: viewContext)
+        habit1.createdAt = Date()
+        habit1.uuid = UUID()
+        habit1.name = "Test habit 1"
+        habit1.frequencyPerWeek = Int32(5)
+        habit1.order = Int32(0)
 
-        [-29, -28, -28, -1, 0].forEach { dateOffset in
+        [-8, -4, -4, -1, 0].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
             let checkInDate = Calendar.current.date(
                 byAdding: .day,
@@ -33,13 +33,13 @@ struct PersistenceController {
             checkIn.uuid = UUID()
             checkIn.isSuccess = true
             checkIn.checkInDate = checkInDate
-            checkIn.habit = habit
+            checkIn.habit = habit1
         }
 
         let reminder1 = Reminder(context: viewContext)
         reminder1.createdAt = Date()
         reminder1.uuid = UUID()
-        reminder1.habit = habit
+        reminder1.habit = habit1
         reminder1.hour = Int32(13)
         reminder1.minute = Int32(11)
         reminder1.frequencyDays =
@@ -48,11 +48,18 @@ struct PersistenceController {
         let reminder2 = Reminder(context: viewContext)
         reminder2.createdAt = Date()
         reminder2.uuid = UUID()
-        reminder2.habit = habit
+        reminder2.habit = habit1
         reminder2.hour = Int32(10)
         reminder2.minute = Int32(44)
         reminder2.frequencyDays =
             Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+
+        let habit2 = Habit(context: viewContext)
+        habit2.createdAt = Date()
+        habit2.uuid = UUID()
+        habit2.name = "Test habit 2"
+        habit2.frequencyPerWeek = Int32(2)
+        habit2.order = Int32(1)
 
         do {
             try PersistenceController.save(context: viewContext)
