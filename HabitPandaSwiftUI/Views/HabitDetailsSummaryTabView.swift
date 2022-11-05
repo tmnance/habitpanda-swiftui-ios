@@ -1,5 +1,5 @@
 //
-//  HabitSummaryTabView.swift
+//  HabitDetailsSummaryTabView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/11/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HabitSummaryTabView: View {
+struct HabitDetailsSummaryTabView: View {
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var router: Router
 
@@ -22,7 +22,7 @@ struct HabitSummaryTabView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
-                HabitSummaryChartView(habit: habit)
+                HabitDetailsSummaryTabChartView(habit: habit)
                     .padding(EdgeInsets(top: 0, leading: 4, bottom: 16, trailing: 16))
                 
                 Button(action: {
@@ -75,7 +75,7 @@ struct HabitSummaryTabView: View {
 
 struct HabitSummaryTabView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitSummaryTabView(habit: Habit.example)
+        HabitDetailsSummaryTabView(habit: Habit.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
             .environmentObject(Router())
     }

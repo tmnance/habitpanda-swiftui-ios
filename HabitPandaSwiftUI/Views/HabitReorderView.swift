@@ -1,5 +1,5 @@
 //
-//  ReorderHabitsView.swift
+//  HabitReorderView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/7/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ReorderHabitsView: View {
+struct HabitReorderView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -87,7 +87,7 @@ struct ReorderHabitsView: View {
 
 struct ReorderHabitsView_Previews: PreviewProvider {
     static var previews: some View {
-        ReorderHabitsView()
+        HabitReorderView()
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

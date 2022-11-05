@@ -23,12 +23,7 @@ struct HabitDetailsView: View {
 
     private var checkInDateOptions: [Date] {
         let today = Date().stripTime()
-        var dateArray = [today]
-        for i in 1...4 {
-            let pastDay = Calendar.current.date(byAdding: .day, value: (-1 * i), to: today)!
-            dateArray.append(pastDay)
-        }
-        return dateArray
+        return Array(0...4).map { Calendar.current.date(byAdding: .day, value: (-1 * $0), to: today)! }
     }
 
     var body: some View {
@@ -79,15 +74,16 @@ struct HabitDetailsView: View {
                 Text("Summary").tag(TabOption.summary)
                 Text("Check-ins").tag(TabOption.checkIns)
                 Text("Reminders").tag(TabOption.reminders)
-            }.pickerStyle(.segmented)
+            }
+            .pickerStyle(.segmented)
 
             switch selectedTab {
             case .summary:
-                HabitSummaryTabView(habit: habit)
+                HabitDetailsSummaryTabView(habit: habit)
             case .checkIns:
-                HabitCheckInsTabView(habit: habit)
+                HabitDetailsCheckInsTabView(habit: habit)
             case .reminders:
-                HabitRemindersTabView(habit: habit)
+                HabitDetailsRemindersTabView(habit: habit)
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)

@@ -1,5 +1,5 @@
 //
-//  HabitCheckInsTabView.swift
+//  HabitDetailsCheckInsTabView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/11/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HabitCheckInsTabView: View {
+struct HabitDetailsCheckInsTabView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @ObservedObject var habit: Habit
@@ -70,7 +70,7 @@ struct HabitCheckInsTabView: View {
 
 struct HabitCheckInsTabView_Previews: PreviewProvider {
     static var previews: some View {
-        HabitCheckInsTabView(habit: Habit.example)
+        HabitDetailsCheckInsTabView(habit: Habit.example)
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

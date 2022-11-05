@@ -82,10 +82,13 @@ extension Habit {
     static var example: Habit {
         let context = PersistenceController.preview.container.viewContext
 
-        let fetchRequest: NSFetchRequest<Habit> = Habit.fetchRequest()
-        fetchRequest.fetchLimit = 1
+        let request: NSFetchRequest<Habit> = Habit.fetchRequest()
+        request.sortDescriptors = [("order", Constants.SortDir.asc)].map {
+            NSSortDescriptor(key: $0.0, ascending: $0.1 == Constants.SortDir.asc)
+        }
+        request.fetchLimit = 1
 
-        let results = try? context.fetch(fetchRequest)
+        let results = try? context.fetch(request)
 
         return (results?.first!)!
     }

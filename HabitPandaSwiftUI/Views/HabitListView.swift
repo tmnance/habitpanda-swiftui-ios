@@ -72,7 +72,7 @@ struct HabitListView: View {
             AddEditHabitView()
         }
         .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
-            ReorderHabitsView()
+            HabitReorderView()
         }
     }
 }
