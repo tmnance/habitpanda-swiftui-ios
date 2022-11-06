@@ -36,18 +36,16 @@ struct HabitListView: View {
                 }
         }
         .toolbar {
-            #if DEBUG
             ToolbarItem(placement: .navigationBarLeading) {
                 Button(action: {
                 }) {
-                    NavigationLink(destination: AdminView()) {
-                        Text("Admin")
+                    NavigationLink(destination: AboutView()) {
+                        Text("About")
                             .frame(minWidth: Constants.minTappableDimension)
                             .frame(height: Constants.minTappableDimension)
                     }
                 }
             }
-            #endif
 
             ToolbarItemGroup(placement: .navigationBarTrailing) {
                 Button(action: {
