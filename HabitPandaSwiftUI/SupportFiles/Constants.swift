@@ -66,6 +66,6 @@ public struct Constants {
     }
 
     public enum ViewInteractionMode {
-        case add, edit, view
+        case add, edit
     }
 }

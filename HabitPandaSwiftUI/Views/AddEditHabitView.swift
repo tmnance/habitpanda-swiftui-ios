@@ -20,7 +20,7 @@ struct AddEditHabitView: View {
     @State private var frequencySliderValue = Float(Constants.Habit.defaultFrequencyPerWeek)
     @State private var frequencyOverflow = ""
     @FocusState private var focusedField: Field?
-//    @State private var timer: Timer?
+    @State private var timer: Timer?
     @State private var interactionMode: Constants.ViewInteractionMode = .add
 
     let frequencySliderOverflowThreshold = 8
@@ -33,14 +33,6 @@ struct AddEditHabitView: View {
                 Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
                 TextField("", text: $name)
                     .focused($focusedField, equals: .name)
-//                    .onAppear {
-//                        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
-//                            focusedField = .name
-//                            if focusedField == .name {
-//                                self.timer?.invalidate()
-//                            }
-//                        }
-//                    }
                     .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
                     .submitLabel(.done)
 
@@ -131,19 +123,28 @@ struct AddEditHabitView: View {
         }
         .onAppear {
             interactionMode = habitToEdit == nil ? .add : .edit
-            guard let habitToEdit = habitToEdit else { return }
-            guard interactionMode == .edit else { return }
+            switch interactionMode {
+            case .add:
+                // auto focus on name field when adding new
+                self.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
+                    focusedField = .name
+                    if focusedField == .name {
+                        self.timer?.invalidate()
+                    }
+                }
+            case .edit:
+                guard let habitToEdit = habitToEdit else { return }
+                name = habitToEdit.name ?? ""
+                frequencyPerWeek = Int(habitToEdit.frequencyPerWeek)
 
-            name = habitToEdit.name ?? ""
-            frequencyPerWeek = Int(habitToEdit.frequencyPerWeek)
-
-            if frequencyPerWeek >= frequencySliderOverflowThreshold {
-                frequencySliderValue = Float(frequencySliderOverflowThreshold)
-                isSliderOverflowActive = true
-                frequencyOverflow = String(frequencyPerWeek)
-            }
-            else {
-                frequencySliderValue = Float(frequencyPerWeek)
+                if frequencyPerWeek >= frequencySliderOverflowThreshold {
+                    frequencySliderValue = Float(frequencySliderOverflowThreshold)
+                    isSliderOverflowActive = true
+                    frequencyOverflow = String(frequencyPerWeek)
+                }
+                else {
+                    frequencySliderValue = Float(frequencyPerWeek)
+                }
             }
         }
     }
