@@ -24,11 +24,6 @@ struct HabitDetailsCheckInsTabView: View {
         )
     }
 
-//    @FetchRequest(
-//        sortDescriptors: [NSSortDescriptor(keyPath: \CheckIn.checkInDate, ascending: false)],
-//        animation: .none)
-//    private var checkIns: FetchedResults<CheckIn>
-
     var body: some View {
         VStack {
             if checkIns.isEmpty {
@@ -38,12 +33,9 @@ struct HabitDetailsCheckInsTabView: View {
                 List {
                     ForEach(checkIns) { checkIn in
                         VStack(alignment: .leading) {
-                            Text(checkIn.checkInDate!.formatted(
-                                .dateTime.weekday(.abbreviated).day().month(.wide))
-                            )
-                            Text(checkIn.createdAt!.formatted(
-                                .dateTime.hour().minute())
-                            ).font(.footnote)
+                            Text(DateHelper.getDateString(checkIn.checkInDate!))
+                            Text(checkIn.createdAt!.formatted(.dateTime.hour().minute()))
+                                .font(.footnote)
                         }
                     }
                     .onDelete(perform: delete(offsets:))

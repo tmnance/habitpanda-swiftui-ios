@@ -42,7 +42,7 @@ struct HabitDetailsView: View {
                                 showToast = true
                             }) {
                                 Label(
-                                    date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated)),
+                                    DateHelper.getDateString(date),
                                     systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
                                 )
                             }
@@ -106,7 +106,7 @@ struct HabitDetailsView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    func addCheckIn(forDate date: Date) {
+    private func addCheckIn(forDate date: Date) {
         // TODO: may want to move this to the habit model
         let checkInToSave = CheckIn(context: viewContext)
 
