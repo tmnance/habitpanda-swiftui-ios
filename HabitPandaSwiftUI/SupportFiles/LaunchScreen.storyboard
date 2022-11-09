@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="EHf-IW-A2E">
+            <objects>
+                <viewController id="01J-lp-oVM" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="t6r-vy-yve">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hux-Vd-uFY" userLabel="Content View">
+                                <rect key="frame" x="73.666666666666671" y="279.33333333333337" width="245.66666666666663" height="293.33333333333337"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="panda" translatesAutoresizingMaskIntoConstraints="NO" id="BIQ-MZ-2OT">
+                                        <rect key="frame" x="0.0" y="0.0" width="245.66666666666666" height="245.66666666666666"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="BIQ-MZ-2OT" secondAttribute="height" multiplier="1:1" id="dl5-lL-qo5"/>
+                                        </constraints>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logoText" translatesAutoresizingMaskIntoConstraints="NO" id="jEj-23-4aK">
+                                        <rect key="frame" x="0.0" y="245.66666666666666" width="245.66666666666666" height="47.666666666666657"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="jEj-23-4aK" secondAttribute="height" multiplier="200:39" id="eEU-i0-AQm"/>
+                                        </constraints>
+                                    </imageView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="BIQ-MZ-2OT" secondAttribute="trailing" id="2YU-UD-6vB"/>
+                                    <constraint firstItem="jEj-23-4aK" firstAttribute="top" secondItem="BIQ-MZ-2OT" secondAttribute="bottom" id="Iej-Yw-EYW"/>
+                                    <constraint firstAttribute="bottom" secondItem="jEj-23-4aK" secondAttribute="bottom" id="P8p-FQ-CNv"/>
+                                    <constraint firstItem="BIQ-MZ-2OT" firstAttribute="leading" secondItem="hux-Vd-uFY" secondAttribute="leading" id="Q0y-KM-Au9"/>
+                                    <constraint firstAttribute="trailing" secondItem="jEj-23-4aK" secondAttribute="trailing" id="Vds-2X-b5N"/>
+                                    <constraint firstItem="BIQ-MZ-2OT" firstAttribute="top" secondItem="hux-Vd-uFY" secondAttribute="top" id="Z8F-rF-gK5"/>
+                                    <constraint firstItem="jEj-23-4aK" firstAttribute="leading" secondItem="hux-Vd-uFY" secondAttribute="leading" id="wFL-Hi-JPz"/>
+                                    <constraint firstItem="jEj-23-4aK" firstAttribute="width" secondItem="BIQ-MZ-2OT" secondAttribute="width" id="xok-w7-Szn"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="9zf-pk-hVB"/>
+                        <color key="backgroundColor" name="launchScreenBg"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="hux-Vd-uFY" secondAttribute="width" multiplier="1.6" id="GvY-wL-bdD"/>
+                            <constraint firstItem="hux-Vd-uFY" firstAttribute="centerX" secondItem="t6r-vy-yve" secondAttribute="centerX" id="haR-Ak-Y27"/>
+                            <constraint firstItem="hux-Vd-uFY" firstAttribute="centerY" secondItem="t6r-vy-yve" secondAttribute="centerY" id="pi3-Iu-oXx"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53" y="375"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="logoText" width="211" height="39.333332061767578"/>
+        <image name="panda" width="160" height="160"/>
+        <namedColor name="launchScreenBg">
+            <color red="0.84700000286102295" green="0.84700000286102295" blue="0.84700000286102295" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
