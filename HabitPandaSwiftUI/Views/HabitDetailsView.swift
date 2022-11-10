@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct HabitDetailsView: View {
     enum TabOption: Hashable {
@@ -17,8 +16,7 @@ struct HabitDetailsView: View {
 
     @ObservedObject var habit: Habit
     @State var selectedTab: TabOption = .summary
-    @State private var showToast = false
-    @State private var toastText = ""
+    @State private var toast: FancyToast? = nil
     @State private var isEditHabitViewPresented = false
 
     private var checkInDateOptions: [Date] {
@@ -38,8 +36,13 @@ struct HabitDetailsView: View {
                         ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
                             Button(action: {
                                 addCheckIn(forDate: date)
-                                toastText = "Check-in added"
-                                showToast = true
+                                // TODO: move toast to a success callback on the above addCheckIn and potentially add a fail toast on error
+                                toast = FancyToast(
+                                    type: .success,
+                                    message: "Check-in added",
+                                    duration: 2,
+                                    tapToDismiss: true
+                                )
                             }) {
                                 Label(
                                     DateHelper.getDateString(date),
@@ -87,9 +90,7 @@ struct HabitDetailsView: View {
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .toast(isPresenting: $showToast, duration: 2, tapToDismiss: true) {
-            AlertToast(type: .complete(.green), title: toastText)
-        }
+        .toastView(toast: $toast)
         .fullScreenCover(isPresented: $isEditHabitViewPresented) {
             AddEditHabitView(habitToEdit: habit)
         }

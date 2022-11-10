@@ -6,13 +6,11 @@
 //
 
 import SwiftUI
-import AlertToast
 
 struct AdminView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
-    @State private var showToast = false
-    @State private var toastText = ""
+    @State private var toast: FancyToast? = nil
     @State private var showConfirmAlert = false
     @State private var confirmAlertText = ""
     @State private var confirmAlertMessage = ""
@@ -145,9 +143,7 @@ struct AdminView: View {
                 )
             }
         )
-        .toast(isPresenting: $showToast, duration: 2, tapToDismiss: true) {
-            AlertToast(type: .regular, title: toastText)
-        }
+        .toastView(toast: $toast)
         .onAppear {
             loadNotificationData()
         }
@@ -163,8 +159,7 @@ struct AdminView: View {
     }
 
     private func showToast(_ text: String) {
-        toastText = text
-        showToast = true
+        toast = FancyToast(type: .success, message: text, tapToDismiss: true)
     }
 
     private func loadNotificationData() {

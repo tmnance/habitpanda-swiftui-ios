@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* AddEditReminderView.swift */; };
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
+		1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */; };
+		1C8D24BE291D5D0500ED1296 /* FancyToastModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */; };
 		1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F43082916E6D9007B8219 /* AboutView.swift */; };
 		1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */; };
@@ -31,7 +33,6 @@
 		1CDA4CD028F0ACA9007D02F3 /* HabitReorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CCF28F0ACA9007D02F3 /* HabitReorderView.swift */; };
 		1CDA4CD228F0C2F7007D02F3 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CD128F0C2F7007D02F3 /* Constants.swift */; };
 		1CDA4CD428F0C4FE007D02F3 /* AdminView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CD328F0C4FE007D02F3 /* AdminView.swift */; };
-		1CDA4CD728F0C574007D02F3 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = 1CDA4CD628F0C574007D02F3 /* AlertToast */; };
 		1CDA4CDC28F11A57007D02F3 /* HabitDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CDB28F11A57007D02F3 /* HabitDetailsView.swift */; };
 		1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CDD28F33C5C007D02F3 /* CheckIn.swift */; };
 		1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CDF28F34270007D02F3 /* Reminder.swift */; };
@@ -44,6 +45,8 @@
 /* Begin PBXFileReference section */
 		1C8515952905A572009FC9B3 /* AddEditReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditReminderView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastView.swift; sourceTree = "<group>"; };
+		1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastModifier.swift; sourceTree = "<group>"; };
 		1C9F43082916E6D9007B8219 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		1CA0B5FF28F60680002103EA /* HabitPandaSwiftUI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HabitPandaSwiftUI.xcdatamodel; sourceTree = "<group>"; };
 		1CA0B60128F60ED4002103EA /* HabitDetailsSummaryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsSummaryTabView.swift; sourceTree = "<group>"; };
@@ -81,13 +84,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1CDA4CD728F0C574007D02F3 /* AlertToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C8D24BA291D47E800ED1296 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */,
+				1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
 		1CDA4CA728F096AD007D02F3 = {
 			isa = PBXGroup;
 			children = (
@@ -137,6 +148,7 @@
 		1CDA4CC528F09CE7007D02F3 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1C8D24BA291D47E800ED1296 /* Shared */,
 				1C9F43082916E6D9007B8219 /* AboutView.swift */,
 				1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */,
 				1C8515952905A572009FC9B3 /* AddEditReminderView.swift */,
@@ -207,7 +219,6 @@
 			);
 			name = HabitPandaSwiftUI;
 			packageProductDependencies = (
-				1CDA4CD628F0C574007D02F3 /* AlertToast */,
 			);
 			productName = HabitPandaSwiftUI;
 			productReference = 1CDA4CB028F096AD007D02F3 /* HabitPandaSwiftUI.app */;
@@ -238,7 +249,6 @@
 			);
 			mainGroup = 1CDA4CA728F096AD007D02F3;
 			packageReferences = (
-				1CDA4CD528F0C574007D02F3 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = 1CDA4CB128F096AD007D02F3 /* Products */;
 			projectDirPath = "";
@@ -270,6 +280,7 @@
 				1CDA4CCE28F0AB2C007D02F3 /* Habit.swift in Sources */,
 				1CA0B61129005657002103EA /* ReminderNotificationService.swift in Sources */,
 				1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */,
+				1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */,
 				1CDA4CE328F3B02D007D02F3 /* Date+Rounding.swift in Sources */,
 				1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */,
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
@@ -280,6 +291,7 @@
 				1CDA4CD028F0ACA9007D02F3 /* HabitReorderView.swift in Sources */,
 				1CA0B613290056EB002103EA /* NotificationHelper.swift in Sources */,
 				1CA0B60228F60ED4002103EA /* HabitDetailsSummaryTabView.swift in Sources */,
+				1C8D24BE291D5D0500ED1296 /* FancyToastModifier.swift in Sources */,
 				1CA0B60428F60EDF002103EA /* HabitDetailsCheckInsTabView.swift in Sources */,
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
@@ -499,25 +511,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		1CDA4CD528F0C574007D02F3 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/elai950/AlertToast.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		1CDA4CD628F0C574007D02F3 /* AlertToast */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 1CDA4CD528F0C574007D02F3 /* XCRemoteSwiftPackageReference "AlertToast" */;
-			productName = AlertToast;
-		};
-/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */ = {
