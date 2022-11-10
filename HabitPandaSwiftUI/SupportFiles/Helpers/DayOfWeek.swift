@@ -12,22 +12,16 @@ struct DayOfWeek {
         case daily = 0, weekdays = 1, custom = 2
         var description: String {
             switch self {
-            case .daily:
-                return "Daily"
-            case .weekdays:
-                return "Weekdays"
-            case .custom:
-                return "Custom"
+            case .daily: return "Daily"
+            case .weekdays: return "Weekdays"
+            case .custom: return "Custom"
             }
         }
         var frequencyDays: Set<Day> {
             switch self {
-            case .daily:
-                return [.sun, .mon, .tue, .wed, .thu, .fri, .sat]
-            case .weekdays:
-                return [.mon, .tue, .wed, .thu, .fri]
-            case .custom:
-                return []
+            case .daily: return [.sun, .mon, .tue, .wed, .thu, .fri, .sat]
+            case .weekdays: return [.mon, .tue, .wed, .thu, .fri]
+            case .custom: return []
             }
         }
     }
@@ -35,20 +29,13 @@ struct DayOfWeek {
         case sun = 0, mon = 1, tue = 2, wed = 3, thu = 4, fri = 5, sat = 6
         var description: String {
             switch self {
-            case .sun:
-                return "Sun"
-            case .mon:
-                return "Mon"
-            case .tue:
-                return "Tue"
-            case .wed:
-                return "Wed"
-            case .thu:
-                return "Thu"
-            case .fri:
-                return "Fri"
-            case .sat:
-                return "Sat"
+            case .sun: return "Sun"
+            case .mon: return "Mon"
+            case .tue: return "Tue"
+            case .wed: return "Wed"
+            case .thu: return "Thu"
+            case .fri: return "Fri"
+            case .sat: return "Sat"
             }
         }
     }

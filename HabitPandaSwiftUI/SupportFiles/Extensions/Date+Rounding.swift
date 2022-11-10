@@ -8,9 +8,7 @@
 import Foundation
 
 enum DateRoundingType {
-    case round
-    case ceil
-    case floor
+    case round, ceil, floor
 }
 
 extension Date {
