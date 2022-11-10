@@ -120,7 +120,7 @@ extension ReminderNotificationService {
         )
 
         UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+            if let error {
                 print("Error scheduling notification for \(debugIdentifier) -> \(error)")
             }
         }

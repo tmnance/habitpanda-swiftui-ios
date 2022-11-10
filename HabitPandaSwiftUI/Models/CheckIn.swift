@@ -23,17 +23,17 @@ public class CheckIn: NSManagedObject {
         let request: NSFetchRequest<CheckIn> = CheckIn.fetchRequest()
         var predicates: [NSPredicate] = []
 
-        if let habitUUIDs = habitUUIDs {
+        if let habitUUIDs {
             let uuidArgs = habitUUIDs.map { $0.uuidString as CVarArg }
             if uuidArgs.count > 0 {
                 predicates.append(NSPredicate(format: "habit.uuid IN %@", argumentArray: [uuidArgs]))
             }
         }
 
-        if let startDate = startDate {
+        if let startDate {
             predicates.append(NSPredicate(format: "checkInDate >= %@", startDate as NSDate))
         }
-        if let endDate = endDate {
+        if let endDate {
             predicates.append(NSPredicate(format: "checkInDate <= %@", endDate as NSDate))
         }
 
@@ -42,7 +42,7 @@ public class CheckIn: NSManagedObject {
             NSSortDescriptor(key: $0.0, ascending: $0.1 == Constants.SortDir.asc)
         }
 
-        if let limit = limit {
+        if let limit {
             request.fetchLimit = limit
         }
 

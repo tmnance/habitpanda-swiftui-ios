@@ -22,7 +22,7 @@ public class Reminder: NSManagedObject {
             NSSortDescriptor(key: "minute", ascending: true),
             NSSortDescriptor(key: "frequencyDays", ascending: true)
         ]
-        if let limit = limit {
+        if let limit {
             request.fetchLimit = limit
         }
 

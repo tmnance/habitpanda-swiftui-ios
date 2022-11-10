@@ -133,7 +133,7 @@ struct AddEditHabitView: View {
                     }
                 }
             case .edit:
-                guard let habitToEdit = habitToEdit else { return }
+                guard let habitToEdit else { return }
                 name = habitToEdit.name ?? ""
                 frequencyPerWeek = Int(habitToEdit.frequencyPerWeek)
 

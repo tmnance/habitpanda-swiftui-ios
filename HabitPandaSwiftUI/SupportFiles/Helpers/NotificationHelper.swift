@@ -16,7 +16,7 @@ class NotificationHelper {
         UNUserNotificationCenter.current().requestAuthorization(
             options: [.alert, .badge, .sound]
         ) { success, error in
-            if let error = error {
+            if let error {
                 print("ERROR: \(error.localizedDescription)")
             } else {
                 NotificationHelper.isGranted = true

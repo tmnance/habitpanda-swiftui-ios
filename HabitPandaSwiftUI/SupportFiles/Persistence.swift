@@ -82,8 +82,8 @@ struct PersistenceController {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
-        container.loadPersistentStores { storeDescription, err in
-            if let err = err {
+        container.loadPersistentStores { storeDescription, error in
+            if let error {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
 
@@ -95,7 +95,7 @@ struct PersistenceController {
                 * The store could not be migrated to the current model version.
                 Check the error message to determine what the actual problem was.
                 */
-                fatalError(err.localizedDescription)
+                fatalError(error.localizedDescription)
             }
         }
     }

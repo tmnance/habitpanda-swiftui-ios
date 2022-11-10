@@ -109,7 +109,7 @@ struct AddEditReminderView: View {
         }
         .onAppear {
             interactionMode = reminderToEdit == nil ? .add : .edit
-            guard let reminderToEdit = reminderToEdit else { return }
+            guard let reminderToEdit else { return }
             guard interactionMode == .edit else { return }
 
             time = Calendar.current.date(
