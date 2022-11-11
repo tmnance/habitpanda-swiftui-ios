@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftUI
 
 public struct Constants {
     static let minTappableDimension: CGFloat = 44
@@ -41,11 +42,13 @@ public struct Constants {
         static let deleteButtonBorder = UIColor(named: "deleteButtonBorder")!
         static let deleteButtonText = UIColor(named: "deleteButtonText")!
 
-        static let toastText = UIColor(named: "toastText")!
-        static let toastSuccessBg = UIColor(named: "toastSuccessBg")!
-        static let toastErrorBg = UIColor(named: "toastErrorBg")!
-        static let toastWarningBg = UIColor(named: "toastWarningBg")!
-        static let toastInfoBg = UIColor(named: "toastInfoBg")!
+        static let toastText = Color("toastText")
+        static let toastBg = Color("toastBg")
+        static let toastShadow = Color("toastShadow")
+        static let toastAccentSuccess = Color("toastAccentSuccess")
+        static let toastAccentError = Color("toastAccentSuccess")
+        static let toastAccentWarning = Color("toastAccentWarning")
+        static let toastAccentInfo = Color("toastAccentInfo")
     }
 
     struct Habit {

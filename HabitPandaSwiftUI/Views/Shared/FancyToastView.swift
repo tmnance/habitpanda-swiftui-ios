@@ -12,10 +12,10 @@ enum FancyToastStyle {
     case error, warning, success, info
     var themeColor: Color {
         switch self {
-        case .error: return Color(Constants.Colors.toastErrorBg)
-        case .warning: return Color(Constants.Colors.toastWarningBg)
-        case .info: return Color(Constants.Colors.toastInfoBg)
-        case .success: return Color(Constants.Colors.toastSuccessBg)
+        case .error: return Constants.Colors.toastAccentError
+        case .warning: return Constants.Colors.toastAccentWarning
+        case .info: return Constants.Colors.toastAccentInfo
+        case .success: return Constants.Colors.toastAccentSuccess
         }
     }
     var iconFileName: String {
@@ -37,7 +37,6 @@ enum FancyToastStyle {
 }
 
 struct FancyToastView: View {
-    // TODO: clean up colors and color constant names
     var type: FancyToastStyle
     var title: String?
     var message: String
@@ -51,10 +50,10 @@ struct FancyToastView: View {
                 VStack(alignment: .leading) {
                     Text(title ?? type.defaultTitle)
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(Color(Constants.Colors.label))
+                        .foregroundColor(Constants.Colors.toastText)
                     Text(message)
                         .font(.system(size: 12))
-                        .foregroundColor(Color(Constants.Colors.label).opacity(0.6))
+                        .foregroundColor(Constants.Colors.toastText.opacity(0.6))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -65,13 +64,13 @@ struct FancyToastView: View {
                         onCancelTapped()
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundColor(Color(Constants.Colors.label))
+                            .foregroundColor(Constants.Colors.toastText)
                     }
                 }
             }
             .padding()
         }
-        .background(Color(Constants.Colors.mainViewBg))
+        .background(Constants.Colors.toastBg)
         .overlay(
             Rectangle()
                 .fill(type.themeColor)
@@ -81,7 +80,7 @@ struct FancyToastView: View {
         )
         .frame(minWidth: 0, maxWidth: .infinity)
         .cornerRadius(8)
-        .shadow(color: Color(Constants.Colors.listBorder).opacity(0.25), radius: 4, x: 0, y: 1)
+        .shadow(color: Constants.Colors.toastShadow, radius: 4, x: 0, y: 1)
         .padding(.horizontal, 16)
     }
 }
