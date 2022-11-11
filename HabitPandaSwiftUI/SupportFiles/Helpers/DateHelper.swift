@@ -9,11 +9,14 @@ import Foundation
 
 struct DateHelper {
     static func getDateString(_ date: Date) -> String {
-        if Calendar.current.isDateInToday(date) {
-            return "Today, \(date.formatted(.dateTime.day().month(.abbreviated)))"
-        }
         if Calendar.current.isDateInYesterday(date) {
-            return "Yesterday, \(date.formatted(.dateTime.day().month(.abbreviated)))"
+            return "Yesterday"
+        }
+        if Calendar.current.isDateInToday(date) {
+            return "Today"
+        }
+        if Calendar.current.isDateInTomorrow(date) {
+            return "Tomorrow"
         }
         return date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated))
     }

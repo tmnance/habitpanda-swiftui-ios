@@ -74,6 +74,28 @@ public class Habit: NSManagedObject {
         )
         return checkIns.first?.checkInDate!.stripTime()
     }
+
+    func addCheckIn(
+        forDate date: Date,
+        context: NSManagedObjectContext,
+        completionHandler: ((Error?) -> Void)? = nil
+    ) {
+        let checkInToSave = CheckIn(context: context)
+
+        checkInToSave.createdAt = Date()
+        checkInToSave.uuid = UUID()
+        checkInToSave.habit = self
+        checkInToSave.checkInDate = date.stripTime()
+        checkInToSave.isSuccess = true
+
+        do {
+            try PersistenceController.save(context: context)
+            ReminderNotificationService.refreshNotificationsForAllReminders()
+            completionHandler?(nil)
+        } catch {
+            completionHandler?(error)
+        }
+    }
 }
 
 

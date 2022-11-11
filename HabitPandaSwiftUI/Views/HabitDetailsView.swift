@@ -35,24 +35,24 @@ struct HabitDetailsView: View {
                     Section(header: Text("Select a Check-in Date")) {
                         ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
                             Button(action: {
-                                addCheckIn(forDate: date)
-                                // TODO: move toast to a success callback on the above addCheckIn and potentially add a fail toast on error
-                                toast = FancyToast(
-                                    type: .success,
-                                    message: "Check-in added",
-                                    duration: 2,
-                                    tapToDismiss: true
-                                )
+                                habit.addCheckIn(forDate: date, context: viewContext) { error in
+                                    if let error {
+                                        toast = FancyToast.errorMessage(error.localizedDescription)
+                                        return
+                                    }
+                                    toast = FancyToast(
+                                        type: .success,
+                                        message: "Check-in added",
+                                        duration: 2,
+                                        tapToDismiss: true
+                                    )
+                                }
                             }) {
                                 Label(
                                     DateHelper.getDateString(date),
                                     systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
                                 )
                             }
-                        }
-
-                        Button(action: {}) {
-                            Text("Cancel")
                         }
                     }
                 }
@@ -105,24 +105,6 @@ struct HabitDetailsView: View {
         }
         .navigationTitle("Habit Details")
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    private func addCheckIn(forDate date: Date) {
-        // TODO: may want to move this to the habit model
-        let checkInToSave = CheckIn(context: viewContext)
-
-        checkInToSave.createdAt = Date()
-        checkInToSave.uuid = UUID()
-        checkInToSave.habit = habit
-        checkInToSave.checkInDate = date.stripTime()
-        checkInToSave.isSuccess = true
-
-        do {
-            try PersistenceController.save(context: viewContext)
-            ReminderNotificationService.refreshNotificationsForAllReminders()
-        } catch {
-            print(error.localizedDescription)
-        }
     }
 }
 

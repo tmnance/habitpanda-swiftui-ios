@@ -11,6 +11,7 @@ struct HabitListCheckInGridView: View {
     typealias CheckInGridOffsetMap = [Int: Int]
     @Environment(\.managedObjectContext) private var viewContext
 
+    @State private var toast: FancyToast? = nil
     @State private var habitCheckInGridOffsetMap: [UUID: CheckInGridOffsetMap] = [:]
     @State private var habitFirstCheckInOffsetMap: [UUID: Int?] = [:]
     @State private var isFirstLoad = true
@@ -24,12 +25,17 @@ struct HabitListCheckInGridView: View {
     let endDate: Date
     let dateCount: Int
     let dateListSaturdayOffset: Int
+    let checkInDateOptions: [Date]
 
     init(startDate: Date, endDate: Date) {
         self.startDate = startDate
         self.endDate = endDate
         self.dateCount = DateHelper.getDaysBetween(startDate: startDate, endDate: endDate) + 1
         self.dateListSaturdayOffset = Calendar.current.component(.weekday, from: startDate) % 7
+        let today = Date().stripTime()
+        self.checkInDateOptions = Array(0...1).map {
+            Calendar.current.date(byAdding: .day, value: (-1 * $0), to: today)!
+        }
     }
 
     var body: some View {
@@ -75,11 +81,11 @@ struct HabitListCheckInGridView: View {
                     HabitDetailsView(habit: habit)
                 }
                 .onAppear {
-                    // assumes any check in changes will happen in another view
                     buildHabitCheckInMaps()
                 }
             }
         }
+        .toastView(toast: $toast)
     }
 }
 
@@ -214,6 +220,31 @@ extension HabitListCheckInGridView {
                     .multilineTextAlignment(.leading)
                     .padding(.leading, 10)
             }
+            .contextMenu {
+                // TODO: refactor this into a cleaner place?
+                ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
+                    Button(action: {
+                        habit.addCheckIn(forDate: date, context: viewContext) { error in
+                            if let error {
+                                toast = FancyToast.errorMessage(error.localizedDescription)
+                                return
+                            }
+                            buildHabitCheckInMaps()
+                            toast = FancyToast(
+                                type: .success,
+                                message: "Check-in added",
+                                duration: 2,
+                                tapToDismiss: true
+                            )
+                        }
+                    }) {
+                        Label(
+                            "Check in \(DateHelper.getDateString(date))",
+                            systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
+                        )
+                    }
+                }
+            }
             Text("🎯\n\(habit.frequencyPerWeek)x/wk")
                 .font(.system(size: 13, weight: .thin))
                 .multilineTextAlignment(.center)
@@ -276,7 +307,7 @@ struct HabitListCheckInGridView_Previews: PreviewProvider {
         let endDate = currentDate
         NavigationStack {
             HabitListCheckInGridView(startDate: startDate, endDate: endDate)
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

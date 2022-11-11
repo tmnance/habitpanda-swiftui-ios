@@ -15,6 +15,13 @@ struct FancyToast: Equatable {
     var message: String
     var duration: Double = 3
     var tapToDismiss: Bool = false
+    public static func errorMessage(_ message: String) -> FancyToast {
+        return FancyToast(
+            type: .error,
+            message: message,
+            duration: 0
+        )
+    }
 }
 
 extension View {
