@@ -152,13 +152,6 @@ struct HabitDetailsSummaryTabChartView: View {
     }
 }
 
-struct HabitSummaryChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        HabitDetailsSummaryTabChartView(habit: Habit.example)
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}
-
 
 // MARK: - Rolling average calculation
 extension HabitDetailsSummaryTabChartView {
@@ -237,5 +230,13 @@ extension HabitDetailsSummaryTabChartView {
         }
 
         return startDateOffsetCheckInCountMap
+    }
+}
+
+
+struct HabitSummaryChartView_Previews: PreviewProvider {
+    static var previews: some View {
+        HabitDetailsSummaryTabChartView(habit: Habit.example)
+            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

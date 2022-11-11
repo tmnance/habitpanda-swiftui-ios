@@ -112,7 +112,7 @@ struct HabitDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
             HabitDetailsView(habit: Habit.example)
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
