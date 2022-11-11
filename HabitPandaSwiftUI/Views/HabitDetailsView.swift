@@ -25,7 +25,7 @@ struct HabitDetailsView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 Text(habit.name ?? "")
                     .font(.system(size: 20))
@@ -71,7 +71,8 @@ struct HabitDetailsView: View {
                 // TODO: confirm this is still necessary on newer versions of iOS (>16)
                 .frame(height: Constants.comfortableTappableDimension)
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, 10)
 
             Picker("", selection: $selectedTab) {
                 Text("Summary").tag(TabOption.summary)

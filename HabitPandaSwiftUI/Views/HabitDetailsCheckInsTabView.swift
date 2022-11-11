@@ -18,7 +18,8 @@ struct HabitDetailsCheckInsTabView: View {
         _checkIns = FetchRequest(
             entity: CheckIn.entity(),
             sortDescriptors: [
-                NSSortDescriptor(keyPath: \CheckIn.checkInDate, ascending: false)
+                NSSortDescriptor(keyPath: \CheckIn.checkInDate, ascending: false),
+                NSSortDescriptor(keyPath: \CheckIn.createdAt, ascending: false),
             ],
             predicate: NSPredicate(format: "habit == %@", habit)
         )
@@ -34,9 +35,12 @@ struct HabitDetailsCheckInsTabView: View {
                     ForEach(checkIns) { checkIn in
                         VStack(alignment: .leading) {
                             Text(DateHelper.getDateString(checkIn.checkInDate!))
-                            Text(checkIn.createdAt!.formatted(.dateTime.hour().minute()))
-                                .font(.footnote)
+                                .font(.system(size: 17))
+                            Text(getSubTitleText(checkIn: checkIn))
+                                .foregroundColor(Color(Constants.Colors.subText))
+                                .font(.system(size: 13))
                         }
+                        .padding(.vertical, 2)
                     }
                     .onDelete(perform: delete(offsets:))
                 }
@@ -44,6 +48,16 @@ struct HabitDetailsCheckInsTabView: View {
                 .padding(8)
             }
         }
+    }
+
+    func getSubTitleText(checkIn: CheckIn) -> String {
+        guard let createdAt = checkIn.createdAt else { return "" }
+        var subTitleText = createdAt.formatted(.dateTime.hour().minute())
+        if checkIn.wasAddedForPriorDate() {
+            let dayOffset = checkIn.getAddedVsCheckInDateDayOffset()
+            subTitleText = "*\(subTitleText) (added \(dayOffset) day\(dayOffset == 1 ? "" : "s") later)"
+        }
+        return subTitleText
     }
 
     private func delete(offsets: IndexSet) {

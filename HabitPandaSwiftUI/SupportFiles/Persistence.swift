@@ -22,19 +22,29 @@ struct PersistenceController {
         habit1.frequencyPerWeek = Int32(5)
         habit1.order = Int32(0)
 
-        [-8, -4, -4, -1, 0].forEach { dateOffset in
+        [-8, -4, -4, 0].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
-            let checkInDate = Calendar.current.date(
+            checkIn.createdAt = Calendar.current.date(
                 byAdding: .day,
                 value: dateOffset,
                 to: Date()
             )!.stripTime()
-            checkIn.createdAt = checkInDate
             checkIn.uuid = UUID()
             checkIn.isSuccess = true
-            checkIn.checkInDate = checkInDate
+            checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit1
         }
+
+        let lateCheckIn = CheckIn(context: viewContext)
+        lateCheckIn.createdAt = Date().stripTime()
+        lateCheckIn.uuid = UUID()
+        lateCheckIn.isSuccess = true
+        lateCheckIn.checkInDate = Calendar.current.date(
+            byAdding: .day,
+            value: -1,
+            to: Date()
+        )!.stripTime()
+        lateCheckIn.habit = habit1
 
         let reminder1 = Reminder(context: viewContext)
         reminder1.createdAt = Date()

@@ -54,6 +54,18 @@ public class CheckIn: NSManagedObject {
 
         return checkIns
     }
+
+    func wasAddedForPriorDate() -> Bool {
+        return getAddedVsCheckInDateDayOffset() > 0
+    }
+
+    func getAddedVsCheckInDateDayOffset() -> Int {
+        return Calendar.current.dateComponents(
+            [.day],
+            from: checkInDate!,
+            to: createdAt!
+        ).day ?? 0
+    }
 }
 
 
