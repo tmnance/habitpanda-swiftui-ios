@@ -41,7 +41,7 @@ struct PersistenceController {
         reminder1.uuid = UUID()
         reminder1.habit = habit1
         reminder1.hour = Int32(13)
-        reminder1.minute = Int32(11)
+        reminder1.minute = Int32(15)
         reminder1.frequencyDays =
             Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
 
@@ -50,7 +50,7 @@ struct PersistenceController {
         reminder2.uuid = UUID()
         reminder2.habit = habit1
         reminder2.hour = Int32(10)
-        reminder2.minute = Int32(44)
+        reminder2.minute = Int32(45)
         reminder2.frequencyDays =
             Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
 

@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct ReminderListCellView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
     @ObservedObject var reminder: Reminder
     @State private var isEditReminderViewPresented = false
+
+    let onEdit: (Reminder) -> Void
+    let onRemove: (Reminder) -> Void
 
     var body: some View {
         HStack(spacing: 0) {
@@ -20,39 +21,31 @@ struct ReminderListCellView: View {
 
             HStack(spacing: 0) {
                 ForEach(Array(Calendar.current.veryShortWeekdaySymbols.enumerated()), id: \.0) { index, element in
-                    Text(element).foregroundColor(reminder.isActiveOnDay(index) ? .primary : .gray)
+                    Text(element)
+                        .opacity(reminder.isActiveOnDay(index) ? 1.0 : 0.45)
                 }
             }
 
             Button("Edit") {
-                isEditReminderViewPresented.toggle()
+                onEdit(reminder)
             }
             .padding(.horizontal, 20)
 
             Button("Remove") {
-                // TODO: add confirm delete alert?
-                deleteReminder()
+                onRemove(reminder)
             }
         }
-        .fullScreenCover(isPresented: $isEditReminderViewPresented) {
-            AddEditReminderView(habit: reminder.habit!, reminderToEdit: reminder)
-        }
         .frame(maxWidth: .infinity, alignment: .leading)
-    }
-
-    private func deleteReminder() {
-        do {
-            try PersistenceController.delete(reminder, context: viewContext)
-            ReminderNotificationService.refreshNotificationsForAllReminders()
-        } catch {
-            print(error.localizedDescription)
-        }
     }
 }
 
 struct ReminderListCellView_Previews: PreviewProvider {
     static var previews: some View {
-        ReminderListCellView(reminder: Reminder.example)
+        ReminderListCellView(
+            reminder: Reminder.example,
+            onEdit: { _ in },
+            onRemove: { _ in }
+        )
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }

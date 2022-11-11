@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct HabitDetailsRemindersTabView: View {
+    @Environment(\.managedObjectContext) private var viewContext
+
     @ObservedObject var habit: Habit
     @FetchRequest var reminders: FetchedResults<Reminder>
-    @State private var isAddReminderViewPresented = false
+    @State private var isAddEditReminderViewPresented = false
+    @State private var reminderToEdit: Reminder? = nil
 
     init(habit: Habit) {
         self.habit = habit
@@ -31,22 +34,45 @@ struct HabitDetailsRemindersTabView: View {
 
                 VStack(alignment: .leading) {
                     ForEach(reminders) { reminder in
-                        ReminderListCellView(reminder: reminder)
+                        ReminderListCellView(
+                            reminder: reminder,
+                            onEdit: { reminder in
+                                reminderToEdit = reminder
+                                isAddEditReminderViewPresented.toggle()
+                            },
+                            onRemove: { reminder in
+                                // TODO: add confirm delete alert?
+                                deleteReminder(reminder)
+                            }
+                        )
                     }
                     .padding(.vertical, 10)
                 }
 
                 Button("Add reminder") {
-                    isAddReminderViewPresented.toggle()
+                    reminderToEdit = nil
+                    isAddEditReminderViewPresented.toggle()
                 }
 
                 Spacer()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .fullScreenCover(isPresented: $isAddReminderViewPresented) {
-                AddEditReminderView(habit: habit)
+            .fullScreenCover(isPresented: $isAddEditReminderViewPresented) {
+                AddEditReminderView(habit: habit, reminderToEdit: self.$reminderToEdit)
             }
+        }
+        .onAppear {
+            reminderToEdit = nil
+        }
+    }
+
+    private func deleteReminder(_ reminder: Reminder) {
+        do {
+            try PersistenceController.delete(reminder, context: viewContext)
+            ReminderNotificationService.refreshNotificationsForAllReminders()
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }

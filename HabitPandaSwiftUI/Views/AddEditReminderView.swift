@@ -28,7 +28,7 @@ struct AddEditReminderView: View {
     @State private var interactionMode: Constants.ViewInteractionMode = .add
 
     let habit: Habit
-    var reminderToEdit: Reminder? = nil
+    @Binding var reminderToEdit: Reminder?
     private let layoutGrid = [
         GridItem(.adaptive(minimum: 80)),
     ]
@@ -176,7 +176,7 @@ struct AddEditReminderView: View {
 
 struct AddReminderView_Previews: PreviewProvider {
     static var previews: some View {
-        AddEditReminderView(habit: Habit.example)
+        AddEditReminderView(habit: Habit.example, reminderToEdit: .constant(nil))
             .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
     }
 }
