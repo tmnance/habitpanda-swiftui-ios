@@ -224,18 +224,20 @@ extension HabitListCheckInGridView {
                 // TODO: refactor this into a cleaner place?
                 ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
                     Button(action: {
-                        habit.addCheckIn(forDate: date, context: viewContext) { error in
-                            if let error {
-                                toast = FancyToast.errorMessage(error.localizedDescription)
-                                return
+                        withAnimation {
+                            habit.addCheckIn(forDate: date, context: viewContext) { error in
+                                if let error {
+                                    toast = FancyToast.errorMessage(error.localizedDescription)
+                                    return
+                                }
+                                buildHabitCheckInMaps()
+                                toast = FancyToast(
+                                    type: .success,
+                                    message: "Check-in added",
+                                    duration: 2,
+                                    tapToDismiss: true
+                                )
                             }
-                            buildHabitCheckInMaps()
-                            toast = FancyToast(
-                                type: .success,
-                                message: "Check-in added",
-                                duration: 2,
-                                tapToDismiss: true
-                            )
                         }
                     }) {
                         Label(
@@ -272,15 +274,15 @@ extension HabitListCheckInGridView {
                     .padding(.bottom, 5)
             } else {
                 Text("")
+                    .background(alignment: .bottom) {
+                        Image("disabled-diag-stripe")
+                            .resizable(resizingMode: .tile)
+                            .frame(width: 50, height: 44)
+                            .opacity(isBeforeHabitFirstCheckIn ? 0.05 : 0)
+                    }
             }
         }
         .frame(width: 50, height: 88, alignment: .bottom)
-        .background(alignment: .bottom) {
-            Image("disabled-diag-stripe")
-                .resizable(resizingMode: .tile)
-                .frame(width: 50, height: 44)
-                .opacity(isBeforeHabitFirstCheckIn ? 0.05 : 0)
-        }
         .background(Color(getCellBgColor(forIndex: dateOffset)))
     }
 

@@ -35,17 +35,19 @@ struct HabitDetailsView: View {
                     Section(header: Text("Select a Check-in Date")) {
                         ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
                             Button(action: {
-                                habit.addCheckIn(forDate: date, context: viewContext) { error in
-                                    if let error {
-                                        toast = FancyToast.errorMessage(error.localizedDescription)
-                                        return
+                                withAnimation {
+                                    habit.addCheckIn(forDate: date, context: viewContext) { error in
+                                        if let error {
+                                            toast = FancyToast.errorMessage(error.localizedDescription)
+                                            return
+                                        }
+                                        toast = FancyToast(
+                                            type: .success,
+                                            message: "Check-in added",
+                                            duration: 2,
+                                            tapToDismiss: true
+                                        )
                                     }
-                                    toast = FancyToast(
-                                        type: .success,
-                                        message: "Check-in added",
-                                        duration: 2,
-                                        tapToDismiss: true
-                                    )
                                 }
                             }) {
                                 Label(
