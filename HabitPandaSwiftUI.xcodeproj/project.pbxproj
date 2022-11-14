@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */; };
 		1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* AddEditReminderView.swift */; };
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
 		1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
 		1C8515952905A572009FC9B3 /* AddEditReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditReminderView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastView.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 			children = (
 				1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */,
 				1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */,
+				1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -286,6 +289,7 @@
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
 				1CDA4CE528F3B05E007D02F3 /* DateHelper.swift in Sources */,
 				1CDA4CE728F3B071007D02F3 /* DayOfWeek.swift in Sources */,
+				1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */,
 				1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */,
 				1CA0B60628F60EE9002103EA /* HabitDetailsRemindersTabView.swift in Sources */,
 				1CDA4CD028F0ACA9007D02F3 /* HabitReorderView.swift in Sources */,

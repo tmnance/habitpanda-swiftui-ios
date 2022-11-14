@@ -18,6 +18,7 @@ struct HabitDetailsView: View {
     @State var selectedTab: TabOption = .summary
     @State private var toast: FancyToast? = nil
     @State private var isEditHabitViewPresented = false
+    @State private var currentDate = Date().stripTime()
 
     private var checkInDateOptions: [Date] {
         let today = Date().stripTime()
@@ -96,6 +97,13 @@ struct HabitDetailsView: View {
         .toastView(toast: $toast)
         .fullScreenCover(isPresented: $isEditHabitViewPresented) {
             AddEditHabitView(habitToEdit: habit)
+        }
+        // date change redraws view
+        .id("habitDetails-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
+        .onNewDay {
+            withAnimation {
+                currentDate = Date().stripTime()
+            }
         }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {

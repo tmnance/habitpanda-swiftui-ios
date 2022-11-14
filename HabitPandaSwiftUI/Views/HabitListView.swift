@@ -27,10 +27,9 @@ struct HabitListView: View {
         VStack {
             HabitListCheckInGridView(startDate: startDate, endDate: endDate)
                 // date change redraws view
-                .id("checkInGridView-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
-                .onAppear {
-                    // only update when changed
-                    if currentDate != Date().stripTime() {
+                .id("checkInGrid-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
+                .onNewDay {
+                    withAnimation {
                         currentDate = Date().stripTime()
                     }
                 }
