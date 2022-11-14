@@ -13,6 +13,7 @@ struct AddEditHabitView: View {
     }
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var toastPresenter: ToastPresenter
 
     @State private var name: String = ""
     @State private var frequencyPerWeek = Constants.Habit.defaultFrequencyPerWeek
@@ -104,6 +105,13 @@ struct AddEditHabitView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
                         dismiss()
+//                        toastPresenter.presentToast(text: "Hello World")
+                        toastPresenter.presentToast(toast: FancyToast(
+                            type: .success,
+                            message: "Check-in added",
+                            duration: 10,
+                            tapToDismiss: true
+                        ))
                     }
                     .frame(minWidth: Constants.minTappableDimension)
                     .frame(height: Constants.minTappableDimension)
