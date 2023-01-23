@@ -8,8 +8,7 @@
 import Foundation
 import CoreData
 
-//@objc(Reminder)
-public class Reminder: NSManagedObject {
+extension Reminder {
     public static func getAll(
         withLimit limit: Int? = nil,
         context: NSManagedObjectContext

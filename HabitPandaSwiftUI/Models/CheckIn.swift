@@ -8,8 +8,7 @@
 import Foundation
 import CoreData
 
-//@objc(CheckIn)
-public class CheckIn: NSManagedObject {
+extension CheckIn {
     public static func getAll(
         sortedBy sortKeys: [(String, Constants.SortDir)] = [("checkInDate", .asc)],
         forHabitUUIDs habitUUIDs: [UUID]? = nil,

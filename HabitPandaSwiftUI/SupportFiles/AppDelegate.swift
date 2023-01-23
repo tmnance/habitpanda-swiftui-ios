@@ -9,9 +9,6 @@ import UIKit
 import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    var window: UIWindow?
-    var router: Router? = nil
-
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         setupNotificationCenter()
         return true

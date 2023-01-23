@@ -44,6 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C23BD85297F2E8900B6F08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
 		1C8515952905A572009FC9B3 /* AddEditReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditReminderView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 				1CDA4CB928F096B0007D02F3 /* Preview Content */,
 				1CDA4CC828F09D2F007D02F3 /* SupportFiles */,
 				1CDA4CC528F09CE7007D02F3 /* Views */,
+				1C23BD85297F2E8900B6F08F /* Info.plist */,
 			);
 			path = HabitPandaSwiftUI;
 			sourceTree = "<group>";
@@ -443,7 +445,7 @@
 				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = HabitPandaSwiftUI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
@@ -474,7 +476,7 @@
 				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = HabitPandaSwiftUI/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;

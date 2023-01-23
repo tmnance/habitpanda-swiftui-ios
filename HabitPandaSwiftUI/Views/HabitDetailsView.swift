@@ -12,7 +12,6 @@ struct HabitDetailsView: View {
         case summary, checkIns, reminders
     }
     @Environment(\.managedObjectContext) private var viewContext
-    @EnvironmentObject var router: Router
 
     @ObservedObject var habit: Habit
     @State var selectedTab: TabOption = .summary

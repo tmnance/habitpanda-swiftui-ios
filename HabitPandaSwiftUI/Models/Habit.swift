@@ -8,8 +8,7 @@
 import Foundation
 import CoreData
 
-//@objc(Habit)
-public class Habit: NSManagedObject {
+extension Habit {
     public static func getAll(
         sortedBy sortKeys: [(String, Constants.SortDir)] = [("name", .asc)],
         context: NSManagedObjectContext
