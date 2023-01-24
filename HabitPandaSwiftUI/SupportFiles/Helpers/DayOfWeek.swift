@@ -9,11 +9,12 @@ import Foundation
 
 struct DayOfWeek {
     enum WeekSubsetType: Int {
-        case daily = 0, weekdays = 1, custom = 2
+        case daily = 0, weekdays = 1, weekends = 2, custom = 3
         var description: String {
             switch self {
             case .daily: return "Daily"
             case .weekdays: return "Weekdays"
+            case .weekends: return "Weekend"
             case .custom: return "Custom"
             }
         }
@@ -21,6 +22,7 @@ struct DayOfWeek {
             switch self {
             case .daily: return [.sun, .mon, .tue, .wed, .thu, .fri, .sat]
             case .weekdays: return [.mon, .tue, .wed, .thu, .fri]
+            case .weekends: return [.sat, .sun]
             case .custom: return []
             }
         }

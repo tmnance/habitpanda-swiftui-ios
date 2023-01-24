@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C23BD87297F3BBD00B6F08F /* DaysOfWeekPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */; };
 		1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */; };
 		1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* AddEditReminderView.swift */; };
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		1C23BD85297F2E8900B6F08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysOfWeekPicker.swift; sourceTree = "<group>"; };
 		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
 		1C8515952905A572009FC9B3 /* AddEditReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditReminderView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 		1C8D24BA291D47E800ED1296 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */,
 				1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */,
 				1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */,
 				1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */,
@@ -283,6 +286,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1CDA4CCE28F0AB2C007D02F3 /* Habit.swift in Sources */,
+				1C23BD87297F3BBD00B6F08F /* DaysOfWeekPicker.swift in Sources */,
 				1CA0B61129005657002103EA /* ReminderNotificationService.swift in Sources */,
 				1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */,
 				1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */,
