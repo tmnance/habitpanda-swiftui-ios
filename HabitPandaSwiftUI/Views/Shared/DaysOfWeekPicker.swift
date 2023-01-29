@@ -20,14 +20,19 @@ struct DaysOfWeekPicker: View {
         }
     }()
     @Binding var selectedDays: Set<DayOfWeek.Day>
+    var pickerOptions: [(DayOfWeek.WeekSubsetType, String)] = [
+        (.daily, "Daily"),
+        (.weekdays, "Weekdays"),
+        (.weekends, "Weekends"),
+        (.custom, "Custom"),
+    ]
 
     var body: some View {
         VStack {
             Picker("", selection: $selectedWeekSubsetType) {
-                Text("Daily").tag(DayOfWeek.WeekSubsetType.daily)
-                Text("Weekdays").tag(DayOfWeek.WeekSubsetType.weekdays)
-                Text("Weekends").tag(DayOfWeek.WeekSubsetType.weekends)
-                Text("Custom").tag(DayOfWeek.WeekSubsetType.custom)
+                ForEach(pickerOptions, id: \.0) { tag, label in
+                    Text(label).tag(tag)
+                }
             }
             .pickerStyle(.segmented)
             .onChange(of: selectedWeekSubsetType) { _ in

@@ -21,6 +21,8 @@ struct PersistenceController {
         habit1.name = "Test habit 1"
         habit1.frequencyPerWeek = Int32(5)
         habit1.order = Int32(0)
+        habit1.activeDaysOfWeek = []
+        habit1.checkInCooldownDays = Int32(0)
 
         [-8, -4, -4, 0].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -70,6 +72,8 @@ struct PersistenceController {
         habit2.name = "Test habit 2"
         habit2.frequencyPerWeek = Int32(2)
         habit2.order = Int32(1)
+        habit2.activeDaysOfWeek = []
+        habit2.checkInCooldownDays = Int32(0)
 
         do {
             try PersistenceController.save(context: viewContext)
