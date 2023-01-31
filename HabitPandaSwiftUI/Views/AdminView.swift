@@ -416,7 +416,7 @@ extension AdminView {
         habitToSave.name = name
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.order = Int32(order)
-        habitToSave.activeDaysOfWeek = []
+        habitToSave.inactiveDaysOfWeek = []
         habitToSave.checkInCooldownDays = Int32(0)
 
         return habitToSave

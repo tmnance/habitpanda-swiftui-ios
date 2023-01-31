@@ -19,7 +19,8 @@ struct AddEditHabitView: View {
     @State private var isSliderOverflowActive = false
     @State private var frequencySliderValue = Float(Constants.Habit.defaultFrequencyPerWeek)
     @State private var frequencyOverflow = ""
-    @State private var selectedActiveDaysOfWeek: Set<DayOfWeek.Day> = []
+    @State private var isDaysOffActive = false
+    @State private var selectedInactiveDaysOfWeek: Set<DayOfWeek.Day> = []
     @State private var isCheckInCooldownActive = false
     @State private var checkInCooldownDays: Int = 1
     @FocusState private var focusedField: Field?
@@ -109,45 +110,45 @@ struct AddEditHabitView: View {
 
                     Group {
                         Group {
-                            Text("Active Days").font(.title2)
-                            Text("(which days should this habit occur on)").font(.footnote)
+                            HStack {
+                                Text("Days Off").font(.title2)
+                                Toggle("Days Off Active", isOn: $isDaysOffActive)
+                                    .labelsHidden()
+                            }
+                            Text("(optional off days for this habit)").font(.footnote)
                         }
                         .onTapGesture {
                             hideKeyboard()
                         }
-                        DaysOfWeekPicker(
-                            selectedDays: $selectedActiveDaysOfWeek,
-                            pickerOptions: [
-                                (.daily, "All"),
-                                (.weekdays, "Weekdays"),
-                                (.weekends, "Weekends"),
-                                (.custom, "Custom"),
-                            ]
-                        )
-                            .onChange(of: selectedActiveDaysOfWeek) { _ in
-                                hideKeyboard()
-                            }
+                        if isDaysOffActive {
+                            DaysOfWeekPicker(
+                                selectedDays: $selectedInactiveDaysOfWeek,
+                                weekSubsetOptions: [
+                                    DaysOfWeekPicker.WeekSubsetOption(.weekdays),
+                                    DaysOfWeekPicker.WeekSubsetOption(.weekends),
+                                    DaysOfWeekPicker.WeekSubsetOption(.custom),
+                                ]
+                            )
+                                .onChange(of: selectedInactiveDaysOfWeek) { _ in
+                                    hideKeyboard()
+                                }
+                        }
                     }
 
                     Group {
                         Group {
-                            Text("Check In Cooldown").font(.title2)
+                            HStack {
+                                Text("Check In Cooldown").font(.title2)
+                                Toggle("Check In Cooldown Active", isOn: $isCheckInCooldownActive)
+                                    .labelsHidden()
+                            }
                             Text("(how many days off after a successful check in)").font(.footnote)
                         }
                         .onTapGesture {
                             hideKeyboard()
                         }
-                        HStack(spacing: 0) {
-                            HStack(spacing: 8) {
-                                Text("Active")
-                                Toggle("Active", isOn: $isCheckInCooldownActive)
-                                    .labelsHidden()
-                            }
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .onTapGesture {
-                                hideKeyboard()
-                            }
-                            HStack(spacing: 8) {
+                        if isCheckInCooldownActive {
+                            VStack(spacing: 8) {
                                 Text(getCheckInCooldownDaysDisplayText())
                                 Stepper("Cooldown day(s)", value: $checkInCooldownDays, in: 1...6, step: 1)
                                     .labelsHidden()
@@ -155,8 +156,7 @@ struct AddEditHabitView: View {
                                         hideKeyboard()
                                     }
                             }
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .opacity(isCheckInCooldownActive ? 1.0 : 0)
+                            .frame(maxWidth: .infinity, alignment: .center)
                         }
                     }
 
@@ -219,11 +219,9 @@ struct AddEditHabitView: View {
                 }
             }
 
-            selectedActiveDaysOfWeek = Set((habitToEdit?.activeDaysOfWeek ?? [])
+            isDaysOffActive = (habitToEdit?.inactiveDaysOfWeek ?? []).count > 0
+            selectedInactiveDaysOfWeek = Set((habitToEdit?.inactiveDaysOfWeek ?? [])
                 .compactMap { DayOfWeek.Day(rawValue: $0.intValue) })
-            if selectedActiveDaysOfWeek.count == 0 {
-                selectedActiveDaysOfWeek = DayOfWeek.WeekSubsetType.daily.frequencyDays
-            }
             isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
             checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
         }
@@ -236,7 +234,7 @@ struct AddEditHabitView: View {
     func isValidInput() -> Bool {
         return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
             (!isSliderOverflowActive || Int(frequencyOverflow) ?? 0 > 0) &&
-            selectedActiveDaysOfWeek.count > 0
+            selectedInactiveDaysOfWeek.count < 7
     }
 
     func getFrequencyPerWeekDisplayText() -> String {
@@ -266,10 +264,13 @@ struct AddEditHabitView: View {
 
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
-        habitToSave.activeDaysOfWeek = selectedActiveDaysOfWeek
-            .map { $0.rawValue }
-            .sorted()
-            .map { $0 as NSNumber }
+        habitToSave.inactiveDaysOfWeek = (isDaysOffActive ?
+            selectedInactiveDaysOfWeek
+                .map { $0.rawValue }
+                .sorted()
+                .map { $0 as NSNumber } :
+            []
+        )
         habitToSave.checkInCooldownDays = Int32(isCheckInCooldownActive ? checkInCooldownDays : 0)
 
         do {

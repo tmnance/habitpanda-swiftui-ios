@@ -21,7 +21,10 @@ struct PersistenceController {
         habit1.name = "Test habit 1"
         habit1.frequencyPerWeek = Int32(5)
         habit1.order = Int32(0)
-        habit1.activeDaysOfWeek = []
+        habit1.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
+            .map { $0.rawValue }
+            .sorted()
+            .map { $0 as NSNumber }
         habit1.checkInCooldownDays = Int32(0)
 
         [-8, -4, -4, 0].forEach { dateOffset in
@@ -72,8 +75,83 @@ struct PersistenceController {
         habit2.name = "Test habit 2"
         habit2.frequencyPerWeek = Int32(2)
         habit2.order = Int32(1)
-        habit2.activeDaysOfWeek = []
+        habit2.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekends.days
+            .map { $0.rawValue }
+            .sorted()
+            .map { $0 as NSNumber }
         habit2.checkInCooldownDays = Int32(0)
+
+        [-16].forEach { dateOffset in
+            let checkIn = CheckIn(context: viewContext)
+            checkIn.createdAt = Calendar.current.date(
+                byAdding: .day,
+                value: dateOffset,
+                to: Date()
+            )!.stripTime()
+            checkIn.uuid = UUID()
+            checkIn.isSuccess = true
+            checkIn.checkInDate = checkIn.createdAt
+            checkIn.habit = habit2
+        }
+
+        let habit3 = Habit(context: viewContext)
+        habit3.createdAt = Date()
+        habit3.uuid = UUID()
+        habit3.name = "Test habit 3"
+        habit3.frequencyPerWeek = Int32(2)
+        habit3.order = Int32(2)
+        habit3.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
+            .map { $0.rawValue }
+            .sorted()
+            .map { $0 as NSNumber }
+        habit3.checkInCooldownDays = Int32(1)
+
+        [-16].forEach { dateOffset in
+            let checkIn = CheckIn(context: viewContext)
+            checkIn.createdAt = Calendar.current.date(
+                byAdding: .day,
+                value: dateOffset,
+                to: Date()
+            )!.stripTime()
+            checkIn.uuid = UUID()
+            checkIn.isSuccess = true
+            checkIn.checkInDate = checkIn.createdAt
+            checkIn.habit = habit3
+        }
+
+        let habit4 = Habit(context: viewContext)
+        habit4.createdAt = Date()
+        habit4.uuid = UUID()
+        habit4.name = "Test habit 4"
+        habit4.frequencyPerWeek = Int32(2)
+        habit4.order = Int32(3)
+        habit4.inactiveDaysOfWeek = DayOfWeek.WeekSubset.daily.days
+            .map { $0.rawValue }
+            .sorted()
+            .map { $0 as NSNumber }
+        habit4.checkInCooldownDays = Int32(1)
+
+        [-16].forEach { dateOffset in
+            let checkIn = CheckIn(context: viewContext)
+            checkIn.createdAt = Calendar.current.date(
+                byAdding: .day,
+                value: dateOffset,
+                to: Date()
+            )!.stripTime()
+            checkIn.uuid = UUID()
+            checkIn.isSuccess = true
+            checkIn.checkInDate = checkIn.createdAt
+            checkIn.habit = habit4
+        }
+
+        let habit5 = Habit(context: viewContext)
+        habit5.createdAt = Date()
+        habit5.uuid = UUID()
+        habit5.name = "Test habit 5"
+        habit5.frequencyPerWeek = Int32(2)
+        habit5.order = Int32(4)
+        habit5.inactiveDaysOfWeek = []
+        habit5.checkInCooldownDays = Int32(1)
 
         do {
             try PersistenceController.save(context: viewContext)

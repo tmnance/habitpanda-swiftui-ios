@@ -10,6 +10,7 @@ import SwiftUI
 struct HabitListCheckInGridView: View {
     typealias CheckInGridOffsetMap = [Int: Int]
     @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.colorScheme) private var colorScheme
 
     @State private var toast: FancyToast? = nil
     @State private var habitCheckInGridOffsetMap: [UUID: CheckInGridOffsetMap] = [:]
@@ -131,6 +132,19 @@ extension HabitListCheckInGridView {
         return habitCheckInGridOffsetMap[habit.uuid!]?[dateOffset] ?? 0
     }
 
+    func getIsDayOff(habit: Habit, dateOffset: Int) -> Bool {
+        if getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset) {
+            return false
+        }
+        let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
+            .compactMap { $0.intValue })
+        if inactiveDaysOfWeek.count == 0 {
+            return false
+        }
+        let sundayOffset = (dateOffset + dateListSaturdayOffset - 1) % 7
+        return inactiveDaysOfWeek.contains(sundayOffset)
+    }
+
     func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: Int) -> Bool {
         guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
         return dateOffset < firstCheckInOffset
@@ -188,6 +202,7 @@ extension HabitListCheckInGridView {
             ForEach(0 ..< dateCount, id: \.self) { dateOffset in
                 checkInContentCell(
                     checkInCount: getCheckInCount(habit: habit, dateOffset: dateOffset),
+                    isDayOff: getIsDayOff(habit: habit, dateOffset: dateOffset),
                     isBeforeHabitFirstCheckIn: getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset),
                     dateOffset: dateOffset
                 )
@@ -257,6 +272,7 @@ extension HabitListCheckInGridView {
 
     @ViewBuilder func checkInContentCell(
         checkInCount: Int,
+        isDayOff: Bool,
         isBeforeHabitFirstCheckIn: Bool,
         dateOffset: Int
     ) -> some View {
@@ -272,6 +288,14 @@ extension HabitListCheckInGridView {
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
                     .padding(.bottom, 5)
+            } else if isDayOff {
+                // TODO: convert this to an asset?
+                Text("💤")
+                    .brightness(colorScheme == .dark ? 0.4 : 0.0)
+                    .frame(width: 50, height: 44)
+                    .scaledToFill()
+                    .minimumScaleFactor(0.5)
+                    .opacity(0.5)
             } else {
                 Text("")
                     .background(alignment: .bottom) {

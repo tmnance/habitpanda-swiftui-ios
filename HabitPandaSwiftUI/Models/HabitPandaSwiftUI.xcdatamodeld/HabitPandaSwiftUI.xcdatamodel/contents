@@ -8,10 +8,10 @@
         <relationship name="habit" maxCount="1" deletionRule="Nullify" destinationEntity="Habit" inverseName="checkIns" inverseEntity="Habit"/>
     </entity>
     <entity name="Habit" representedClassName="Habit" syncable="YES" codeGenerationType="class">
-        <attribute name="activeDaysOfWeek" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[NSNumber]"/>
         <attribute name="checkInCooldownDays" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="frequencyPerWeek" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
+        <attribute name="inactiveDaysOfWeek" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[NSNumber]"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
