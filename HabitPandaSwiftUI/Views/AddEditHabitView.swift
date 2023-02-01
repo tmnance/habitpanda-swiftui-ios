@@ -33,8 +33,8 @@ struct AddEditHabitView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    Group {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Habit Activity / Behavior").font(.title2)
                         Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
                         TextField("", text: $name)
@@ -46,9 +46,8 @@ struct AddEditHabitView: View {
                         hideKeyboard()
                     }
 
-                    Group {
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Habit Target Frequency 🎯").font(.title2)
-                            .padding([.top], 16)
                         Text("(how often do you aim to perform this activity / behavior)").font(.footnote)
                         Text(getFrequencyPerWeekDisplayText())
                             .frame(maxWidth: .infinity, alignment: .center)
@@ -108,7 +107,7 @@ struct AddEditHabitView: View {
                         hideKeyboard()
                     }
 
-                    Group {
+                    VStack(alignment: .leading, spacing: 8) {
                         Group {
                             HStack {
                                 Text("Days Off").font(.title2)
@@ -135,7 +134,7 @@ struct AddEditHabitView: View {
                         }
                     }
 
-                    Group {
+                    VStack(alignment: .leading, spacing: 8) {
                         Group {
                             HStack {
                                 Text("Check In Cooldown").font(.title2)
