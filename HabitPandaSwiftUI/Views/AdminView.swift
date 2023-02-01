@@ -275,19 +275,22 @@ extension AdminView {
                 "name": "Call mom",
                 "frequencyPerWeek": 1,
                 //                 98765432109876543210
-                "checkInHistory": "    X      X      X "
+                "checkInHistory": "    X      X      X ",
             ],
             [
                 "name": "Do some form of exercise",
-                "frequencyPerWeek": 5,
+                "frequencyPerWeek": 3,
                 //                 98765432109876543210
-                "checkInHistory": " XXX X  X X X X 2 XX"
+                "checkInHistory": " X X X  X X X  X  X ",
+                "checkInCooldownDays": 1,
             ],
             [
                 "name": "Have a no-TV night",
                 "frequencyPerWeek": 2,
                 //                 98765432109876543210
-                "checkInHistory": " X  X      X      X "
+                "checkInHistory": " X  X      X      X ",
+                //                     SMTWTFS
+                "inactiveDaysOfWeek": "X     X",
             ],
             [
                 "name": "Make the bed every morning",
@@ -313,13 +316,13 @@ extension AdminView {
                 "name": "Read for fun or growth 20 minutes",
                 "frequencyPerWeek": 5,
                 //                 98765432109876543210
-                "checkInHistory": " X X X X XXXX X XX X"
+                "checkInHistory": " X X X X XXXX X XX X",
             ],
             [
                 "name": "Take daily vitamins",
                 "frequencyPerWeek": 7,
                 //                 98765432109876543210
-                "checkInHistory": "XX XXXXXXXXXX XXXXXX"
+                "checkInHistory": "XX XXXXXXXXXX XXXXXX",
             ],
         ]
 
@@ -332,7 +335,7 @@ extension AdminView {
                 seedHabits.append([
                     "name": "Test Habit \(i + 1)",
                     "frequencyPerWeek": frequencyPerWeek,
-                    "checkInHistory": checkInHistory
+                    "checkInHistory": checkInHistory,
                 ])
             }
         }
@@ -344,6 +347,10 @@ extension AdminView {
         )!
 
         seedHabits.enumerated().forEach { i, seedHabit in
+            let inactiveDaysOfWeek = Array(seedHabit["inactiveDaysOfWeek"] as? String ?? "")
+                .enumerated()
+                .filter { $0.1 != " " }
+                .map { $0.0 as Int }
             let newHabit = createHabit(
                 name: seedHabit["name"] as? String ?? "",
                 frequencyPerWeek: seedHabit["frequencyPerWeek"] as? Int ?? 1,
@@ -352,7 +359,9 @@ extension AdminView {
                     value: i,
                     to: createdAtDate
                 )!,
-                order: i
+                order: i,
+                inactiveDaysOfWeek: inactiveDaysOfWeek,
+                checkInCooldownDays: seedHabit["checkInCooldownDays"] as? Int ?? 0
             )
 
             Array(seedHabit["checkInHistory"] as? String ?? "").reversed().enumerated()
@@ -408,7 +417,9 @@ extension AdminView {
         name: String,
         frequencyPerWeek: Int,
         createdAt: Date,
-        order: Int
+        order: Int,
+        inactiveDaysOfWeek: [Int] = [],
+        checkInCooldownDays: Int = 0
     ) -> Habit {
         let habitToSave = Habit(context: viewContext)
         habitToSave.createdAt = createdAt
@@ -416,6 +427,8 @@ extension AdminView {
         habitToSave.name = name
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.order = Int32(order)
+        habitToSave.inactiveDaysOfWeek = inactiveDaysOfWeek.map { $0 as NSNumber }
+        habitToSave.checkInCooldownDays = Int32(checkInCooldownDays)
 
         return habitToSave
     }
@@ -476,6 +489,8 @@ extension AdminView {
         let frequencyPerWeek: Int
         let checkIns: [ExportCheckIn]
         let reminders: [ExportReminder]
+        let inactiveDaysOfWeek: [Int]
+        let checkInCooldownDays: Int
 
         init(habit: Habit) {
             self.uuid = habit.uuid!.uuidString
@@ -489,6 +504,8 @@ extension AdminView {
             self.reminders = (habit.reminders as? Set<Reminder> ?? [])
                 .sorted { $0.createdAt! < $1.createdAt! }
                 .map { ExportReminder(reminder: $0) }
+            self.inactiveDaysOfWeek = (habit.inactiveDaysOfWeek ?? []).map { Int(truncating: $0) }
+            self.checkInCooldownDays = Int(habit.checkInCooldownDays)
         }
     }
 
@@ -557,28 +574,30 @@ extension AdminView {
 
         deleteAllHabits()
 
-        importedHabits.forEach{ habit in
+        importedHabits.forEach{ importedHabit in
             let newHabit = createHabit(
-                uuid: UUID(uuidString: habit.uuid),
-                name: habit.name,
-                frequencyPerWeek: habit.frequencyPerWeek,
-                createdAt: Date(timeIntervalSince1970: Double(habit.createdAt)),
-                order: habit.order
+                uuid: UUID(uuidString: importedHabit.uuid),
+                name: importedHabit.name,
+                frequencyPerWeek: importedHabit.frequencyPerWeek,
+                createdAt: Date(timeIntervalSince1970: Double(importedHabit.createdAt)),
+                order: importedHabit.order,
+                inactiveDaysOfWeek: importedHabit.inactiveDaysOfWeek,
+                checkInCooldownDays: importedHabit.checkInCooldownDays
             )
-            habit.checkIns.forEach { checkIn in
+            importedHabit.checkIns.forEach { importedCheckIn in
                 let _ = createCheckIn(
-                    uuid: UUID(uuidString: checkIn.uuid),
+                    uuid: UUID(uuidString: importedCheckIn.uuid),
                     habit: newHabit,
-                    createdAt: Date(timeIntervalSince1970: Double(checkIn.createdAt)),
-                    checkInDate: Date(timeIntervalSince1970: Double(checkIn.checkInDate))
+                    createdAt: Date(timeIntervalSince1970: Double(importedCheckIn.createdAt)),
+                    checkInDate: Date(timeIntervalSince1970: Double(importedCheckIn.checkInDate))
                 )
             }
-            habit.reminders.forEach { reminder in
+            importedHabit.reminders.forEach { importedReminder in
                 let _ = createReminder(
                     habit: newHabit,
-                    hour: reminder.hour,
-                    minute: reminder.minute,
-                    frequencyDays: reminder.frequencyDays
+                    hour: importedReminder.hour,
+                    minute: importedReminder.minute,
+                    frequencyDays: importedReminder.frequencyDays
                 )
             }
         }

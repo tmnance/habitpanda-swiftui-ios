@@ -219,7 +219,7 @@ extension HabitDetailsSummaryTabChartView {
     ) -> [Int: Int] {
         var startDateOffsetCheckInCountMap: [Int: Int] = [:]
 
-        checkIns.forEach { (checkIn) in
+        checkIns.forEach { checkIn in
             let checkInDate = checkIn.checkInDate!.stripTime()
             let startDateOffset = Calendar.current.dateComponents(
                 [.day],

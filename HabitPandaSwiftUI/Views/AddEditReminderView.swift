@@ -27,24 +27,28 @@ struct AddEditReminderView: View {
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Reminder Time").font(.title2)
-                DatePicker(
-                    "",
-                    selection: $time,
-                    displayedComponents: [.hourAndMinute]
-                )
-                .datePickerStyle(.wheel)
-                .labelsHidden()
-                .onAppear {
-                    // TODO: refactor into something that doesn't clobber all datepickers
-                    // (e.g. https://d1v1b.com/en/swiftui/datepicker)
-                    UIDatePicker.appearance().minuteInterval = Constants.TimePicker.minuteInterval
+                Group {
+                    Text("Reminder Time").font(.title2)
+                    DatePicker(
+                        "",
+                        selection: $time,
+                        displayedComponents: [.hourAndMinute]
+                    )
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .onAppear {
+                        // TODO: refactor into something that doesn't clobber all datepickers
+                        // (e.g. https://d1v1b.com/en/swiftui/datepicker)
+                        UIDatePicker.appearance().minuteInterval = Constants.TimePicker.minuteInterval
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
-                .frame(maxWidth: .infinity, alignment: .center)
 
-                Text("Reminder Days").font(.title2)
-                Text("(which days should this reminder be sent)").font(.footnote)
-                DaysOfWeekPicker(selectedDays: $selectedFrequencyDays)
+                Group {
+                    Text("Reminder Days").font(.title2)
+                    Text("(which days should this reminder be sent)").font(.footnote)
+                    DaysOfWeekPicker(selectedDays: $selectedFrequencyDays)
+                }
 
                 Spacer()
             }

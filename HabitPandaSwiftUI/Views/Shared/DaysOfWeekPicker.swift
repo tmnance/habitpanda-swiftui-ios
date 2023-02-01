@@ -8,32 +8,47 @@
 import SwiftUI
 
 struct DaysOfWeekPicker: View {
-    private struct DaysOfWeekPickerOption: Equatable {
+    struct WeekSubsetOption {
+        var tag: DayOfWeek.WeekSubset
+        var label: String
+
+        init(_ tag: DayOfWeek.WeekSubset, label: String? = nil) {
+            self.tag = tag
+            self.label = label ?? tag.description
+        }
+    }
+
+    private struct DayToggleState: Equatable {
       let day: DayOfWeek.Day
       var isActive: Bool
     }
 
-    @State private var selectedWeekSubsetType: DayOfWeek.WeekSubsetType = .custom
+    @State private var selectedWeekSubset: DayOfWeek.WeekSubset = .custom
     @State private var dayOptionToggleStates = {
         return DayOfWeek.Day.allCases.map {
-            DaysOfWeekPickerOption(day: $0, isActive: false)
+            DayToggleState(day: $0, isActive: false)
         }
     }()
     @Binding var selectedDays: Set<DayOfWeek.Day>
+    var weekSubsetOptions: [WeekSubsetOption] = [
+        WeekSubsetOption(.daily),
+        WeekSubsetOption(.weekdays),
+        WeekSubsetOption(.weekends),
+        WeekSubsetOption(.custom),
+    ]
 
     var body: some View {
         VStack {
-            Picker("", selection: $selectedWeekSubsetType) {
-                Text("Daily").tag(DayOfWeek.WeekSubsetType.daily)
-                Text("Weekdays").tag(DayOfWeek.WeekSubsetType.weekdays)
-                Text("Weekends").tag(DayOfWeek.WeekSubsetType.weekends)
-                Text("Custom").tag(DayOfWeek.WeekSubsetType.custom)
+            Picker("", selection: $selectedWeekSubset) {
+                ForEach(weekSubsetOptions, id: \.tag) { weekSubsetOption in
+                    Text(weekSubsetOption.label).tag(weekSubsetOption.tag)
+                }
             }
             .pickerStyle(.segmented)
-            .onChange(of: selectedWeekSubsetType) { _ in
+            .onChange(of: selectedWeekSubset) { _ in
                 // only change the day toggle values if they don't currently match the new picker option
-                if selectedWeekSubsetType != getCurrentFrequencyOptionFromActiveDays() {
-                    updateFrequencyDays(forOption: selectedWeekSubsetType)
+                if selectedWeekSubset != getCurrentWeekSubsetFromActiveDays() {
+                    updateSelectedDays(forWeekSubset: selectedWeekSubset)
                 }
             }
 
@@ -47,7 +62,7 @@ struct DaysOfWeekPicker: View {
                     .toggleStyle(.button)
                 }
                 .onChange(of: dayOptionToggleStates) { _ in
-                    selectedWeekSubsetType = getCurrentFrequencyOptionFromActiveDays()
+                    selectedWeekSubset = getCurrentWeekSubsetFromActiveDays()
                     selectedDays = Set(dayOptionToggleStates.filter { $0.isActive }.map { $0.day })
                 }
             }
@@ -59,20 +74,24 @@ struct DaysOfWeekPicker: View {
         }
     }
 
-    private func updateFrequencyDays(forOption option: DayOfWeek.WeekSubsetType) {
+    private func updateSelectedDays(forWeekSubset weekSubset: DayOfWeek.WeekSubset) {
         for (index, toggleState) in dayOptionToggleStates.enumerated() {
-            self.dayOptionToggleStates[index].isActive = option.frequencyDays.contains(toggleState.day)
+            self.dayOptionToggleStates[index].isActive = weekSubset.days.contains(toggleState.day)
         }
     }
 
-    private func getCurrentFrequencyOptionFromActiveDays() -> DayOfWeek.WeekSubsetType {
+    private func getCurrentWeekSubsetFromActiveDays() -> DayOfWeek.WeekSubset {
         let currentActiveDaySet = Set(dayOptionToggleStates.filter { $0.isActive }.map { $0.day })
+        // verify this option is available
+        if !Set(weekSubsetOptions.map { $0.tag.days }).contains(currentActiveDaySet) {
+            return .custom
+        }
         switch currentActiveDaySet {
-        case DayOfWeek.WeekSubsetType.daily.frequencyDays:
+        case DayOfWeek.WeekSubset.daily.days:
             return .daily
-        case DayOfWeek.WeekSubsetType.weekdays.frequencyDays:
+        case DayOfWeek.WeekSubset.weekdays.days:
             return .weekdays
-        case DayOfWeek.WeekSubsetType.weekends.frequencyDays:
+        case DayOfWeek.WeekSubset.weekends.days:
             return .weekends
         default:
             return .custom
@@ -83,15 +102,30 @@ struct DaysOfWeekPicker: View {
 struct DaysOfWeekPicker_Previews: PreviewProvider {
     struct Container: View {
         @State var selectedDays: Set<DayOfWeek.Day> = []
+        var weekSubsetOptions: [DaysOfWeekPicker.WeekSubsetOption]? = nil
         var body: some View {
-            DaysOfWeekPicker(selectedDays: $selectedDays)
+            if let weekSubsetOptions {
+                DaysOfWeekPicker(
+                    selectedDays: $selectedDays,
+                    weekSubsetOptions: weekSubsetOptions
+                )
+            } else {
+                DaysOfWeekPicker(selectedDays: $selectedDays)
+            }
         }
     }
 
     static var previews: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 20) {
             Container(selectedDays: [.sat, .sun])
-            Container().padding()
+            Container().padding(.horizontal)
+            Container(
+                weekSubsetOptions: [
+                    DaysOfWeekPicker.WeekSubsetOption(.weekdays),
+                    DaysOfWeekPicker.WeekSubsetOption(.weekends),
+                    DaysOfWeekPicker.WeekSubsetOption(.custom),
+                ]
+            )
         }
     }
 }

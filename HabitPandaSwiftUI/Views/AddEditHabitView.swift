@@ -19,6 +19,10 @@ struct AddEditHabitView: View {
     @State private var isSliderOverflowActive = false
     @State private var frequencySliderValue = Float(Constants.Habit.defaultFrequencyPerWeek)
     @State private var frequencyOverflow = ""
+    @State private var isDaysOffActive = false
+    @State private var selectedInactiveDaysOfWeek: Set<DayOfWeek.Day> = []
+    @State private var isCheckInCooldownActive = false
+    @State private var checkInCooldownDays: Int = 1
     @FocusState private var focusedField: Field?
     @State private var timer: Timer?
     @State private var interactionMode: Constants.ViewInteractionMode = .add
@@ -28,78 +32,145 @@ struct AddEditHabitView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Habit Activity / Behavior").font(.title2)
-                Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
-                TextField("", text: $name)
-                    .focused($focusedField, equals: .name)
-                    .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
-                    .submitLabel(.done)
-
-                Text("Habit Target Frequency 🎯").font(.title2)
-                    .padding([.top], 16)
-                Text("(how often do you aim to perform this activity / behavior)").font(.footnote)
-                Text(getFrequencyPerWeekDisplayText())
-                    .frame(maxWidth: .infinity, alignment: .center)
-                HStack(spacing: 0) {
-                    Slider(
-                        value: $frequencySliderValue,
-                        in: 1...Float(frequencySliderOverflowThreshold),
-                        step: 1
-                    ) { isEditing in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Habit Activity / Behavior").font(.title2)
+                        Text("(e.g. \"Go to the gym\", \"Make the bed\")").font(.footnote)
+                        TextField("", text: $name)
+                            .focused($focusedField, equals: .name)
+                            .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
+                            .submitLabel(.done)
+                    }
+                    .onTapGesture {
                         hideKeyboard()
-                        if !isEditing { // done editing
-                            isSliderOverflowActive = Int(frequencySliderValue) == frequencySliderOverflowThreshold
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Habit Target Frequency 🎯").font(.title2)
+                        Text("(how often do you aim to perform this activity / behavior)").font(.footnote)
+                        Text(getFrequencyPerWeekDisplayText())
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        // TODO: refactor slider to shared component?
+                        HStack(spacing: 0) {
+                            Slider(
+                                value: $frequencySliderValue,
+                                in: 1...Float(frequencySliderOverflowThreshold),
+                                step: 1
+                            ) { isEditing in
+                                hideKeyboard()
+                                if !isEditing { // done editing
+                                    isSliderOverflowActive = Int(frequencySliderValue) == frequencySliderOverflowThreshold
+                                    if isSliderOverflowActive {
+                                        focusedField = .frequencyOverflow
+                                    }
+                                }
+                            }
+                            .padding(.horizontal)
+                            .onChange(of: frequencySliderValue) { _ in
+                                frequencyOverflow = ""
+                                frequencyPerWeek = Int(frequencySliderValue)
+                            }
                             if isSliderOverflowActive {
-                                focusedField = .frequencyOverflow
+                                TextField("", text: $frequencyOverflow)
+                                    .focused($focusedField, equals: .frequencyOverflow)
+                                    .frame(width: 45)
+                                    .keyboardType(.numberPad)
+                                    .onChange(of: frequencyOverflow) { [frequencyOverflow] newValue in
+                                        let oldValue = frequencyOverflow
+                                        var cleanNewValue = newValue.filter { Set("0123456789").contains($0) }
+                                        if cleanNewValue.count > 2 { // trim/ignore excess characters
+                                            cleanNewValue = oldValue.count == 2 ? oldValue : String(cleanNewValue.prefix(2))
+                                        }
+                                        if cleanNewValue.count == 2 && cleanNewValue.prefix(1) == "0" { // remove leading zero
+                                            cleanNewValue = String(cleanNewValue.suffix(1))
+                                        }
+                                        if cleanNewValue != newValue { // replace with the clean value
+                                            self.frequencyOverflow = cleanNewValue
+                                        }
+                                        // change frequencyPerWeek state if the overflow field is relevant
+                                        // (it becomes irrelevant if the slider is being changed)
+                                        if Int(frequencySliderValue) == frequencySliderOverflowThreshold {
+                                            let cleanNewValueInt = Int(cleanNewValue) ?? 0
+                                            frequencyPerWeek = (cleanNewValueInt > 0 ?
+                                                                cleanNewValueInt :
+                                                                    frequencySliderOverflowThreshold
+                                            )
+                                        }
+                                    }
+                                    .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
                             }
                         }
+                        .frame(height: Constants.comfortableTappableDimension, alignment: .center)
                     }
-                    .padding(.horizontal)
-                    .onChange(of: frequencySliderValue) { _ in
-                        frequencyOverflow = ""
-                        frequencyPerWeek = Int(frequencySliderValue)
+                    .onTapGesture {
+                        hideKeyboard()
                     }
-                    if isSliderOverflowActive {
-                        TextField("", text: $frequencyOverflow)
-                            .focused($focusedField, equals: .frequencyOverflow)
-                            .frame(width: 45)
-                            .keyboardType(.numberPad)
-                            .onChange(of: frequencyOverflow) { [frequencyOverflow] newValue in
-                                let oldValue = frequencyOverflow
-                                var cleanNewValue = newValue.filter { Set("0123456789").contains($0) }
-                                if cleanNewValue.count > 2 { // trim/ignore excess characters
-                                    cleanNewValue = oldValue.count == 2 ? oldValue : String(cleanNewValue.prefix(2))
-                                }
-                                if cleanNewValue.count == 2 && cleanNewValue.prefix(1) == "0" { // remove leading zero
-                                    cleanNewValue = String(cleanNewValue.suffix(1))
-                                }
-                                if cleanNewValue != newValue { // replace with the clean value
-                                    self.frequencyOverflow = cleanNewValue
-                                }
-                                // change frequencyPerWeek state if the overflow field is relevant
-                                // (it becomes irrelevant if the slider is being changed)
-                                if Int(frequencySliderValue) == frequencySliderOverflowThreshold {
-                                    let cleanNewValueInt = Int(cleanNewValue) ?? 0
-                                    frequencyPerWeek = (cleanNewValueInt > 0 ?
-                                        cleanNewValueInt :
-                                        frequencySliderOverflowThreshold
-                                    )
-                                }
-                            }
-                            .onTapGesture { } // override parent view onTapGesture's keyboard dismissal
-                    }
-                }
-                .frame(height: Constants.comfortableTappableDimension, alignment: .center)
 
-                Spacer()
+                    VStack(alignment: .leading, spacing: 8) {
+                        Group {
+                            HStack {
+                                Text("Days Off").font(.title2)
+                                Toggle("Days Off Active", isOn: $isDaysOffActive)
+                                    .labelsHidden()
+                            }
+                            Text("(optional off days for this habit)").font(.footnote)
+                        }
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
+                        if isDaysOffActive {
+                            DaysOfWeekPicker(
+                                selectedDays: $selectedInactiveDaysOfWeek,
+                                weekSubsetOptions: [
+                                    DaysOfWeekPicker.WeekSubsetOption(.weekdays),
+                                    DaysOfWeekPicker.WeekSubsetOption(.weekends),
+                                    DaysOfWeekPicker.WeekSubsetOption(.custom),
+                                ]
+                            )
+                                .onChange(of: selectedInactiveDaysOfWeek) { _ in
+                                    hideKeyboard()
+                                }
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Group {
+                            HStack {
+                                Text("Check In Cooldown").font(.title2)
+                                Toggle("Check In Cooldown Active", isOn: $isCheckInCooldownActive)
+                                    .labelsHidden()
+                            }
+                            Text("(how many days off after a successful check in)").font(.footnote)
+                        }
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
+                        if isCheckInCooldownActive {
+                            VStack(spacing: 8) {
+                                Text(getCheckInCooldownDaysDisplayText())
+                                Stepper("Cooldown day(s)", value: $checkInCooldownDays, in: 1...6, step: 1)
+                                    .labelsHidden()
+                                    .onChange(of: checkInCooldownDays) { _ in
+                                        hideKeyboard()
+                                    }
+                            }
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        }
+                    }
+
+                    Spacer()
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
+                }
+//                .contentShape(Rectangle()) // used to enable gesture recognition on the entire view
+//                .onTapGesture {
+//                    hideKeyboard()
+//                }
+                .padding(.horizontal, 20)
+                .textFieldStyle(.roundedBorder)
             }
-            .contentShape(Rectangle()) // used to enable gesture recognition on the entire view
-            .onTapGesture {
-                hideKeyboard()
-            }
-            .padding(.horizontal, 20)
-            .textFieldStyle(.roundedBorder)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Cancel") {
@@ -146,6 +217,12 @@ struct AddEditHabitView: View {
                     frequencySliderValue = Float(frequencyPerWeek)
                 }
             }
+
+            isDaysOffActive = (habitToEdit?.inactiveDaysOfWeek ?? []).count > 0
+            selectedInactiveDaysOfWeek = Set((habitToEdit?.inactiveDaysOfWeek ?? [])
+                .compactMap { DayOfWeek.Day(rawValue: $0.intValue) })
+            isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
+            checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
         }
     }
 
@@ -155,7 +232,8 @@ struct AddEditHabitView: View {
 
     func isValidInput() -> Bool {
         return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-            (!isSliderOverflowActive || Int(frequencyOverflow) ?? 0 > 0)
+            (!isSliderOverflowActive || Int(frequencyOverflow) ?? 0 > 0) &&
+            selectedInactiveDaysOfWeek.count < 7
     }
 
     func getFrequencyPerWeekDisplayText() -> String {
@@ -166,6 +244,11 @@ struct AddEditHabitView: View {
             frequencyOverflowInt == 0 && frequencyPerWeek == frequencySliderOverflowThreshold
         )
         return "\(displayValue)\(isShowingOverflowPlaceholder ? "+" : "") time\(isPlural ? "s" : "") / week"
+    }
+
+    func getCheckInCooldownDaysDisplayText() -> String {
+        let isPlural = checkInCooldownDays != 1
+        return "\(checkInCooldownDays) day\(isPlural ? "s" : "")"
     }
 
     func save() {
@@ -180,6 +263,14 @@ struct AddEditHabitView: View {
 
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
+        habitToSave.inactiveDaysOfWeek = (isDaysOffActive ?
+            selectedInactiveDaysOfWeek
+                .map { $0.rawValue }
+                .sorted()
+                .map { $0 as NSNumber } :
+            []
+        )
+        habitToSave.checkInCooldownDays = Int32(isCheckInCooldownActive ? checkInCooldownDays : 0)
 
         do {
             try PersistenceController.save(context: viewContext)
