@@ -14,7 +14,8 @@ struct HabitListCheckInGridView: View {
 
     @State private var toast: FancyToast? = nil
     @State private var habitCheckInGridOffsetMap: [UUID: CheckInGridOffsetMap] = [:]
-    @State private var habitFirstCheckInOffsetMap: [UUID: Int?] = [:]
+    @State private var habitFirstCheckInOffsetMap: [UUID: Int] = [:]
+    @State private var habitLastCheckInOffsetMap: [UUID: Int] = [:]
     @State private var isFirstLoad = true
 
     @FetchRequest(
@@ -102,6 +103,7 @@ extension HabitListCheckInGridView {
     func buildHabitCheckInMaps() {
         habitCheckInGridOffsetMap = [:]
         habitFirstCheckInOffsetMap = [:]
+        habitLastCheckInOffsetMap = [:]
 
         let checkIns = CheckIn.getAll(
             forHabitUUIDs: habits.map { $0.uuid! },
@@ -109,21 +111,23 @@ extension HabitListCheckInGridView {
             context: viewContext
         )
 
-        checkIns.forEach { (checkIn) in
+        checkIns.forEach { checkIn in
             let habitUUID = checkIn.habit!.uuid!
             let checkInDate = checkIn.checkInDate!.stripTime()
             let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
-            habitCheckInGridOffsetMap[habitUUID] = habitCheckInGridOffsetMap[habitUUID] ?? [:]
-            habitCheckInGridOffsetMap[habitUUID]![checkInDateOffset] =
-                (habitCheckInGridOffsetMap[habitUUID]![checkInDateOffset] ?? 0) + 1
+            habitCheckInGridOffsetMap[habitUUID, default: [:]][checkInDateOffset, default: 0] += 1
         }
 
-        habits.forEach { (habit) in
+        habits.forEach { habit in
             if let firstCheckInDate = habit.getFirstCheckInDate() {
                 habitFirstCheckInOffsetMap[habit.uuid!] =
                     (Calendar.current.dateComponents([.day], from: startDate, to: firstCheckInDate).day ?? 0)
-            } else {
-                habitFirstCheckInOffsetMap[habit.uuid!] = nil
+            }
+            if habit.checkInCooldownDays > 0 {
+                if let lastCheckInDate = habit.getLastCheckInDate() {
+                    habitLastCheckInOffsetMap[habit.uuid!] =
+                    (Calendar.current.dateComponents([.day], from: startDate, to: lastCheckInDate).day ?? 0)
+                }
             }
         }
     }
@@ -135,6 +139,9 @@ extension HabitListCheckInGridView {
     func getIsDayOff(habit: Habit, dateOffset: Int) -> Bool {
         if getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset) {
             return false
+        }
+        if getIsCooldownAfterHabitLastCheckIn(habit: habit, dateOffset: dateOffset) {
+            return true
         }
         let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
             .compactMap { $0.intValue })
@@ -148,6 +155,12 @@ extension HabitListCheckInGridView {
     func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: Int) -> Bool {
         guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
         return dateOffset < firstCheckInOffset
+    }
+
+    func getIsCooldownAfterHabitLastCheckIn(habit: Habit, dateOffset: Int) -> Bool {
+        guard habit.checkInCooldownDays > 0 else { return false }
+        guard let lastCheckInOffset = (habitLastCheckInOffsetMap[habit.uuid!] ?? nil) else { return false }
+        return dateOffset > lastCheckInOffset && dateOffset <= lastCheckInOffset + Int(habit.checkInCooldownDays)
     }
 
     func getCellBgColor(forIndex index: Int) -> UIColor {

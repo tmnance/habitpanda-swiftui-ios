@@ -104,7 +104,7 @@ struct PersistenceController {
             .map { $0.rawValue }
             .sorted()
             .map { $0 as NSNumber }
-        habit3.checkInCooldownDays = Int32(1)
+        habit3.checkInCooldownDays = Int32(0)
 
         [-16].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -129,7 +129,7 @@ struct PersistenceController {
             .map { $0.rawValue }
             .sorted()
             .map { $0 as NSNumber }
-        habit4.checkInCooldownDays = Int32(1)
+        habit4.checkInCooldownDays = Int32(0)
 
         [-16].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -152,6 +152,19 @@ struct PersistenceController {
         habit5.order = Int32(4)
         habit5.inactiveDaysOfWeek = []
         habit5.checkInCooldownDays = Int32(1)
+
+        [-2].forEach { dateOffset in
+            let checkIn = CheckIn(context: viewContext)
+            checkIn.createdAt = Calendar.current.date(
+                byAdding: .day,
+                value: dateOffset,
+                to: Date()
+            )!.stripTime()
+            checkIn.uuid = UUID()
+            checkIn.isSuccess = true
+            checkIn.checkInDate = checkIn.createdAt
+            checkIn.habit = habit5
+        }
 
         do {
             try PersistenceController.save(context: viewContext)

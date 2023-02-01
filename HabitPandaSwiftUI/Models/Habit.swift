@@ -67,6 +67,18 @@ extension Habit {
     func getFirstCheckInDate() -> Date? {
         guard let context = managedObjectContext else { return nil }
         let checkIns = CheckIn.getAll(
+            sortedBy: [("checkInDate", .asc)],
+            forHabitUUIDs: [uuid!],
+            withLimit: 1,
+            context: context
+        )
+        return checkIns.first?.checkInDate!.stripTime()
+    }
+
+    func getLastCheckInDate() -> Date? {
+        guard let context = managedObjectContext else { return nil }
+        let checkIns = CheckIn.getAll(
+            sortedBy: [("checkInDate", .desc)],
             forHabitUUIDs: [uuid!],
             withLimit: 1,
             context: context
