@@ -131,13 +131,12 @@ extension HabitListCheckInGridView {
             let habitUUID = checkIn.habit!.uuid!
             let checkInDate = checkIn.checkInDate!.stripTime()
             let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
-            let resultType = CheckInResultType.fromString(checkIn.resultType)
             // works because we are looping in descending checkInDate order
-            if resultType != .dayOff && habitLastCheckInOffsetMap[habitUUID] == nil {
+            if checkIn.resultType != .dayOff && habitLastCheckInOffsetMap[habitUUID] == nil {
                 habitLastCheckInOffsetMap[habitUUID] = checkInDateOffset
             }
             addCheckInResultToHabitDayReport(
-                resultType: resultType,
+                resultType: checkIn.resultType,
                 resultValue: checkIn.resultValue,
                 habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][checkInDateOffset, default: [:]]
             )

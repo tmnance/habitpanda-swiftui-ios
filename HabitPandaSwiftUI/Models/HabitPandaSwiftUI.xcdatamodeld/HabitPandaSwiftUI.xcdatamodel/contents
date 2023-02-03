@@ -3,8 +3,8 @@
     <entity name="CheckIn" representedClassName="CheckIn" syncable="YES" codeGenerationType="class">
         <attribute name="checkInDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="resultType" optional="YES" attributeType="String"/>
-        <attribute name="resultValue" optional="YES" attributeType="String"/>
+        <attribute name="resultTypeRaw" optional="YES" attributeType="String"/>
+        <attribute name="resultValueRaw" optional="YES" attributeType="String"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="habit" maxCount="1" deletionRule="Nullify" destinationEntity="Habit" inverseName="checkIns" inverseEntity="Habit"/>
     </entity>

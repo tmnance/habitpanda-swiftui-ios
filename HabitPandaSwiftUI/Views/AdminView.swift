@@ -446,8 +446,8 @@ extension AdminView {
         checkInToSave.uuid = uuid ?? UUID()
         checkInToSave.habit = habit
         checkInToSave.checkInDate = checkInDate ?? createdAt.stripTime()
-        checkInToSave.resultType = resultType?.rawValue
-        checkInToSave.resultValue = resultValue
+        checkInToSave.resultTypeRaw = resultType?.rawValue
+        checkInToSave.resultValueRaw = resultValue
 
         return checkInToSave
     }
@@ -516,15 +516,15 @@ extension AdminView {
         let uuid: String
         let createdAt: Int
         let checkInDate: Int
-        let resultType: String?
-        let resultValue: String?
+        let resultTypeRaw: String?
+        let resultValueRaw: String?
 
         init(checkIn: CheckIn) {
             self.uuid = checkIn.uuid!.uuidString
             self.createdAt = Int(checkIn.createdAt!.timeIntervalSince1970)
             self.checkInDate = Int(checkIn.checkInDate!.timeIntervalSince1970)
-            self.resultType = checkIn.resultType
-            self.resultValue = checkIn.resultValue
+            self.resultTypeRaw = checkIn.resultTypeRaw
+            self.resultValueRaw = checkIn.resultValueRaw
         }
     }
 

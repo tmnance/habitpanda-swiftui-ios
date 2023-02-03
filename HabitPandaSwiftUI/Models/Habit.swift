@@ -117,8 +117,8 @@ extension Habit {
         checkInToSave.uuid = UUID()
         checkInToSave.habit = self
         checkInToSave.checkInDate = date.stripTime()
-        checkInToSave.resultType = resultType?.rawValue
-        checkInToSave.resultValue = resultValue
+        checkInToSave.resultTypeRaw = resultType?.rawValue
+        checkInToSave.resultValueRaw = resultValue
 
         do {
             try PersistenceController.save(context: context)

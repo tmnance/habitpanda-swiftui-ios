@@ -70,7 +70,7 @@ struct HabitDetailsView: View {
                             }
                         }
                     }
-                    if !anyCheckInsToday() {
+                    if !anyCheckInsToday() && !isTodayOff() {
                         Button(action: {
                             withAnimation {
                                 habit.addCheckIn(
@@ -159,6 +159,29 @@ struct HabitDetailsView: View {
 
     func anyCheckInsToday() -> Bool {
         return mostRecentCheckIns.first?.checkInDate == currentDate
+    }
+
+    func isTodayOff() -> Bool {
+        if let mostRecentCheckIn = mostRecentCheckIns.first {
+            if mostRecentCheckIn.checkInDate == currentDate {
+                return mostRecentCheckIn.resultType == .dayOff
+            }
+            if habit.checkInCooldownDays > 0 &&
+                Calendar.current.dateComponents(
+                    [.day],
+                    from: mostRecentCheckIn.checkInDate!,
+                    to: currentDate
+                ).day! <= habit.checkInCooldownDays {
+                return true
+            }
+        }
+        if habit.hasInactiveDaysOfWeek() {
+            let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
+                .compactMap { $0.intValue })
+            let currentDayOffset = (Calendar.current.component(.weekday, from: currentDate) % 7) - 1
+            return inactiveDaysOfWeek.contains(currentDayOffset)
+        }
+        return false
     }
 }
 
