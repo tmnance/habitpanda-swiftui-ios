@@ -35,7 +35,6 @@ struct PersistenceController {
                 to: Date()
             )!.stripTime()
             checkIn.uuid = UUID()
-            checkIn.isSuccess = true
             checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit1
         }
@@ -43,7 +42,6 @@ struct PersistenceController {
         let lateCheckIn = CheckIn(context: viewContext)
         lateCheckIn.createdAt = Date().stripTime()
         lateCheckIn.uuid = UUID()
-        lateCheckIn.isSuccess = true
         lateCheckIn.checkInDate = Calendar.current.date(
             byAdding: .day,
             value: -1,
@@ -89,7 +87,6 @@ struct PersistenceController {
                 to: Date()
             )!.stripTime()
             checkIn.uuid = UUID()
-            checkIn.isSuccess = true
             checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit2
         }
@@ -114,7 +111,6 @@ struct PersistenceController {
                 to: Date()
             )!.stripTime()
             checkIn.uuid = UUID()
-            checkIn.isSuccess = true
             checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit3
         }
@@ -139,7 +135,6 @@ struct PersistenceController {
                 to: Date()
             )!.stripTime()
             checkIn.uuid = UUID()
-            checkIn.isSuccess = true
             checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit4
         }
@@ -161,7 +156,6 @@ struct PersistenceController {
                 to: Date()
             )!.stripTime()
             checkIn.uuid = UUID()
-            checkIn.isSuccess = true
             checkIn.checkInDate = checkIn.createdAt
             checkIn.habit = habit5
         }

@@ -68,6 +68,10 @@ public struct Constants {
         case asc, desc
     }
 
+    public enum FirstOrLast: String {
+        case first, last
+    }
+
     public enum ViewInteractionMode {
         case add, edit
     }

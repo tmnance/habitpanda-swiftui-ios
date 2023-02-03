@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct HabitListCheckInGridView: View {
-    typealias CheckInGridOffsetMap = [Int: Int]
+    typealias DateOffset = Int
+    typealias HabitDayReport = [CheckInResultType: String]
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
 
     @State private var toast: FancyToast? = nil
-    @State private var habitCheckInGridOffsetMap: [UUID: CheckInGridOffsetMap] = [:]
+    @State private var habitDailyReportMap: [UUID: [DateOffset: HabitDayReport]] = [:]
     @State private var habitFirstCheckInOffsetMap: [UUID: Int] = [:]
-    @State private var habitLastCheckInOffsetMap: [UUID: Int] = [:]
     @State private var isFirstLoad = true
 
     @FetchRequest(
@@ -100,12 +100,28 @@ extension HabitListCheckInGridView {
             .background(Color(Constants.Colors.listBorder))
     }
 
+    func addCheckInResultToHabitDayReport(
+        resultType: CheckInResultType,
+        resultValue: String? = nil,
+        habitDayReport: inout HabitDayReport // pass by reference
+    ) {
+        switch resultType {
+        case .success:
+            habitDayReport[.success] = "\((Int(habitDayReport[.success, default: "0"]) ?? 0) + 1)"
+        case .dayOff:
+            habitDayReport[.dayOff] = ""
+        default:
+            break // do nothing
+        }
+    }
+
     func buildHabitCheckInMaps() {
-        habitCheckInGridOffsetMap = [:]
+        habitDailyReportMap = [:]
         habitFirstCheckInOffsetMap = [:]
-        habitLastCheckInOffsetMap = [:]
+        var habitLastCheckInOffsetMap: [UUID: Int] = [:]
 
         let checkIns = CheckIn.getAll(
+            sortedBy: [("checkInDate", .desc)],
             forHabitUUIDs: habits.map { $0.uuid! },
             fromStartDate: startDate,
             context: viewContext
@@ -115,52 +131,64 @@ extension HabitListCheckInGridView {
             let habitUUID = checkIn.habit!.uuid!
             let checkInDate = checkIn.checkInDate!.stripTime()
             let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
-            habitCheckInGridOffsetMap[habitUUID, default: [:]][checkInDateOffset, default: 0] += 1
+            // works because we are looping in descending checkInDate order
+            if habitLastCheckInOffsetMap[habitUUID] == nil {
+                habitLastCheckInOffsetMap[habitUUID] = checkInDateOffset
+            }
+            addCheckInResultToHabitDayReport(
+                resultType: CheckInResultType.fromString(checkIn.resultType),
+                resultValue: checkIn.resultValue,
+                habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][checkInDateOffset, default: [:]]
+            )
+        }
+
+        habitFirstCheckInOffsetMap = CheckIn.getHabitFirstCheckInMap(context: viewContext).mapValues { firstCheckInDate in
+            Calendar.current.dateComponents(
+                [.day],
+                from: startDate,
+                to: firstCheckInDate
+            ).day ?? 0
         }
 
         habits.forEach { habit in
-            if let firstCheckInDate = habit.getFirstCheckInDate() {
-                habitFirstCheckInOffsetMap[habit.uuid!] =
-                    (Calendar.current.dateComponents([.day], from: startDate, to: firstCheckInDate).day ?? 0)
-            }
-            if habit.checkInCooldownDays > 0 {
-                if let lastCheckInDate = habit.getLastCheckInDate() {
-                    habitLastCheckInOffsetMap[habit.uuid!] =
-                    (Calendar.current.dateComponents([.day], from: startDate, to: lastCheckInDate).day ?? 0)
+            let habitUUID = habit.uuid!
+            if let firstCheckInOffset = habitFirstCheckInOffsetMap[habitUUID] {
+                // add inactive days (after first check in) to daily report
+                if habit.hasInactiveDaysOfWeek() {
+                    let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
+                        .compactMap { $0.intValue })
+                    for dateOffset in ((firstCheckInOffset + 1) ..< dateCount) {
+                        let sundayOffset = (dateOffset + dateListSaturdayOffset - 1) % 7
+                        if inactiveDaysOfWeek.contains(sundayOffset) {
+                            addCheckInResultToHabitDayReport(
+                                resultType: .dayOff,
+                                habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][dateOffset, default: [:]]
+                            )
+                        }
+                    }
+                }
+                // add cooldown days after most recent check in to daily report
+                if habit.checkInCooldownDays > 0, let lastCheckInOffset = habitLastCheckInOffsetMap[habitUUID] {
+                    let firstCooldownOffset = lastCheckInOffset + 1
+                    let lastCooldownOffset = min(lastCheckInOffset + 1 + Int(habit.checkInCooldownDays), dateCount)
+                    for dateOffset in (firstCooldownOffset ..< lastCooldownOffset) {
+                        addCheckInResultToHabitDayReport(
+                            resultType: .dayOff,
+                            habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][dateOffset, default: [:]]
+                        )
+                    }
                 }
             }
         }
     }
 
-    func getCheckInCount(habit: Habit, dateOffset: Int) -> Int {
-        return habitCheckInGridOffsetMap[habit.uuid!]?[dateOffset] ?? 0
+    func getCheckInResults(habit: Habit, dateOffset: DateOffset) -> HabitDayReport {
+        return habitDailyReportMap[habit.uuid!]?[dateOffset] ?? [:]
     }
 
-    func getIsDayOff(habit: Habit, dateOffset: Int) -> Bool {
-        if getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset) {
-            return false
-        }
-        if getIsCooldownAfterHabitLastCheckIn(habit: habit, dateOffset: dateOffset) {
-            return true
-        }
-        let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
-            .compactMap { $0.intValue })
-        if inactiveDaysOfWeek.count == 0 {
-            return false
-        }
-        let sundayOffset = (dateOffset + dateListSaturdayOffset - 1) % 7
-        return inactiveDaysOfWeek.contains(sundayOffset)
-    }
-
-    func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: Int) -> Bool {
+    func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: DateOffset) -> Bool {
         guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
         return dateOffset < firstCheckInOffset
-    }
-
-    func getIsCooldownAfterHabitLastCheckIn(habit: Habit, dateOffset: Int) -> Bool {
-        guard habit.checkInCooldownDays > 0 else { return false }
-        guard let lastCheckInOffset = (habitLastCheckInOffsetMap[habit.uuid!] ?? nil) else { return false }
-        return dateOffset > lastCheckInOffset && dateOffset <= lastCheckInOffset + Int(habit.checkInCooldownDays)
     }
 
     func getCellBgColor(forIndex index: Int) -> UIColor {
@@ -192,7 +220,7 @@ extension HabitListCheckInGridView {
         }
     }
 
-    @ViewBuilder func checkInHeaderCell(date: Date, dateOffset: Int) -> some View {
+    @ViewBuilder func checkInHeaderCell(date: Date, dateOffset: DateOffset) -> some View {
         Text(getHeaderDisplayDate(date))
             .font(.system(size: 15))
             .multilineTextAlignment(.center)
@@ -214,8 +242,7 @@ extension HabitListCheckInGridView {
         HStack(spacing: 0) {
             ForEach(0 ..< dateCount, id: \.self) { dateOffset in
                 checkInContentCell(
-                    checkInCount: getCheckInCount(habit: habit, dateOffset: dateOffset),
-                    isDayOff: getIsDayOff(habit: habit, dateOffset: dateOffset),
+                    checkInResults: getCheckInResults(habit: habit, dateOffset: dateOffset),
                     isBeforeHabitFirstCheckIn: getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset),
                     dateOffset: dateOffset
                 )
@@ -274,6 +301,32 @@ extension HabitListCheckInGridView {
                         )
                     }
                 }
+                Button(action: {
+                    withAnimation {
+                        habit.addCheckIn(
+                            forDate: checkInDateOptions[0],
+                            resultType: .dayOff,
+                            context: viewContext
+                        ) { error in
+                            if let error {
+                                toast = FancyToast.errorMessage(error.localizedDescription)
+                                return
+                            }
+                            buildHabitCheckInMaps()
+                            toast = FancyToast(
+                                type: .success,
+                                message: "Snoozed habit for today",
+                                duration: 2,
+                                tapToDismiss: true
+                            )
+                        }
+                    }
+                }) {
+                    Label(
+                        "Snooze for today",
+                        systemImage: "zzz"
+                    )
+                }
             }
             Text("🎯\n\(habit.frequencyPerWeek)x/wk")
                 .font(.system(size: 13, weight: .thin))
@@ -284,13 +337,12 @@ extension HabitListCheckInGridView {
     }
 
     @ViewBuilder func checkInContentCell(
-        checkInCount: Int,
-        isDayOff: Bool,
+        checkInResults: HabitDayReport,
         isBeforeHabitFirstCheckIn: Bool,
-        dateOffset: Int
+        dateOffset: DateOffset
     ) -> some View {
         ZStack {
-            if checkInCount > 0 {
+            if let checkInCountRaw = checkInResults[.success], let checkInCount = Int(checkInCountRaw), checkInCount > 0 {
                 Image("checkmark")
                     .resizable()
                     .scaledToFit()
@@ -301,7 +353,7 @@ extension HabitListCheckInGridView {
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
                     .padding(.bottom, 5)
-            } else if isDayOff {
+            } else if checkInResults[.dayOff] != nil {
                 // TODO: convert this to an asset?
                 Text("💤")
                     .brightness(colorScheme == .dark ? 0.4 : 0.0)

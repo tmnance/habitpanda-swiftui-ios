@@ -86,8 +86,14 @@ extension Habit {
         return checkIns.first?.checkInDate!.stripTime()
     }
 
+    func hasInactiveDaysOfWeek() -> Bool {
+        return (inactiveDaysOfWeek ?? []).count > 0
+    }
+
     func addCheckIn(
         forDate date: Date,
+        resultType: CheckInResultType? = nil,
+        resultValue: String? = nil,
         context: NSManagedObjectContext,
         completionHandler: ((Error?) -> Void)? = nil
     ) {
@@ -97,7 +103,8 @@ extension Habit {
         checkInToSave.uuid = UUID()
         checkInToSave.habit = self
         checkInToSave.checkInDate = date.stripTime()
-        checkInToSave.isSuccess = true
+        checkInToSave.resultType = resultType?.rawValue
+        checkInToSave.resultValue = resultValue
 
         do {
             try PersistenceController.save(context: context)
