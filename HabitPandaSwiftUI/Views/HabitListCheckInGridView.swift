@@ -131,12 +131,13 @@ extension HabitListCheckInGridView {
             let habitUUID = checkIn.habit!.uuid!
             let checkInDate = checkIn.checkInDate!.stripTime()
             let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
+            let resultType = CheckInResultType.fromString(checkIn.resultType)
             // works because we are looping in descending checkInDate order
-            if habitLastCheckInOffsetMap[habitUUID] == nil {
+            if resultType != .dayOff && habitLastCheckInOffsetMap[habitUUID] == nil {
                 habitLastCheckInOffsetMap[habitUUID] = checkInDateOffset
             }
             addCheckInResultToHabitDayReport(
-                resultType: CheckInResultType.fromString(checkIn.resultType),
+                resultType: resultType,
                 resultValue: checkIn.resultValue,
                 habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][checkInDateOffset, default: [:]]
             )
@@ -189,6 +190,10 @@ extension HabitListCheckInGridView {
     func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: DateOffset) -> Bool {
         guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
         return dateOffset < firstCheckInOffset
+    }
+
+    func anyCheckInsToday(habit: Habit) -> Bool {
+        return (habitDailyReportMap[habit.uuid!]?[dateCount - 1] ?? [:]).count > 0
     }
 
     func getCellBgColor(forIndex index: Int) -> UIColor {
@@ -301,31 +306,33 @@ extension HabitListCheckInGridView {
                         )
                     }
                 }
-                Button(action: {
-                    withAnimation {
-                        habit.addCheckIn(
-                            forDate: checkInDateOptions[0],
-                            resultType: .dayOff,
-                            context: viewContext
-                        ) { error in
-                            if let error {
-                                toast = FancyToast.errorMessage(error.localizedDescription)
-                                return
+                if !anyCheckInsToday(habit: habit) {
+                    Button(action: {
+                        withAnimation {
+                            habit.addCheckIn(
+                                forDate: checkInDateOptions[0],
+                                resultType: .dayOff,
+                                context: viewContext
+                            ) { error in
+                                if let error {
+                                    toast = FancyToast.errorMessage(error.localizedDescription)
+                                    return
+                                }
+                                buildHabitCheckInMaps()
+                                toast = FancyToast(
+                                    type: .success,
+                                    message: "Snoozed habit for today",
+                                    duration: 2,
+                                    tapToDismiss: true
+                                )
                             }
-                            buildHabitCheckInMaps()
-                            toast = FancyToast(
-                                type: .success,
-                                message: "Snoozed habit for today",
-                                duration: 2,
-                                tapToDismiss: true
-                            )
                         }
+                    }) {
+                        Label(
+                            "Snooze for today",
+                            systemImage: "zzz"
+                        )
                     }
-                }) {
-                    Label(
-                        "Snooze for today",
-                        systemImage: "zzz"
-                    )
                 }
             }
             Text("🎯\n\(habit.frequencyPerWeek)x/wk")

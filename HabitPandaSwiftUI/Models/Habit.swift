@@ -90,6 +90,20 @@ extension Habit {
         return (inactiveDaysOfWeek ?? []).count > 0
     }
 
+    func getCheckInsForDate(
+        _ date: Date,
+        ofResultType resultTypes: [CheckInResultType]? = nil,
+        context: NSManagedObjectContext
+    ) -> [CheckIn] {
+        return CheckIn.getAll(
+            forHabitUUIDs: [uuid!],
+            fromStartDate: date,
+            toEndDate: date,
+            ofResultType: resultTypes,
+            context: context
+        )
+    }
+
     func addCheckIn(
         forDate date: Date,
         resultType: CheckInResultType? = nil,
@@ -108,6 +122,20 @@ extension Habit {
 
         do {
             try PersistenceController.save(context: context)
+            // remove any "day off" check ins for this day if we are doing anything
+            if resultType != .dayOff {
+                getCheckInsForDate(
+                    date,
+                    ofResultType: [.dayOff],
+                    context: context
+                ).forEach { checkInToDelete in
+                    do {
+                        try PersistenceController.delete(checkInToDelete, context: context)
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+            }
             ReminderNotificationService.refreshNotificationsForAllReminders()
             completionHandler?(nil)
         } catch {

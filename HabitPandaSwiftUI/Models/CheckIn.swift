@@ -16,6 +16,16 @@ public enum CheckInResultType: String {
          letterGrade,      // something you want to score A-F
          sentimentEmoji    // something you want to score with a sentiment emoji
     static let defaultValue: CheckInResultType = .success
+    func descriptionWithResultValue(_ resultValue: String? = nil) -> String {
+        let resultValue = resultValue == "" ? nil : resultValue
+        switch self {
+        case .success: return "Success ✅"
+        case .successOrFailure: return (resultValue == "success" ? "Success ✅" : "Missed ❌")
+        case .dayOff: return "💤 Day off (override)"
+        case .letterGrade: return "Grade: \(resultValue ?? "unknown")"
+        case .sentimentEmoji: return "Sentiment: \(resultValue ?? "unknown")"
+        }
+    }
 
     static func fromString(_ resultTypeString: String?) -> CheckInResultType {
         guard let resultTypeString else {
@@ -31,6 +41,7 @@ extension CheckIn {
         forHabitUUIDs habitUUIDs: [UUID]? = nil,
         fromStartDate startDate: Date? = nil,
         toEndDate endDate: Date? = nil,
+        ofResultType resultTypes: [CheckInResultType]? = nil,
         withLimit limit: Int? = nil,
         context: NSManagedObjectContext
     ) -> [CheckIn] {
@@ -43,6 +54,13 @@ extension CheckIn {
             let uuidArgs = habitUUIDs.map { $0.uuidString as CVarArg }
             if uuidArgs.count > 0 {
                 predicates.append(NSPredicate(format: "habit.uuid IN %@", argumentArray: [uuidArgs]))
+            }
+        }
+
+        if let resultTypes {
+            let uuidArgs = resultTypes.map { $0.rawValue as CVarArg }
+            if uuidArgs.count > 0 {
+                predicates.append(NSPredicate(format: "resultType IN %@", argumentArray: [uuidArgs]))
             }
         }
 

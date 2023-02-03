@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct HabitDetailsView: View {
     enum TabOption: Hashable {
@@ -22,6 +23,18 @@ struct HabitDetailsView: View {
     private var checkInDateOptions: [Date] {
         let today = Date().stripTime()
         return Array(0...4).map { Calendar.current.date(byAdding: .day, value: (-1 * $0), to: today)! }
+    }
+    @FetchRequest var mostRecentCheckIns: FetchedResults<CheckIn>
+
+    init(habit: Habit) {
+        self.habit = habit
+        let request: NSFetchRequest<CheckIn> = CheckIn.fetchRequest()
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \CheckIn.checkInDate, ascending: false),
+        ]
+        request.predicate = NSPredicate(format: "habit == %@", habit)
+        request.fetchLimit = 1
+        _mostRecentCheckIns = FetchRequest(fetchRequest: request)
     }
 
     var body: some View {
@@ -55,6 +68,33 @@ struct HabitDetailsView: View {
                                     systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
                                 )
                             }
+                        }
+                    }
+                    if !anyCheckInsToday() {
+                        Button(action: {
+                            withAnimation {
+                                habit.addCheckIn(
+                                    forDate: Date().stripTime(),
+                                    resultType: .dayOff,
+                                    context: viewContext
+                                ) { error in
+                                    if let error {
+                                        toast = FancyToast.errorMessage(error.localizedDescription)
+                                        return
+                                    }
+                                    toast = FancyToast(
+                                        type: .success,
+                                        message: "Snoozed habit for today",
+                                        duration: 2,
+                                        tapToDismiss: true
+                                    )
+                                }
+                            }
+                        }) {
+                            Label(
+                                "Snooze for today",
+                                systemImage: "zzz"
+                            )
                         }
                     }
                 }
@@ -115,6 +155,10 @@ struct HabitDetailsView: View {
         }
         .navigationTitle("Habit Details")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    func anyCheckInsToday() -> Bool {
+        return mostRecentCheckIns.first?.checkInDate == currentDate
     }
 }
 

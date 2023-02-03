@@ -34,7 +34,7 @@ struct HabitDetailsCheckInsTabView: View {
                 List {
                     ForEach(checkIns) { checkIn in
                         VStack(alignment: .leading) {
-                            Text(DateHelper.getDateString(checkIn.checkInDate!))
+                            Text(getTitleText(checkIn: checkIn))
                                 .font(.system(size: 17))
                             Text(getSubTitleText(checkIn: checkIn))
                                 .foregroundColor(Color(Constants.Colors.subText))
@@ -48,6 +48,11 @@ struct HabitDetailsCheckInsTabView: View {
                 .padding(8)
             }
         }
+    }
+
+    func getTitleText(checkIn: CheckIn) -> String {
+        return DateHelper.getDateString(checkIn.checkInDate!) + " — " +
+            CheckInResultType.fromString(checkIn.resultType).descriptionWithResultValue(checkIn.resultValue)
     }
 
     func getSubTitleText(checkIn: CheckIn) -> String {
