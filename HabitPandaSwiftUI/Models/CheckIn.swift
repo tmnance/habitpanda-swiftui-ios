@@ -9,17 +9,17 @@ import Foundation
 import CoreData
 
 public enum CheckInResultType: String {
-    case success,          // only show positive indicators
-         successOrFailure, // care about positive and negative indicators, e.g. something maintaining a streak on or
-                           // something you're trying not to do
-         dayOff,           // treat as a day off, e.g. on vacation or sick
-         letterGrade,      // something you want to score A-F
-         sentimentEmoji    // something you want to score with a sentiment emoji
+    case success,        // only show positive indicators
+         failure,        // used when caring about logging both positive and negative indicators,
+                         //   e.g. something maintaining a streak on or something you're trying not to do
+         letterGrade,    // something you want to score A-F
+         sentimentEmoji, // something you want to score with a sentiment emoji
+         dayOff          // treat as a day off, e.g. on vacation or sick
     static let defaultValue: CheckInResultType = .success
     func descriptionWithResultValue(_ resultValue: String? = nil) -> String {
         switch self {
         case .success: return "Success ✅"
-        case .successOrFailure: return (resultValue == "success" ? "Success ✅" : "Missed ❌")
+        case .failure: return "Missed ❌"
         case .dayOff: return "Day off 💤 (override)"
         case .letterGrade: return "Grade: \(resultValue ?? "unknown")"
         case .sentimentEmoji: return "Sentiment: \(resultValue ?? "unknown")"

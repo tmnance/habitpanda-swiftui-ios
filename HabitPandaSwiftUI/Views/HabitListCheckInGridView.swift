@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HabitListCheckInGridView: View {
     typealias DateOffset = Int
-    typealias HabitDayReport = [CheckInResultType: String]
+    typealias HabitDayReport = [CheckInResultType: [String?]]
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
 
@@ -57,10 +57,9 @@ struct HabitListCheckInGridView: View {
                                 pinnedViews: [.sectionHeaders]
                             ) {
                                 Section(header: checkInHeaderRow()) {
-                                    ForEach(Array(habits.enumerated()), id: \.element) { i, habit in
-                                        checkInContentRow(
+                                    ForEach(habits, id: \.self) { habit in
+                                        habitRow(
                                             habit: habit,
-                                            rowIndex: i,
                                             scrollWindowWidth: geometry.size.width
                                         )
                                     }
@@ -105,14 +104,7 @@ extension HabitListCheckInGridView {
         resultValue: String? = nil,
         habitDayReport: inout HabitDayReport // pass by reference
     ) {
-        switch resultType {
-        case .success:
-            habitDayReport[.success] = "\((Int(habitDayReport[.success, default: "0"]) ?? 0) + 1)"
-        case .dayOff:
-            habitDayReport[.dayOff] = ""
-        default:
-            break // do nothing
-        }
+        habitDayReport[resultType, default: []].append(resultValue)
     }
 
     func buildHabitCheckInMaps() {
@@ -151,8 +143,7 @@ extension HabitListCheckInGridView {
         }
 
         habits.forEach { habit in
-            let habitUUID = habit.uuid!
-            if let firstCheckInOffset = habitFirstCheckInOffsetMap[habitUUID] {
+            if let habitUUID = habit.uuid, let firstCheckInOffset = getHabitFirstCheckIn(habit: habit) {
                 // add inactive days (after first check in) to daily report
                 if habit.hasInactiveDaysOfWeek() {
                     let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
@@ -182,17 +173,23 @@ extension HabitListCheckInGridView {
         }
     }
 
-    func getCheckInResults(habit: Habit, dateOffset: DateOffset) -> HabitDayReport {
-        return habitDailyReportMap[habit.uuid!]?[dateOffset] ?? [:]
+    func getHabitFirstCheckIn(habit: Habit) -> Int? {
+        guard let habitUUID = habit.uuid else { return nil }
+        return habitFirstCheckInOffsetMap[habitUUID]
+    }
+
+    func getHabitDayReport(habit: Habit, dateOffset: DateOffset) -> HabitDayReport {
+        guard let habitUUID = habit.uuid else { return [:] }
+        return habitDailyReportMap[habitUUID]?[dateOffset] ?? [:]
     }
 
     func getIsBeforeHabitFirstCheckIn(habit: Habit, dateOffset: DateOffset) -> Bool {
-        guard let firstCheckInOffset = (habitFirstCheckInOffsetMap[habit.uuid!] ?? nil) else { return true }
+        guard let firstCheckInOffset = getHabitFirstCheckIn(habit: habit) else { return true }
         return dateOffset < firstCheckInOffset
     }
 
     func anyCheckInsToday(habit: Habit) -> Bool {
-        return (habitDailyReportMap[habit.uuid!]?[dateCount - 1] ?? [:]).count > 0
+        return getHabitDayReport(habit: habit, dateOffset: dateCount - 1).count > 0
     }
 
     func getCellBgColor(forIndex index: Int) -> UIColor {
@@ -242,11 +239,11 @@ extension HabitListCheckInGridView {
 
 // MARK: - Grid Content
 extension HabitListCheckInGridView {
-    @ViewBuilder func checkInContentRow(habit: Habit, rowIndex: Int, scrollWindowWidth: CGFloat) -> some View {
+    @ViewBuilder func habitRow(habit: Habit, scrollWindowWidth: CGFloat) -> some View {
         HStack(spacing: 0) {
             ForEach(0 ..< dateCount, id: \.self) { dateOffset in
-                checkInContentCell(
-                    checkInResults: getCheckInResults(habit: habit, dateOffset: dateOffset),
+                habitDayContentCell(
+                    habitDayReport: getHabitDayReport(habit: habit, dateOffset: dateOffset),
                     isBeforeHabitFirstCheckIn: getIsBeforeHabitFirstCheckIn(habit: habit, dateOffset: dateOffset),
                     dateOffset: dateOffset
                 )
@@ -256,7 +253,7 @@ extension HabitListCheckInGridView {
         .overlay(
             GeometryReader { geometryInner in
                 VStack {
-                    checkInContentRowTitleCell(habit: habit)
+                    habitRowTitle(habit: habit)
                         .frame(width: scrollWindowWidth)
                         .offset(x: getTitleRowOffset(
                             scrollGeo: geometryInner.frame(in: .named("ScrollViewSpace")),
@@ -268,7 +265,7 @@ extension HabitListCheckInGridView {
         )
     }
 
-    @ViewBuilder func checkInContentRowTitleCell(habit: Habit) -> some View {
+    @ViewBuilder func habitRowTitle(habit: Habit) -> some View {
         HStack(spacing: 0) {
             NavigationLink(value: habit) {
                 Text(habit.name ?? "")
@@ -342,13 +339,13 @@ extension HabitListCheckInGridView {
         .background(Color(Constants.Colors.listRowOverlayBg))
     }
 
-    @ViewBuilder func checkInContentCell(
-        checkInResults: HabitDayReport,
+    @ViewBuilder func habitDayContentCell(
+        habitDayReport: HabitDayReport,
         isBeforeHabitFirstCheckIn: Bool,
         dateOffset: DateOffset
     ) -> some View {
         ZStack {
-            if let checkInCountRaw = checkInResults[.success], let checkInCount = Int(checkInCountRaw), checkInCount > 0 {
+            if let checkInSuccesses = habitDayReport[.success], let checkInCount = checkInSuccesses.count, checkInCount > 0 {
                 Image("checkmark")
                     .resizable()
                     .scaledToFit()
@@ -359,7 +356,7 @@ extension HabitListCheckInGridView {
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
                     .padding(.bottom, 5)
-            } else if checkInResults[.dayOff] != nil {
+            } else if habitDayReport[.dayOff] != nil {
                 // TODO: convert this to an asset?
                 Text("💤")
                     .brightness(colorScheme == .dark ? 0.4 : 0.0)
