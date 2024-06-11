@@ -37,7 +37,7 @@ struct AboutView: View {
                 #endif
             }
             .listStyle(.insetGrouped)
-            .foregroundColor(Color(Constants.Colors.label))
+            .foregroundColor(Color(Constants.Colors.labelText))
 //            .scrollContentBackground(.hidden)
             Text(getVersionText())
                 .font(.system(size: 17.0))

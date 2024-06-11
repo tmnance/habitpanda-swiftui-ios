@@ -110,7 +110,7 @@ struct HabitDetailsSummaryTabChartView: View {
                 AxisValueLabel(centered: true) {
                     if let dateValue = value.as(Date.self) {
                         Text(getXAxisDisplayDate(dateValue))
-                            .foregroundColor(Color(Constants.Colors.label))
+                            .foregroundColor(Color(Constants.Colors.labelText))
                             .font(.system(size: 10))
                             .multilineTextAlignment(.center)
                     }
@@ -127,7 +127,7 @@ struct HabitDetailsSummaryTabChartView: View {
                 AxisValueLabel() {
                     if let intValue = value.as(Int.self) {
                         Text("\(intValue)")
-                            .foregroundColor(Color(Constants.Colors.label))
+                            .foregroundColor(Color(Constants.Colors.labelText))
                             .font(.system(size: 10))
                     }
                 }

@@ -14,7 +14,7 @@ public struct Constants {
 
     struct Colors {
         static let clear = UIColor.clear
-        static let label = UIColor(named: "label")!
+        static let labelText = UIColor(named: "labelText")!
 
         static let mainViewBg = UIColor(named: "mainViewBg")!
 

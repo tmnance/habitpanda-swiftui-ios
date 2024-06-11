@@ -45,7 +45,7 @@ struct DaysOfWeekPicker: View {
                 }
             }
             .pickerStyle(.segmented)
-            .onChange(of: selectedWeekSubset) { _ in
+            .onChange(of: selectedWeekSubset) {
                 // only change the day toggle values if they don't currently match the new picker option
                 if selectedWeekSubset != getCurrentWeekSubsetFromActiveDays() {
                     updateSelectedDays(forWeekSubset: selectedWeekSubset)
@@ -61,7 +61,7 @@ struct DaysOfWeekPicker: View {
                     }
                     .toggleStyle(.button)
                 }
-                .onChange(of: dayOptionToggleStates) { _ in
+                .onChange(of: dayOptionToggleStates) {
                     selectedWeekSubset = getCurrentWeekSubsetFromActiveDays()
                     selectedDays = Set(dayOptionToggleStates.filter { $0.isActive }.map { $0.day })
                 }

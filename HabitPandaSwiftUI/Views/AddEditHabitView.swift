@@ -67,7 +67,7 @@ struct AddEditHabitView: View {
                                 }
                             }
                             .padding(.horizontal)
-                            .onChange(of: frequencySliderValue) { _ in
+                            .onChange(of: frequencySliderValue) {
                                 frequencyOverflow = ""
                                 frequencyPerWeek = Int(frequencySliderValue)
                             }
@@ -76,8 +76,7 @@ struct AddEditHabitView: View {
                                     .focused($focusedField, equals: .frequencyOverflow)
                                     .frame(width: 45)
                                     .keyboardType(.numberPad)
-                                    .onChange(of: frequencyOverflow) { [frequencyOverflow] newValue in
-                                        let oldValue = frequencyOverflow
+                                    .onChange(of: frequencyOverflow) { oldValue, newValue in
                                         var cleanNewValue = newValue.filter { Set("0123456789").contains($0) }
                                         if cleanNewValue.count > 2 { // trim/ignore excess characters
                                             cleanNewValue = oldValue.count == 2 ? oldValue : String(cleanNewValue.prefix(2))
@@ -128,7 +127,7 @@ struct AddEditHabitView: View {
                                     DaysOfWeekPicker.WeekSubsetOption(.custom),
                                 ]
                             )
-                                .onChange(of: selectedInactiveDaysOfWeek) { _ in
+                                .onChange(of: selectedInactiveDaysOfWeek) {
                                     hideKeyboard()
                                 }
                         }
@@ -151,7 +150,7 @@ struct AddEditHabitView: View {
                                 Text(getCheckInCooldownDaysDisplayText())
                                 Stepper("Cooldown day(s)", value: $checkInCooldownDays, in: 1...6, step: 1)
                                     .labelsHidden()
-                                    .onChange(of: checkInCooldownDays) { _ in
+                                    .onChange(of: checkInCooldownDays) {
                                         hideKeyboard()
                                     }
                             }
