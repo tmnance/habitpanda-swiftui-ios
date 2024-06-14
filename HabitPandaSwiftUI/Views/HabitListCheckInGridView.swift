@@ -73,7 +73,12 @@ struct HabitListCheckInGridView: View {
                             // grid should initially appear scrolled all the way to the right to show the current date
                             if isFirstLoad {
                                 isFirstLoad = false
+                                // call now to prevent flicker
                                 proxy.scrollTo("checkInGrid", anchor: .topTrailing)
+                                // call again async to prevent issue with GeometryReader not updating properly
+                                DispatchQueue.main.async {
+                                    proxy.scrollTo("checkInGrid", anchor: .topTrailing)
+                                }
                             }
                         }
                     }
