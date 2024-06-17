@@ -8,34 +8,57 @@
 import Foundation
 import CoreData
 
-public enum CheckInResultType: String {
+public enum CheckInType: String, Hashable {
     case success,        // only show positive indicators
          failure,        // used when caring about logging both positive and negative indicators,
                          //   e.g. something maintaining a streak on or something you're trying not to do
          letterGrade,    // something you want to score A-F
          sentimentEmoji, // something you want to score with a sentiment emoji
          dayOff          // treat as a day off, e.g. on vacation or sick
-    static let defaultValue: CheckInResultType = .success
-    func descriptionWithResultValue(_ resultValue: String? = nil) -> String {
+    static let defaultValue: CheckInType = .success
+    func descriptionWithCheckInValue(_ checkInValue: String? = nil) -> String {
         switch self {
         case .success: return "Success ✅"
         case .failure: return "Missed ❌"
         case .dayOff: return "Day off 💤 (override)"
-        case .letterGrade: return "Grade: \(resultValue ?? "unknown")"
-        case .sentimentEmoji: return "Sentiment: \(resultValue ?? "unknown")"
+        case .letterGrade: return "Grade: \(checkInValue ?? "unknown")"
+        case .sentimentEmoji: return "Sentiment: \(checkInValue ?? "unknown")"
         }
+    }
+    var label: String {
+        switch self {
+        case .success: return "Success (✔️)"
+        case .failure: return "Failure (❌)"
+        case .dayOff: return "Day off"
+        case .letterGrade: return "Letter Grade (A to F)"
+        case .sentimentEmoji: return "Sentiment (😄 to 😢)"
+        }
+    }
+    var options: [String] {
+        switch self {
+        case .success: return ["✅"]
+        case .failure: return ["❌"]
+        case .dayOff: return []
+        case .letterGrade: return ["A", "B", "C", "D", "F"]
+        case .sentimentEmoji: return ["😄", "🙂", "😐", "😟", "😢"]
+        }
+    }
+    static func getFromRawValue(_ rawValue: String? = nil) -> CheckInType {
+        return CheckInType(
+            rawValue: rawValue ?? CheckInType.defaultValue.rawValue
+        ) ?? CheckInType.defaultValue
     }
 }
 
 extension CheckIn {
-    var resultType: CheckInResultType {
-        guard let resultTypeRaw else {
-            return CheckInResultType.defaultValue
+    var type: CheckInType {
+        guard let typeRaw else {
+            return CheckInType.defaultValue
         }
-        return CheckInResultType(rawValue: resultTypeRaw) ?? CheckInResultType.defaultValue
+        return CheckInType(rawValue: typeRaw) ?? CheckInType.defaultValue
     }
-    var resultValue: String? {
-        return resultValueRaw == "" ? nil : resultValueRaw
+    var value: String? {
+        return valueRaw == "" ? nil : valueRaw
     }
 
     public static func getAll(
@@ -43,7 +66,7 @@ extension CheckIn {
         forHabitUUIDs habitUUIDs: [UUID]? = nil,
         fromStartDate startDate: Date? = nil,
         toEndDate endDate: Date? = nil,
-        ofResultType resultTypes: [CheckInResultType]? = nil,
+        ofType types: [CheckInType]? = nil,
         withLimit limit: Int? = nil,
         context: NSManagedObjectContext
     ) -> [CheckIn] {
@@ -59,10 +82,10 @@ extension CheckIn {
             }
         }
 
-        if let resultTypes {
-            let uuidArgs = resultTypes.map { $0.rawValue as CVarArg }
+        if let types {
+            let uuidArgs = types.map { $0.rawValue as CVarArg }
             if uuidArgs.count > 0 {
-                predicates.append(NSPredicate(format: "resultTypeRaw IN %@", argumentArray: [uuidArgs]))
+                predicates.append(NSPredicate(format: "typeRaw IN %@", argumentArray: [uuidArgs]))
             }
         }
 

@@ -19,6 +19,7 @@ struct AddEditHabitView: View {
     @State private var isSliderOverflowActive = false
     @State private var frequencySliderValue = Float(Constants.Habit.defaultFrequencyPerWeek)
     @State private var frequencyOverflow = ""
+    @State private var selectedCheckInType: CheckInType = .defaultValue
     @State private var isDaysOffActive = false
     @State private var selectedInactiveDaysOfWeek: Set<DayOfWeek.Day> = []
     @State private var isCheckInCooldownActive = false
@@ -104,6 +105,26 @@ struct AddEditHabitView: View {
                     }
                     .onTapGesture {
                         hideKeyboard()
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Group {
+                            Text("Tracking Type").font(.title2)
+                            Text("(how do you want to track this habit?)").font(.footnote)
+                            Picker(selection: $selectedCheckInType, label: Text("Tracking Type")) {
+                                ForEach([
+                                    CheckInType.success,
+                                    CheckInType.failure,
+                                    CheckInType.letterGrade,
+                                    CheckInType.sentimentEmoji,
+                                ], id: \.self) { type in
+                                    Text(type.label).tag(type)
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -206,7 +227,7 @@ struct AddEditHabitView: View {
                 guard let habitToEdit else { return }
                 name = habitToEdit.name ?? ""
                 frequencyPerWeek = Int(habitToEdit.frequencyPerWeek)
-
+                selectedCheckInType = habitToEdit.checkInType
                 if frequencyPerWeek >= frequencySliderOverflowThreshold {
                     frequencySliderValue = Float(frequencySliderOverflowThreshold)
                     isSliderOverflowActive = true
@@ -262,6 +283,7 @@ struct AddEditHabitView: View {
 
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
+        habitToSave.checkInTypeRaw = selectedCheckInType.rawValue
         habitToSave.inactiveDaysOfWeek = (isDaysOffActive ?
             selectedInactiveDaysOfWeek
                 .map { $0.rawValue }

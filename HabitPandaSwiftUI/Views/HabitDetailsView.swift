@@ -45,37 +45,81 @@ struct HabitDetailsView: View {
                     .lineLimit(3)
                 Spacer()
                 Menu {
-                    Section(header: Text("Select a Check-in Date")) {
-                        ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                            Button(action: {
-                                withAnimation {
-                                    habit.addCheckIn(forDate: date, context: viewContext) { error in
-                                        if let error {
-                                            toast = FancyToast.errorMessage(error.localizedDescription)
-                                            return
+                    // TODO: clean up / refactor the below to be more DRY
+                    if (habit.checkInType.options.count <= 1) { // no need for submenus
+                        Section(header: Text("Select a Check-in Date")) {
+                            ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
+                                Button(action: {
+                                    withAnimation {
+                                        // TODO: add ability to select check in value for multi-select types
+                                        habit.addCheckIn(forDate: date, context: viewContext) { error in
+                                            if let error {
+                                                toast = FancyToast.errorMessage(error.localizedDescription)
+                                                return
+                                            }
+                                            toast = FancyToast(
+                                                type: .success,
+                                                message: "Check-in added",
+                                                duration: 2,
+                                                tapToDismiss: true
+                                            )
                                         }
-                                        toast = FancyToast(
-                                            type: .success,
-                                            message: "Check-in added",
-                                            duration: 2,
-                                            tapToDismiss: true
-                                        )
+                                    }
+                                }) {
+                                    Label(
+                                        DateHelper.getDateString(date),
+                                        systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    else { // has submenus
+                        Section(header: Text("Select a Check-in Date")) {
+                            ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
+                                Menu {
+                                    Section(header: Text("Select a Check-in Value")) {
+                                        ForEach(habit.checkInType.options, id: \.self) { option in
+                                            Button(action: {
+                                                withAnimation {
+                                                    // TODO: add ability to select check in value for multi-select types
+                                                    habit.addCheckIn(
+                                                        forDate: date,
+                                                        value: option,
+                                                        context: viewContext
+                                                    ) { error in
+                                                        if let error {
+                                                            toast = FancyToast.errorMessage(error.localizedDescription)
+                                                            return
+                                                        }
+                                                        toast = FancyToast(
+                                                            type: .success,
+                                                            message: "Check-in added",
+                                                            duration: 2,
+                                                            tapToDismiss: true
+                                                        )
+                                                    }
+                                                }
+                                            }) {
+                                                Text(option)
+                                            }
+                                        }
                                     }
                                 }
-                            }) {
-                                Label(
-                                    DateHelper.getDateString(date),
-                                    systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                                )
+                                label : {
+                                    Label(
+                                        DateHelper.getDateString(date),
+                                        systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
+                                    )
+                                }
                             }
                         }
                     }
                     if !anyCheckInsToday() && !isTodayOff() {
                         Button(action: {
                             withAnimation {
-                                habit.addCheckIn(
+                                habit.addDayOffCheckIn(
                                     forDate: Date().stripTime(),
-                                    resultType: .dayOff,
                                     context: viewContext
                                 ) { error in
                                     if let error {
@@ -164,7 +208,7 @@ struct HabitDetailsView: View {
     func isTodayOff() -> Bool {
         if let mostRecentCheckIn = mostRecentCheckIns.first {
             if mostRecentCheckIn.checkInDate == currentDate {
-                return mostRecentCheckIn.resultType == .dayOff
+                return mostRecentCheckIn.type == .dayOff
             }
             if habit.checkInCooldownDays > 0 &&
                 Calendar.current.dateComponents(

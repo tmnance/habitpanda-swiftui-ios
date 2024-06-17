@@ -438,16 +438,16 @@ extension AdminView {
         habit: Habit,
         createdAt: Date,
         checkInDate: Date? = nil,
-        resultType: CheckInResultType? = nil,
-        resultValue: String? = nil
+        typeRaw: String? = nil,
+        valueRaw: String? = nil
     ) -> CheckIn {
         let checkInToSave = CheckIn(context: viewContext)
         checkInToSave.createdAt = createdAt
         checkInToSave.uuid = uuid ?? UUID()
         checkInToSave.habit = habit
         checkInToSave.checkInDate = checkInDate ?? createdAt.stripTime()
-        checkInToSave.resultTypeRaw = resultType?.rawValue
-        checkInToSave.resultValueRaw = resultValue
+        checkInToSave.typeRaw = typeRaw
+        checkInToSave.valueRaw = valueRaw
 
         return checkInToSave
     }
@@ -516,15 +516,15 @@ extension AdminView {
         let uuid: String
         let createdAt: Int
         let checkInDate: Int
-        let resultTypeRaw: String?
-        let resultValueRaw: String?
+        let typeRaw: String?
+        let valueRaw: String?
 
         init(checkIn: CheckIn) {
             self.uuid = checkIn.uuid!.uuidString
             self.createdAt = Int(checkIn.createdAt!.timeIntervalSince1970)
             self.checkInDate = Int(checkIn.checkInDate!.timeIntervalSince1970)
-            self.resultTypeRaw = checkIn.resultTypeRaw
-            self.resultValueRaw = checkIn.resultValueRaw
+            self.typeRaw = checkIn.typeRaw
+            self.valueRaw = checkIn.valueRaw
         }
     }
 
@@ -594,7 +594,9 @@ extension AdminView {
                     uuid: UUID(uuidString: importedCheckIn.uuid),
                     habit: newHabit,
                     createdAt: Date(timeIntervalSince1970: Double(importedCheckIn.createdAt)),
-                    checkInDate: Date(timeIntervalSince1970: Double(importedCheckIn.checkInDate))
+                    checkInDate: Date(timeIntervalSince1970: Double(importedCheckIn.checkInDate)),
+                    typeRaw: importedCheckIn.typeRaw,
+                    valueRaw: importedCheckIn.valueRaw
                 )
             }
             importedHabit.reminders.forEach { importedReminder in

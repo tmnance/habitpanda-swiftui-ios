@@ -52,7 +52,7 @@ struct HabitDetailsCheckInsTabView: View {
 
     func getTitleText(checkIn: CheckIn) -> String {
         return DateHelper.getDateString(checkIn.checkInDate!) + " — " +
-            checkIn.resultType.descriptionWithResultValue(checkIn.resultValue)
+            checkIn.type.descriptionWithCheckInValue(checkIn.value)
     }
 
     func getSubTitleText(checkIn: CheckIn) -> String {

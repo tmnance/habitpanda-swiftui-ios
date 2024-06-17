@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HabitListCheckInGridView: View {
     typealias DateOffset = Int
-    typealias HabitDayReport = [CheckInResultType: [String?]]
+    typealias HabitDayReport = [CheckInType: [String?]]
     @Environment(\.managedObjectContext) private var viewContext
     @Environment(\.colorScheme) private var colorScheme
 
@@ -104,12 +104,12 @@ extension HabitListCheckInGridView {
             .background(Color(Constants.Colors.listBorder))
     }
 
-    func addCheckInResultToHabitDayReport(
-        resultType: CheckInResultType,
-        resultValue: String? = nil,
+    func addCheckInToHabitDayReport(
+        type: CheckInType,
+        value: String? = nil,
         habitDayReport: inout HabitDayReport // pass by reference
     ) {
-        habitDayReport[resultType, default: []].append(resultValue)
+        habitDayReport[type, default: []].append(value)
     }
 
     func buildHabitCheckInMaps() {
@@ -129,12 +129,12 @@ extension HabitListCheckInGridView {
             let checkInDate = checkIn.checkInDate!.stripTime()
             let checkInDateOffset = Calendar.current.dateComponents([.day], from: startDate, to: checkInDate).day ?? 0
             // works because we are looping in descending checkInDate order
-            if checkIn.resultType != .dayOff && habitLastCheckInOffsetMap[habitUUID] == nil {
+            if checkIn.type != .dayOff && habitLastCheckInOffsetMap[habitUUID] == nil {
                 habitLastCheckInOffsetMap[habitUUID] = checkInDateOffset
             }
-            addCheckInResultToHabitDayReport(
-                resultType: checkIn.resultType,
-                resultValue: checkIn.resultValue,
+            addCheckInToHabitDayReport(
+                type: checkIn.type,
+                value: checkIn.value,
                 habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][checkInDateOffset, default: [:]]
             )
         }
@@ -156,8 +156,8 @@ extension HabitListCheckInGridView {
                     for dateOffset in ((firstCheckInOffset + 1) ..< dateCount) {
                         let sundayOffset = (dateOffset + dateListSaturdayOffset - 1) % 7
                         if inactiveDaysOfWeek.contains(sundayOffset) {
-                            addCheckInResultToHabitDayReport(
-                                resultType: .dayOff,
+                            addCheckInToHabitDayReport(
+                                type: .dayOff,
                                 habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][dateOffset, default: [:]]
                             )
                         }
@@ -168,8 +168,8 @@ extension HabitListCheckInGridView {
                     let firstCooldownOffset = lastCheckInOffset + 1
                     let lastCooldownOffset = min(lastCheckInOffset + 1 + Int(habit.checkInCooldownDays), dateCount)
                     for dateOffset in (firstCooldownOffset ..< lastCooldownOffset) {
-                        addCheckInResultToHabitDayReport(
-                            resultType: .dayOff,
+                        addCheckInToHabitDayReport(
+                            type: .dayOff,
                             habitDayReport: &habitDailyReportMap[habitUUID, default: [:]][dateOffset, default: [:]]
                         )
                     }
@@ -310,9 +310,8 @@ extension HabitListCheckInGridView {
                 if !anyCheckInsToday(habit: habit) {
                     Button(action: {
                         withAnimation {
-                            habit.addCheckIn(
+                            habit.addDayOffCheckIn(
                                 forDate: checkInDateOptions[0],
-                                resultType: .dayOff,
                                 context: viewContext
                             ) { error in
                                 if let error {

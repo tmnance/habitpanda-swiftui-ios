@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:">
+      location = "self:/Users/tnance/Documents/ios/App Development/habitpanda-swiftui-ios/HabitPandaSwiftUI.xcodeproj">
    </FileRef>
 </Workspace>

@@ -64,6 +64,10 @@ extension Habit {
         }
     }
 
+    var checkInType: CheckInType {
+        return CheckInType.getFromRawValue(checkInTypeRaw)
+    }
+
     func getFirstCheckInDate() -> Date? {
         guard let context = managedObjectContext else { return nil }
         let checkIns = CheckIn.getAll(
@@ -92,22 +96,21 @@ extension Habit {
 
     func getCheckInsForDate(
         _ date: Date,
-        ofResultType resultTypes: [CheckInResultType]? = nil,
+        ofType types: [CheckInType]? = nil,
         context: NSManagedObjectContext
     ) -> [CheckIn] {
         return CheckIn.getAll(
             forHabitUUIDs: [uuid!],
             fromStartDate: date,
             toEndDate: date,
-            ofResultType: resultTypes,
+            ofType: types,
             context: context
         )
     }
 
     func addCheckIn(
         forDate date: Date,
-        resultType: CheckInResultType? = nil,
-        resultValue: String? = nil,
+        value: String? = nil,
         context: NSManagedObjectContext,
         completionHandler: ((Error?) -> Void)? = nil
     ) {
@@ -117,29 +120,58 @@ extension Habit {
         checkInToSave.uuid = UUID()
         checkInToSave.habit = self
         checkInToSave.checkInDate = date.stripTime()
-        checkInToSave.resultTypeRaw = resultType?.rawValue
-        checkInToSave.resultValueRaw = resultValue
+        checkInToSave.typeRaw = checkInType.rawValue
+        checkInToSave.valueRaw = value
 
         do {
             try PersistenceController.save(context: context)
             // remove any "day off" check ins for this day if we are doing anything
-            if resultType != .dayOff {
-                getCheckInsForDate(
-                    date,
-                    ofResultType: [.dayOff],
-                    context: context
-                ).forEach { checkInToDelete in
-                    do {
-                        try PersistenceController.delete(checkInToDelete, context: context)
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                }
+            if checkInType != .dayOff {
+                removeDayOffCheckIns(forDate: date, context: context)
             }
             ReminderNotificationService.refreshNotificationsForAllReminders()
             completionHandler?(nil)
         } catch {
             completionHandler?(error)
+        }
+    }
+
+    func addDayOffCheckIn(
+        forDate date: Date,
+        context: NSManagedObjectContext,
+        completionHandler: ((Error?) -> Void)? = nil
+    ) {
+        let checkInToSave = CheckIn(context: context)
+
+        checkInToSave.createdAt = Date()
+        checkInToSave.uuid = UUID()
+        checkInToSave.habit = self
+        checkInToSave.checkInDate = date.stripTime()
+        checkInToSave.typeRaw = CheckInType.dayOff.rawValue
+
+        do {
+            try PersistenceController.save(context: context)
+            ReminderNotificationService.refreshNotificationsForAllReminders()
+            completionHandler?(nil)
+        } catch {
+            completionHandler?(error)
+        }
+    }
+
+    func removeDayOffCheckIns(
+        forDate date: Date,
+        context: NSManagedObjectContext
+    ) {
+        getCheckInsForDate(
+            date,
+            ofType: [.dayOff],
+            context: context
+        ).forEach { checkInToDelete in
+            do {
+                try PersistenceController.delete(checkInToDelete, context: context)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }
