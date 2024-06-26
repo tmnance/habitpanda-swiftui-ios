@@ -20,6 +20,7 @@ struct PersistenceController {
         habit1.uuid = UUID()
         habit1.name = "Test habit 1"
         habit1.frequencyPerWeek = Int32(5)
+        habit1.checkInTypeRaw = CheckInType.letterGrade.rawValue
         habit1.order = Int32(0)
         habit1.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
             .map { $0.rawValue }

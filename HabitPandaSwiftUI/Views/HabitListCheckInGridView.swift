@@ -283,28 +283,71 @@ extension HabitListCheckInGridView {
             }
             .contextMenu {
                 // TODO: refactor this into a cleaner place?
-                ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                    Button(action: {
-                        withAnimation {
-                            habit.addCheckIn(forDate: date, context: viewContext) { error in
-                                if let error {
-                                    toast = FancyToast.errorMessage(error.localizedDescription)
-                                    return
+                // TODO: clean up / refactor the below to be more DRY
+
+                if (habit.checkInType.options.count <= 1) { // no need for submenus
+                    ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
+                        Button(action: {
+                            withAnimation {
+                                habit.addCheckIn(forDate: date, context: viewContext) { error in
+                                    if let error {
+                                        toast = FancyToast.errorMessage(error.localizedDescription)
+                                        return
+                                    }
+                                    buildHabitCheckInMaps()
+                                    toast = FancyToast(
+                                        type: .success,
+                                        message: "Check-in added",
+                                        duration: 2,
+                                        tapToDismiss: true
+                                    )
                                 }
-                                buildHabitCheckInMaps()
-                                toast = FancyToast(
-                                    type: .success,
-                                    message: "Check-in added",
-                                    duration: 2,
-                                    tapToDismiss: true
-                                )
+                            }
+                        }) {
+                            Label(
+                                "Check in \(DateHelper.getDateString(date))",
+                                systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
+                            )
+                        }
+                    }
+                }
+                else { // has submenus
+                    ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
+                        Menu {
+                            Section(header: Text("Select a Check-in Value")) {
+                                ForEach(habit.checkInType.options, id: \.self) { option in
+                                    Button(action: {
+                                        withAnimation {
+                                            habit.addCheckIn(
+                                                forDate: date,
+                                                value: option,
+                                                context: viewContext
+                                            ) { error in
+                                                if let error {
+                                                    toast = FancyToast.errorMessage(error.localizedDescription)
+                                                    return
+                                                }
+                                                buildHabitCheckInMaps()
+                                                toast = FancyToast(
+                                                    type: .success,
+                                                    message: "Check-in added",
+                                                    duration: 2,
+                                                    tapToDismiss: true
+                                                )
+                                            }
+                                        }
+                                    }) {
+                                        Text(option)
+                                    }
+                                }
                             }
                         }
-                    }) {
-                        Label(
-                            "Check in \(DateHelper.getDateString(date))",
-                            systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                        )
+                        label : {
+                            Label(
+                                "Check in \(DateHelper.getDateString(date))",
+                                systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
+                            )
+                        }
                     }
                 }
                 if !anyCheckInsToday(habit: habit) {
@@ -360,6 +403,25 @@ extension HabitListCheckInGridView {
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
                     .padding(.bottom, 5)
+            } else if let checkInFailures = habitDayReport[.failure], checkInFailures.count > 0 {
+                Text("❌")
+                    .frame(width: 50, height: 44)
+                    .scaledToFill()
+                    .minimumScaleFactor(0.5)
+                    .padding(.top, 3)
+                    .padding(.bottom, 2)
+                Text(checkInFailures.count > 1 ? "\(checkInFailures.count)" : "")
+                    .foregroundColor(Color(Constants.Colors.listCheckmark))
+                    .font(.system(size: 10))
+                    .frame(width: 35, height: 44, alignment: .bottomTrailing)
+                    .padding(.bottom, 2)
+            } else if let checkInSentimentEmoji = (
+                habitDayReport[.sentimentEmoji]?.last ?? habitDayReport[.letterGrade]?.last
+            ) {
+                Text("\(checkInSentimentEmoji ?? "")")
+                    .frame(width: 50, height: 44)
+                    .scaledToFill()
+                    .minimumScaleFactor(0.5)
             } else if habitDayReport[.dayOff] != nil {
                 // TODO: convert this to an asset?
                 Text("💤")
