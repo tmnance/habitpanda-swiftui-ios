@@ -270,6 +270,34 @@ extension HabitListCheckInGridView {
         )
     }
 
+    @ViewBuilder func checkInValues(habit: Habit, date: Date) -> some View {
+        ForEach(habit.checkInType.options, id: \.self) { option in
+            Button(action: {
+                withAnimation {
+                    habit.addCheckIn(
+                        forDate: date,
+                        value: option,
+                        context: viewContext
+                    ) { error in
+                        if let error {
+                            toast = FancyToast.errorMessage(error.localizedDescription)
+                            return
+                        }
+                        buildHabitCheckInMaps()
+                        toast = FancyToast(
+                            type: .success,
+                            message: "Check-in added",
+                            duration: 2,
+                            tapToDismiss: true
+                        )
+                    }
+                }
+            }) {
+                Text(option)
+            }
+        }
+    }
+    
     @ViewBuilder func habitRowTitle(habit: Habit) -> some View {
         HStack(spacing: 0) {
             NavigationLink(value: habit) {
@@ -315,31 +343,7 @@ extension HabitListCheckInGridView {
                     ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
                         Menu {
                             Section(header: Text("Select a Check-in Value")) {
-                                ForEach(habit.checkInType.options, id: \.self) { option in
-                                    Button(action: {
-                                        withAnimation {
-                                            habit.addCheckIn(
-                                                forDate: date,
-                                                value: option,
-                                                context: viewContext
-                                            ) { error in
-                                                if let error {
-                                                    toast = FancyToast.errorMessage(error.localizedDescription)
-                                                    return
-                                                }
-                                                buildHabitCheckInMaps()
-                                                toast = FancyToast(
-                                                    type: .success,
-                                                    message: "Check-in added",
-                                                    duration: 2,
-                                                    tapToDismiss: true
-                                                )
-                                            }
-                                        }
-                                    }) {
-                                        Text(option)
-                                    }
-                                }
+                                checkInValues(habit: habit, date: date)
                             }
                         }
                         label : {
@@ -393,28 +397,16 @@ extension HabitListCheckInGridView {
     ) -> some View {
         ZStack {
             if let checkInSuccesses = habitDayReport[.success], checkInSuccesses.count > 0 {
-                Image("checkmark-icon")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 25, height: 33.5)
-                    .padding(.bottom, 5)
-                Text(checkInSuccesses.count > 1 ? "\(checkInSuccesses.count)" : "")
-                    .foregroundColor(Color(Constants.Colors.listCheckmark))
-                    .font(.system(size: 10))
-                    .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
-                    .padding(.bottom, 5)
-            } else if let checkInFailures = habitDayReport[.failure], checkInFailures.count > 0 {
-                Text("❌")
-                    .frame(width: 50, height: 44)
-                    .scaledToFill()
-                    .minimumScaleFactor(0.5)
-                    .padding(.top, 3)
-                    .padding(.bottom, 2)
-                Text(checkInFailures.count > 1 ? "\(checkInFailures.count)" : "")
-                    .foregroundColor(Color(Constants.Colors.listCheckmark))
-                    .font(.system(size: 10))
-                    .frame(width: 35, height: 44, alignment: .bottomTrailing)
-                    .padding(.bottom, 2)
+                habitDayContentCellSuccess(checkInSuccesses.count)
+            } else if let checkInSuccessOrFailures = habitDayReport[.successOrFailure], checkInSuccessOrFailures.count > 0 {
+                // TODO: handle mixed pass/fail?
+                let checkInSuccesses = checkInSuccessOrFailures.filter { $0 == "✅" }
+                let checkInFailures = checkInSuccessOrFailures.filter { $0 == "❌" }
+                if checkInSuccesses.count > 0 {
+                    habitDayContentCellSuccess(checkInSuccesses.count)
+                } else {
+                    habitDayContentCellFailure(checkInFailures.count)
+                }
             } else if let checkInSentimentEmoji = (
                 habitDayReport[.sentimentEmoji]?.last ?? habitDayReport[.letterGrade]?.last
             ) {
@@ -442,6 +434,33 @@ extension HabitListCheckInGridView {
         }
         .frame(width: 50, height: 88, alignment: .bottom)
         .background(Color(getCellBgColor(forIndex: dateOffset)))
+    }
+
+    @ViewBuilder func habitDayContentCellSuccess(_ count: Int) -> some View {
+        Image("checkmark-icon")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 25, height: 33.5)
+            .padding(.bottom, 5)
+        Text(count > 1 ? "\(count)" : "")
+            .foregroundColor(Color(Constants.Colors.listCheckmark))
+            .font(.system(size: 10))
+            .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
+            .padding(.bottom, 5)
+    }
+
+    @ViewBuilder func habitDayContentCellFailure(_ count: Int) -> some View {
+        Text("❌")
+            .frame(width: 50, height: 44)
+            .scaledToFill()
+            .minimumScaleFactor(0.5)
+            .padding(.top, 3)
+            .padding(.bottom, 2)
+        Text(count > 1 ? "\(count)" : "")
+            .foregroundColor(Color(Constants.Colors.listCheckmark))
+            .font(.system(size: 10))
+            .frame(width: 35, height: 44, alignment: .bottomTrailing)
+            .padding(.bottom, 2)
     }
 
     func getTitleRowOffset(scrollGeo: CGRect, scrollWindowWidth: CGFloat) -> CGFloat {

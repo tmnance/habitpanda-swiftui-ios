@@ -114,7 +114,7 @@ struct AddEditHabitView: View {
                             Picker(selection: $selectedCheckInType, label: Text("Tracking Type")) {
                                 ForEach([
                                     CheckInType.success,
-                                    CheckInType.failure,
+                                    CheckInType.successOrFailure,
                                     CheckInType.letterGrade,
                                     CheckInType.sentimentEmoji,
                                 ], id: \.self) { type in

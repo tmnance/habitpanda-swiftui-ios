@@ -9,17 +9,17 @@ import Foundation
 import CoreData
 
 public enum CheckInType: String, Hashable {
-    case success,        // only show positive indicators
-         failure,        // used when caring about logging both positive and negative indicators,
-                         //   e.g. something maintaining a streak on or something you're trying not to do
-         letterGrade,    // something you want to score A-F
-         sentimentEmoji, // something you want to score with a sentiment emoji
-         dayOff          // treat as a day off, e.g. on vacation or sick
+    case success,          // only show positive indicators
+         successOrFailure, // used when caring about logging both positive and negative indicators,
+                           //   e.g. something maintaining a streak on or something you're trying not to do
+         letterGrade,      // something you want to score A-F
+         sentimentEmoji,   // something you want to score with a sentiment emoji
+         dayOff            // treat as a day off, e.g. on vacation or sick
     static let defaultValue: CheckInType = .success
     func descriptionWithCheckInValue(_ checkInValue: String? = nil) -> String {
         switch self {
         case .success: return "Success ✅"
-        case .failure: return "Missed ❌"
+        case .successOrFailure: return ((checkInValue ?? "✅") == "✅" ? "Success ✅" : "Missed ❌")
         case .dayOff: return "Day off 💤 (override)"
         case .letterGrade: return "Grade: \(checkInValue ?? "unknown")"
         case .sentimentEmoji: return "Sentiment: \(checkInValue ?? "unknown")"
@@ -28,7 +28,7 @@ public enum CheckInType: String, Hashable {
     var label: String {
         switch self {
         case .success: return "Success (✔️)"
-        case .failure: return "Failure (❌)"
+        case .successOrFailure: return "Success/Failure (✅ ❌)"
         case .dayOff: return "Day off"
         case .letterGrade: return "Letter Grade (A to F)"
         case .sentimentEmoji: return "Sentiment (😄 to 😢)"
@@ -37,7 +37,7 @@ public enum CheckInType: String, Hashable {
     var options: [String] {
         switch self {
         case .success: return ["✅"]
-        case .failure: return ["❌"]
+        case .successOrFailure: return ["✅", "❌"]
         case .dayOff: return []
         case .letterGrade: return ["A", "B", "C", "D", "F"]
         case .sentimentEmoji: return ["😄", "🙂", "😐", "😟", "😢"]
