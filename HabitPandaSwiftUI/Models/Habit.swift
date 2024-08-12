@@ -90,6 +90,36 @@ extension Habit {
         return checkIns.first?.checkInDate!.stripTime()
     }
 
+    func getCheckInCount(
+        throughDate: Date? = nil,
+        context: NSManagedObjectContext
+    ) -> Int {
+        return CheckIn.getAll(
+            forHabitUUIDs: [uuid!],
+            toEndDate: throughDate?.stripTime(),
+            context: context
+        ).count
+    }
+
+    func removeCheckIns(
+        throughDate: Date? = nil,
+        context: NSManagedObjectContext,
+        completionHandler: ((Error?) -> Void)? = nil
+    ) {
+        do {
+            try CheckIn.getAll(
+                forHabitUUIDs: [uuid!],
+                toEndDate: throughDate?.stripTime(),
+                context: context
+            ).forEach { checkInToDelete in
+                try PersistenceController.delete(checkInToDelete, context: context)
+            }
+            completionHandler?(nil)
+        } catch {
+            completionHandler?(error)
+        }
+    }
+
     func hasInactiveDaysOfWeek() -> Bool {
         return (inactiveDaysOfWeek ?? []).count > 0
     }

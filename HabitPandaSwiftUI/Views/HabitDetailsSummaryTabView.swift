@@ -24,7 +24,7 @@ struct HabitDetailsSummaryTabView: View {
 
                 HabitDetailsSummaryTabChartView(habit: habit)
                     .padding(EdgeInsets(top: 0, leading: 4, bottom: 16, trailing: 16))
-                
+
                 Button(action: {
                     showDeleteHabitAlert = true
                 }) {
