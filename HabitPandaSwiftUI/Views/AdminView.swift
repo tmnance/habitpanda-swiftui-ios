@@ -466,7 +466,7 @@ extension AdminView {
         reminderToSave.habit = habit
         reminderToSave.hour = Int32(hour)
         reminderToSave.minute = Int32(minute)
-        reminderToSave.frequencyDays = frequencyDays.map { $0 as NSNumber }
+        reminderToSave.frequencyDays = frequencyDays
 
         return reminderToSave
     }
@@ -542,7 +542,7 @@ extension AdminView {
             self.isEnabled = reminder.isEnabled
             self.hour = Int(reminder.hour)
             self.minute = Int(reminder.minute)
-            self.frequencyDays = (reminder.frequencyDays ?? []).map { Int(truncating: $0) }
+            self.frequencyDays = reminder.frequencyDays
         }
     }
 

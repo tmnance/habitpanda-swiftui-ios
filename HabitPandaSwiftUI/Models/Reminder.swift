@@ -9,6 +9,30 @@ import Foundation
 import CoreData
 
 extension Reminder {
+    // MARK: - Computed Properties
+    var frequencyDays: [Int] {
+        get {
+            DayOfWeek.convertBitmaskToOffsets(Int(self.frequencyDaysRaw))
+        }
+        set {
+            self.frequencyDaysRaw = Int32(DayOfWeek.convertOffsetsToBitmask(newValue))
+        }
+    }
+
+    // MARK: - Instance Methods
+    public func getTimeOfDay() -> TimeOfDay {
+        return TimeOfDay(hour: Int(hour), minute: Int(minute))
+    }
+
+    public func getTimeInMinutes() -> Int {
+        return Int(hour * 60) + Int(minute)
+    }
+
+    public func isActiveOnDay(_ offset: Int) -> Bool {
+        return frequencyDays.contains(offset)
+    }
+
+    // MARK: - Static Methods
     public static func getAll(
         withLimit limit: Int? = nil,
         context: NSManagedObjectContext
@@ -18,8 +42,7 @@ extension Reminder {
         let request: NSFetchRequest<Reminder> = Reminder.fetchRequest()
         request.sortDescriptors = [
             NSSortDescriptor(key: "hour", ascending: true),
-            NSSortDescriptor(key: "minute", ascending: true),
-            NSSortDescriptor(key: "frequencyDays", ascending: true)
+            NSSortDescriptor(key: "minute", ascending: true)
         ]
         if let limit {
             request.fetchLimit = limit
@@ -50,20 +73,7 @@ extension Reminder {
         }
         return reminder
     }
-
-    public func getTimeOfDay() -> TimeOfDay {
-        return TimeOfDay(hour: Int(hour), minute: Int(minute))
-    }
-
-    public func getTimeInMinutes() -> Int {
-        return Int(hour * 60) + Int(minute)
-    }
-
-    public func isActiveOnDay(_ offset: Int) -> Bool {
-        return (frequencyDays ?? []).contains(NSNumber(value: offset))
-    }
 }
-
 
 // MARK: - Xcode preview content
 extension Reminder {

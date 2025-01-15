@@ -86,8 +86,8 @@ struct AddEditReminderView: View {
                 of: Date()
             )!
 
-            selectedFrequencyDays = Set((reminderToEdit.frequencyDays ?? [])
-                .compactMap { DayOfWeek.Day(rawValue: $0.intValue) })
+            selectedFrequencyDays = Set(reminderToEdit.frequencyDays
+                .compactMap { DayOfWeek.Day(rawValue: $0) })
         }
     }
 
@@ -109,7 +109,6 @@ struct AddEditReminderView: View {
         reminderToSave.frequencyDays = selectedFrequencyDays
             .map { $0.rawValue }
             .sorted()
-            .map { $0 as NSNumber }
 
         do {
             try PersistenceController.save(context: viewContext)

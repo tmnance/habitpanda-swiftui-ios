@@ -41,8 +41,8 @@ struct ReminderNotificationService {
             [WeekdayIndex](0...6).forEach { value[$0] = RemindersForDay() }
 
             reminders.forEach { reminder in
-                reminder.frequencyDays?.forEach {
-                    let reminderWeekdayIndex = $0.intValue
+                reminder.frequencyDays.forEach {
+                    let reminderWeekdayIndex = $0
                     value[reminderWeekdayIndex]!.addReminder(reminder)
                 }
             }

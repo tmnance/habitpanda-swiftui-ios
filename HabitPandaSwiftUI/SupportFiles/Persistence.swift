@@ -57,7 +57,7 @@ struct PersistenceController {
         reminder1.hour = Int32(13)
         reminder1.minute = Int32(15)
         reminder1.frequencyDays =
-            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 }
 
         let reminder2 = Reminder(context: viewContext)
         reminder2.createdAt = Date()
@@ -66,7 +66,7 @@ struct PersistenceController {
         reminder2.hour = Int32(10)
         reminder2.minute = Int32(45)
         reminder2.frequencyDays =
-            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 as NSNumber }
+            Array(" XXXXX ").enumerated().filter { $0.1 != " " }.map { $0.0 }
 
         let habit2 = Habit(context: viewContext)
         habit2.createdAt = Date()
