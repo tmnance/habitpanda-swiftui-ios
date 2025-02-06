@@ -220,8 +220,7 @@ struct HabitDetailsView: View {
             }
         }
         if habit.hasInactiveDaysOfWeek() {
-            let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
-                .compactMap { $0.intValue })
+            let inactiveDaysOfWeek = Set(habit.inactiveDaysOfWeek)
             let currentDayOffset = (Calendar.current.component(.weekday, from: currentDate) % 7) - 1
             return inactiveDaysOfWeek.contains(currentDayOffset)
         }

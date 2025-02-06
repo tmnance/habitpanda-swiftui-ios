@@ -20,20 +20,20 @@ extension Reminder {
     }
 
     // MARK: - Instance Methods
-    public func getTimeOfDay() -> TimeOfDay {
+    func getTimeOfDay() -> TimeOfDay {
         return TimeOfDay(hour: Int(hour), minute: Int(minute))
     }
 
-    public func getTimeInMinutes() -> Int {
+    func getTimeInMinutes() -> Int {
         return Int(hour * 60) + Int(minute)
     }
 
-    public func isActiveOnDay(_ offset: Int) -> Bool {
+    func isActiveOnDay(_ offset: Int) -> Bool {
         return frequencyDays.contains(offset)
     }
 
     // MARK: - Static Methods
-    public static func getAll(
+    static func getAll(
         withLimit limit: Int? = nil,
         context: NSManagedObjectContext
     ) -> [Reminder] {
@@ -57,7 +57,7 @@ extension Reminder {
         return reminders
     }
 
-    public static func get(
+    static func get(
         withUUID uuid: UUID,
         context: NSManagedObjectContext
     ) -> Reminder? {

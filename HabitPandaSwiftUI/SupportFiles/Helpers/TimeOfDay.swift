@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TimeOfDay {
+struct TimeOfDay {
     var hour: Int
     var minute: Int
 

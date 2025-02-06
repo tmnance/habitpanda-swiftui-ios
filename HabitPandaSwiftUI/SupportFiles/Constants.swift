@@ -8,7 +8,7 @@
 import UIKit
 import SwiftUI
 
-public struct Constants {
+struct Constants {
     static let minTappableDimension: CGFloat = 44
     static let comfortableTappableDimension: CGFloat = 46
 
@@ -64,15 +64,15 @@ public struct Constants {
         static let minuteInterval = 5
     }
 
-    public enum SortDir: String {
+    enum SortDir: String {
         case asc, desc
     }
 
-    public enum FirstOrLast: String {
+    enum FirstOrLast: String {
         case first, last
     }
 
-    public enum ViewInteractionMode {
+    enum ViewInteractionMode {
         case add, edit
     }
 }

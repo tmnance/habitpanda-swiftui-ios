@@ -9,58 +9,13 @@ import Foundation
 import CoreData
 
 extension Habit {
-    public static func getAll(
-        sortedBy sortKeys: [(String, Constants.SortDir)] = [("name", .asc)],
-        context: NSManagedObjectContext
-    ) -> [Habit] {
-        var habits: [Habit] = []
-
-        let request: NSFetchRequest<Habit> = Habit.fetchRequest()
-        request.sortDescriptors = sortKeys.map {
-            NSSortDescriptor(key: $0.0, ascending: $0.1 == Constants.SortDir.asc)
+    // MARK: - Computed Properties
+    var inactiveDaysOfWeek: [Int] {
+        get {
+            DayOfWeek.convertBitmaskToOffsets(Int(self.inactiveDaysOfWeekRaw))
         }
-
-        do {
-            habits = try context.fetch(request)
-        } catch {
-            print("Error fetching data from context, \(error)")
-        }
-
-        return habits
-    }
-
-    public static func getCount(context: NSManagedObjectContext) -> Int {
-        let request: NSFetchRequest<Habit> = Habit.fetchRequest()
-        var count = 0
-
-        do {
-            count = try context.count(for: request)
-        } catch {
-            print("Error fetching data from context, \(error)")
-        }
-
-        return count
-    }
-
-    public static func fixHabitOrder(context: NSManagedObjectContext) {
-        let habits = Habit.getAll(
-            sortedBy: [("order", .asc), ("createdAt", .asc)],
-            context: context
-        )
-        guard habits.count > 0 else { return }
-
-        var order = 0
-
-        habits.forEach { habit in
-            let habitToSave = habit
-            habitToSave.order = Int32(order)
-            order += 1
-        }
-
-        do {
-            try PersistenceController.save(context: context)
-        } catch {
-            print(error.localizedDescription)
+        set {
+            self.inactiveDaysOfWeekRaw = Int32(DayOfWeek.convertOffsetsToBitmask(newValue))
         }
     }
 
@@ -68,6 +23,7 @@ extension Habit {
         return CheckInType.getFromRawValue(checkInTypeRaw)
     }
 
+    // MARK: - Instance Methods
     func getFirstCheckInDate() -> Date? {
         guard let context = managedObjectContext else { return nil }
         let checkIns = CheckIn.getAll(
@@ -121,7 +77,7 @@ extension Habit {
     }
 
     func hasInactiveDaysOfWeek() -> Bool {
-        return (inactiveDaysOfWeek ?? []).count > 0
+        return inactiveDaysOfWeek.count > 0
     }
 
     func getCheckInsForDate(
@@ -202,6 +158,62 @@ extension Habit {
             } catch {
                 print(error.localizedDescription)
             }
+        }
+    }
+
+    // MARK: - Static Methods
+    static func getAll(
+        sortedBy sortKeys: [(String, Constants.SortDir)] = [("name", .asc)],
+        context: NSManagedObjectContext
+    ) -> [Habit] {
+        var habits: [Habit] = []
+
+        let request: NSFetchRequest<Habit> = Habit.fetchRequest()
+        request.sortDescriptors = sortKeys.map {
+            NSSortDescriptor(key: $0.0, ascending: $0.1 == Constants.SortDir.asc)
+        }
+
+        do {
+            habits = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context, \(error)")
+        }
+
+        return habits
+    }
+
+    static func getCount(context: NSManagedObjectContext) -> Int {
+        let request: NSFetchRequest<Habit> = Habit.fetchRequest()
+        var count = 0
+
+        do {
+            count = try context.count(for: request)
+        } catch {
+            print("Error fetching data from context, \(error)")
+        }
+
+        return count
+    }
+
+    static func fixHabitOrder(context: NSManagedObjectContext) {
+        let habits = Habit.getAll(
+            sortedBy: [("order", .asc), ("createdAt", .asc)],
+            context: context
+        )
+        guard habits.count > 0 else { return }
+
+        var order = 0
+
+        habits.forEach { habit in
+            let habitToSave = habit
+            habitToSave.order = Int32(order)
+            order += 1
+        }
+
+        do {
+            try PersistenceController.save(context: context)
+        } catch {
+            print(error.localizedDescription)
         }
     }
 }

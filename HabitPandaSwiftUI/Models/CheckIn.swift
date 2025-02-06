@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-public enum CheckInType: String, Hashable {
+enum CheckInType: String, Hashable {
     case success,          // only show positive indicators
          successOrFailure, // used when caring about logging both positive and negative indicators,
                            //   e.g. something maintaining a streak on or something you're trying not to do
@@ -61,7 +61,7 @@ extension CheckIn {
         return valueRaw == "" ? nil : valueRaw
     }
 
-    public static func getAll(
+    static func getAll(
         sortedBy sortKeys: [(String, Constants.SortDir)] = [("checkInDate", .asc)],
         forHabitUUIDs habitUUIDs: [UUID]? = nil,
         fromStartDate startDate: Date? = nil,
@@ -114,7 +114,7 @@ extension CheckIn {
         return checkIns
     }
 
-    public static func getHabitFirstCheckInMap(
+    static func getHabitFirstCheckInMap(
         forHabitUUIDs habitUUIDs: [UUID]? = nil,
         fromStartDate startDate: Date? = nil,
         toEndDate endDate: Date? = nil,
@@ -129,7 +129,7 @@ extension CheckIn {
         )
     }
 
-    public static func getHabitLastCheckInMap(
+    static func getHabitLastCheckInMap(
         forHabitUUIDs habitUUIDs: [UUID]? = nil,
         fromStartDate startDate: Date? = nil,
         toEndDate endDate: Date? = nil,

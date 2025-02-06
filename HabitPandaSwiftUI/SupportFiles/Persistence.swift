@@ -25,7 +25,6 @@ struct PersistenceController {
         habit1.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
             .map { $0.rawValue }
             .sorted()
-            .map { $0 as NSNumber }
         habit1.checkInCooldownDays = Int32(0)
 
         [-8, -4, -4, 0].forEach { dateOffset in
@@ -77,7 +76,6 @@ struct PersistenceController {
         habit2.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekends.days
             .map { $0.rawValue }
             .sorted()
-            .map { $0 as NSNumber }
         habit2.checkInCooldownDays = Int32(0)
 
         [-16].forEach { dateOffset in
@@ -101,7 +99,6 @@ struct PersistenceController {
         habit3.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
             .map { $0.rawValue }
             .sorted()
-            .map { $0 as NSNumber }
         habit3.checkInCooldownDays = Int32(0)
 
         [-16].forEach { dateOffset in
@@ -125,7 +122,6 @@ struct PersistenceController {
         habit4.inactiveDaysOfWeek = DayOfWeek.WeekSubset.daily.days
             .map { $0.rawValue }
             .sorted()
-            .map { $0 as NSNumber }
         habit4.checkInCooldownDays = Int32(0)
 
         [-16].forEach { dateOffset in

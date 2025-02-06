@@ -427,7 +427,7 @@ extension AdminView {
         habitToSave.name = name
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.order = Int32(order)
-        habitToSave.inactiveDaysOfWeek = inactiveDaysOfWeek.map { $0 as NSNumber }
+        habitToSave.inactiveDaysOfWeek = inactiveDaysOfWeek
         habitToSave.checkInCooldownDays = Int32(checkInCooldownDays)
 
         return habitToSave
@@ -507,7 +507,7 @@ extension AdminView {
             self.reminders = (habit.reminders as? Set<Reminder> ?? [])
                 .sorted { $0.createdAt! < $1.createdAt! }
                 .map { ExportReminder(reminder: $0) }
-            self.inactiveDaysOfWeek = (habit.inactiveDaysOfWeek ?? []).map { Int(truncating: $0) }
+            self.inactiveDaysOfWeek = habit.inactiveDaysOfWeek
             self.checkInCooldownDays = Int(habit.checkInCooldownDays)
         }
     }

@@ -151,8 +151,7 @@ extension HabitListCheckInGridView {
             if let habitUUID = habit.uuid, let firstCheckInOffset = getHabitFirstCheckIn(habit: habit) {
                 // add inactive days (after first check in) to daily report
                 if habit.hasInactiveDaysOfWeek() {
-                    let inactiveDaysOfWeek = Set((habit.inactiveDaysOfWeek ?? [])
-                        .compactMap { $0.intValue })
+                    let inactiveDaysOfWeek = Set(habit.inactiveDaysOfWeek)
                     for dateOffset in ((firstCheckInOffset + 1) ..< dateCount) {
                         let sundayOffset = (dateOffset + dateListSaturdayOffset - 1) % 7
                         if inactiveDaysOfWeek.contains(sundayOffset) {

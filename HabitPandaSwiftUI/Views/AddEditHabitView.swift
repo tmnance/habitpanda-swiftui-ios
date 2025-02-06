@@ -240,7 +240,7 @@ struct AddEditHabitView: View {
 
             isDaysOffActive = (habitToEdit?.inactiveDaysOfWeek ?? []).count > 0
             selectedInactiveDaysOfWeek = Set((habitToEdit?.inactiveDaysOfWeek ?? [])
-                .compactMap { DayOfWeek.Day(rawValue: $0.intValue) })
+                .compactMap { DayOfWeek.Day(rawValue: $0) })
             isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
             checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
         }
@@ -287,8 +287,7 @@ struct AddEditHabitView: View {
         habitToSave.inactiveDaysOfWeek = (isDaysOffActive ?
             selectedInactiveDaysOfWeek
                 .map { $0.rawValue }
-                .sorted()
-                .map { $0 as NSNumber } :
+                .sorted() :
             []
         )
         habitToSave.checkInCooldownDays = Int32(isCheckInCooldownActive ? checkInCooldownDays : 0)
