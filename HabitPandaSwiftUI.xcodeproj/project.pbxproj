@@ -24,6 +24,8 @@
 		1CA0B613290056EB002103EA /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B612290056EB002103EA /* NotificationHelper.swift */; };
 		1CA0B6152901CF00002103EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B6142901CF00002103EA /* AppDelegate.swift */; };
 		1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B61629045F2C002103EA /* ReminderListCellView.swift */; };
+		1CB577692D5BA40A00186ABA /* TimeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB577682D5BA40600186ABA /* TimeWindow.swift */; };
+		1CB5776B2D5BAD3000186ABA /* CurrentFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */; };
 		1CBA7F82291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */; };
 		1CC0B2542912CAF6003198E1 /* HabitListCheckInGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0B2532912CAF6003198E1 /* HabitListCheckInGridView.swift */; };
 		1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */; };
@@ -62,6 +64,8 @@
 		1CA0B612290056EB002103EA /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		1CA0B6142901CF00002103EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CA0B61629045F2C002103EA /* ReminderListCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListCellView.swift; sourceTree = "<group>"; };
+		1CB577682D5BA40600186ABA /* TimeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeWindow.swift; sourceTree = "<group>"; };
+		1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentFocusView.swift; sourceTree = "<group>"; };
 		1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsSummaryTabChartView.swift; sourceTree = "<group>"; };
 		1CC0B2532912CAF6003198E1 /* HabitListCheckInGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitListCheckInGridView.swift; sourceTree = "<group>"; };
 		1CDA4CB028F096AD007D02F3 /* HabitPandaSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitPandaSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -149,6 +153,7 @@
 				1CDA4CDD28F33C5C007D02F3 /* CheckIn.swift */,
 				1CDA4CCD28F0AB2C007D02F3 /* Habit.swift */,
 				1CDA4CDF28F34270007D02F3 /* Reminder.swift */,
+				1CB577682D5BA40600186ABA /* TimeWindow.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -161,6 +166,7 @@
 				1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */,
 				1C8515952905A572009FC9B3 /* AddEditReminderView.swift */,
 				1CDA4CD328F0C4FE007D02F3 /* AdminView.swift */,
+				1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */,
 				1CA0B60328F60EDF002103EA /* HabitDetailsCheckInsTabView.swift */,
 				1CA0B60528F60EE9002103EA /* HabitDetailsRemindersTabView.swift */,
 				1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */,
@@ -291,10 +297,12 @@
 				1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */,
 				1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */,
 				1CDA4CE328F3B02D007D02F3 /* Date+Rounding.swift in Sources */,
+				1CB577692D5BA40A00186ABA /* TimeWindow.swift in Sources */,
 				1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */,
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
 				1CDA4CE528F3B05E007D02F3 /* DateHelper.swift in Sources */,
 				1CDA4CE728F3B071007D02F3 /* DayOfWeek.swift in Sources */,
+				1CB5776B2D5BAD3000186ABA /* CurrentFocusView.swift in Sources */,
 				1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */,
 				1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */,
 				1CA0B60628F60EE9002103EA /* HabitDetailsRemindersTabView.swift in Sources */,

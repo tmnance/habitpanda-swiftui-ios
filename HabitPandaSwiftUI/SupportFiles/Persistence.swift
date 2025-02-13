@@ -22,7 +22,7 @@ struct PersistenceController {
         habit1.frequencyPerWeek = Int32(5)
         habit1.checkInTypeRaw = CheckInType.letterGrade.rawValue
         habit1.order = Int32(0)
-        habit1.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
+        habit1.applicableDayIndexes = DayOfWeek.WeekSubset.weekends.days
             .map { $0.rawValue }
             .sorted()
         habit1.checkInCooldownDays = Int32(0)
@@ -73,7 +73,7 @@ struct PersistenceController {
         habit2.name = "Test habit 2"
         habit2.frequencyPerWeek = Int32(2)
         habit2.order = Int32(1)
-        habit2.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekends.days
+        habit2.applicableDayIndexes = DayOfWeek.WeekSubset.weekdays.days
             .map { $0.rawValue }
             .sorted()
         habit2.checkInCooldownDays = Int32(0)
@@ -96,7 +96,7 @@ struct PersistenceController {
         habit3.name = "Test habit 3"
         habit3.frequencyPerWeek = Int32(2)
         habit3.order = Int32(2)
-        habit3.inactiveDaysOfWeek = DayOfWeek.WeekSubset.weekdays.days
+        habit3.applicableDayIndexes = DayOfWeek.WeekSubset.weekends.days
             .map { $0.rawValue }
             .sorted()
         habit3.checkInCooldownDays = Int32(0)
@@ -119,7 +119,7 @@ struct PersistenceController {
         habit4.name = "Test habit 4"
         habit4.frequencyPerWeek = Int32(2)
         habit4.order = Int32(3)
-        habit4.inactiveDaysOfWeek = DayOfWeek.WeekSubset.daily.days
+        habit4.applicableDayIndexes = DayOfWeek.WeekSubset.all.days
             .map { $0.rawValue }
             .sorted()
         habit4.checkInCooldownDays = Int32(0)
@@ -142,7 +142,7 @@ struct PersistenceController {
         habit5.name = "Test habit 5"
         habit5.frequencyPerWeek = Int32(2)
         habit5.order = Int32(4)
-        habit5.inactiveDaysOfWeek = []
+        habit5.applicableDayIndexes = []
         habit5.checkInCooldownDays = Int32(1)
 
         [-2].forEach { dateOffset in
@@ -178,7 +178,7 @@ struct PersistenceController {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
-        container.loadPersistentStores { storeDescription, error in
+        container.loadPersistentStores { _, error in
             if let error {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -194,6 +194,7 @@ struct PersistenceController {
                 fatalError(error.localizedDescription)
             }
         }
+        seedInitialDataIfNeeded()
     }
 
     static func save(context: NSManagedObjectContext) throws {
@@ -205,5 +206,44 @@ struct PersistenceController {
     static func delete(_ object: NSManagedObject, context: NSManagedObjectContext) throws {
         context.delete(object)
         try PersistenceController.save(context: context)
+    }
+
+    private func seedInitialDataIfNeeded() {
+        let context = container.newBackgroundContext()
+        context.perform {
+            let fetchRequest: NSFetchRequest<TimeWindow> = TimeWindow.fetchRequest()
+
+            do {
+                let count = try context.count(for: fetchRequest)
+                if count == 0 {
+                    self.insertInitialTimeWindows(context: context)
+                }
+            } catch {
+                print("Error checking existing data: \(error)")
+            }
+        }
+    }
+
+    private func insertInitialTimeWindows(context: NSManagedObjectContext) {
+        let defaultTimeWindows: [(name: String, dayIndexes: [Int], order: Int)] = [
+            ("Morning", Array(0...6), 0),
+            ("Afternoon", Array(0...6), 1),
+            ("Evening", Array(0...6), 2)
+        ]
+
+        for timeWindowData in defaultTimeWindows {
+            let timeWindow = TimeWindow(context: context)
+            timeWindow.uuid = UUID()
+            timeWindow.name = timeWindowData.name
+            timeWindow.applicableDayIndexes = timeWindowData.dayIndexes
+            timeWindow.order = Int32(timeWindowData.order)
+        }
+
+        do {
+            try context.save()
+            print("Initial data seeded successfully.")
+        } catch {
+            print("Error seeding initial data: \(error)")
+        }
     }
 }

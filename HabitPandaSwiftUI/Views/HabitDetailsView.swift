@@ -219,10 +219,9 @@ struct HabitDetailsView: View {
                 return true
             }
         }
-        if habit.hasInactiveDaysOfWeek() {
-            let inactiveDaysOfWeek = Set(habit.inactiveDaysOfWeek)
+        if habit.hasInactiveDaysOfWeek {
             let currentDayOffset = (Calendar.current.component(.weekday, from: currentDate) % 7) - 1
-            return inactiveDaysOfWeek.contains(currentDayOffset)
+            return !habit.isActiveOnDay(currentDayOffset)
         }
         return false
     }

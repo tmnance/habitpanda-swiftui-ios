@@ -10,13 +10,17 @@ import CoreData
 
 extension Habit {
     // MARK: - Computed Properties
-    var inactiveDaysOfWeek: [Int] {
+    var applicableDayIndexes: [Int] {
         get {
-            DayOfWeek.convertBitmaskToOffsets(Int(self.inactiveDaysOfWeekRaw))
+            DayOfWeek.convertBitmaskToOffsets(Int(self.applicableDaysOfWeekBitmask))
         }
         set {
-            self.inactiveDaysOfWeekRaw = Int32(DayOfWeek.convertOffsetsToBitmask(newValue))
+            self.applicableDaysOfWeekBitmask = Int32(DayOfWeek.convertOffsetsToBitmask(newValue))
         }
+    }
+
+    var hasInactiveDaysOfWeek: Bool {
+        return applicableDaysOfWeekBitmask != (1 << 7) - 1
     }
 
     var checkInType: CheckInType {
@@ -24,6 +28,10 @@ extension Habit {
     }
 
     // MARK: - Instance Methods
+    func isActiveOnDay(_ dayIndex: Int) -> Bool {
+        return (applicableDaysOfWeekBitmask & (1 << dayIndex)) != 0
+    }
+
     func getFirstCheckInDate() -> Date? {
         guard let context = managedObjectContext else { return nil }
         let checkIns = CheckIn.getAll(
@@ -74,10 +82,6 @@ extension Habit {
         } catch {
             completionHandler?(error)
         }
-    }
-
-    func hasInactiveDaysOfWeek() -> Bool {
-        return inactiveDaysOfWeek.count > 0
     }
 
     func getCheckInsForDate(

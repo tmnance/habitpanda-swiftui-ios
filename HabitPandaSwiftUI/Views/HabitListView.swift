@@ -12,6 +12,7 @@ struct HabitListView: View {
     @Environment(\.managedObjectContext) private var viewContext
     static let daysToDisplay = 30
 
+    @StateObject var router = Router.shared
     @State private var isAddHabitViewPresented = false
     @State private var isReorderHabitsViewPresented = false
     @State private var currentDate = Date().stripTime()
@@ -24,52 +25,54 @@ struct HabitListView: View {
         )!
         let endDate = currentDate
 
-        VStack {
-            HabitListCheckInGridView(startDate: startDate, endDate: endDate)
+        NavigationStack(path: $router.path) {
+            VStack {
+                HabitListCheckInGridView(startDate: startDate, endDate: endDate)
                 // date change redraws view
-                .id("checkInGrid-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
-                .onNewDay {
-                    withAnimation {
-                        currentDate = Date().stripTime()
+                    .id("checkInGrid-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
+                    .onNewDay {
+                        withAnimation {
+                            currentDate = Date().stripTime()
+                        }
                     }
-                }
-        }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(action: {
-                }) {
-                    NavigationLink(destination: AboutView()) {
-                        Text("About")
-                            .frame(minWidth: Constants.minTappableDimension)
-                            .frame(height: Constants.minTappableDimension)
-                    }
-                }
             }
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                    }) {
+                        NavigationLink(destination: AboutView()) {
+                            Text("About")
+                                .frame(minWidth: Constants.minTappableDimension)
+                                .frame(height: Constants.minTappableDimension)
+                        }
+                    }
+                }
 
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: {
-                    isReorderHabitsViewPresented.toggle()
-                }) {
-                    Label("Reorder Habits", systemImage: "arrow.up.arrow.down")
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isReorderHabitsViewPresented.toggle()
+                    }) {
+                        Label("Reorder Habits", systemImage: "arrow.up.arrow.down")
+                    }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
+                    Button(action: {
+                        isAddHabitViewPresented.toggle()
+                    }) {
+                        Label("Add Habit", systemImage: "plus")
+                    }
+                    .frame(minWidth: Constants.minTappableDimension)
+                    .frame(height: Constants.minTappableDimension)
                 }
-                .frame(minWidth: Constants.minTappableDimension)
-                .frame(height: Constants.minTappableDimension)
-                Button(action: {
-                    isAddHabitViewPresented.toggle()
-                }) {
-                    Label("Add Habit", systemImage: "plus")
-                }
-                .frame(minWidth: Constants.minTappableDimension)
-                .frame(height: Constants.minTappableDimension)
             }
-        }
-        .navigationTitle("HabitPanda 🐼")
-        .navigationBarTitleDisplayMode(.inline)
-        .fullScreenCover(isPresented: $isAddHabitViewPresented) {
-            AddEditHabitView()
-        }
-        .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
-            HabitReorderView()
+            .navigationTitle("HabitPanda 🐼")
+            .navigationBarTitleDisplayMode(.inline)
+            .fullScreenCover(isPresented: $isAddHabitViewPresented) {
+                AddEditHabitView()
+            }
+            .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
+                HabitReorderView()
+            }
         }
     }
 }

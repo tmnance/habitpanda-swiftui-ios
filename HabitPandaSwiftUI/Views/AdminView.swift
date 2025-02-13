@@ -290,7 +290,7 @@ extension AdminView {
                 //                 98765432109876543210
                 "checkInHistory": " X  X      X      X ",
                 //                     SMTWTFS
-                "inactiveDaysOfWeek": "X     X",
+                "applicableDaysOfWeek": " XXXXX ",
             ],
             [
                 "name": "Make the bed every morning",
@@ -347,7 +347,7 @@ extension AdminView {
         )!
 
         seedHabits.enumerated().forEach { i, seedHabit in
-            let inactiveDaysOfWeek = Array(seedHabit["inactiveDaysOfWeek"] as? String ?? "")
+            let applicableDayIndexes = Array(seedHabit["applicableDaysOfWeek"] as? String ?? "XXXXXXX")
                 .enumerated()
                 .filter { $0.1 != " " }
                 .map { $0.0 as Int }
@@ -360,7 +360,7 @@ extension AdminView {
                     to: createdAtDate
                 )!,
                 order: i,
-                inactiveDaysOfWeek: inactiveDaysOfWeek,
+                applicableDayIndexes: applicableDayIndexes,
                 checkInCooldownDays: seedHabit["checkInCooldownDays"] as? Int ?? 0
             )
 
@@ -418,7 +418,7 @@ extension AdminView {
         frequencyPerWeek: Int,
         createdAt: Date,
         order: Int,
-        inactiveDaysOfWeek: [Int] = [],
+        applicableDayIndexes: [Int] = [],
         checkInCooldownDays: Int = 0
     ) -> Habit {
         let habitToSave = Habit(context: viewContext)
@@ -427,7 +427,7 @@ extension AdminView {
         habitToSave.name = name
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.order = Int32(order)
-        habitToSave.inactiveDaysOfWeek = inactiveDaysOfWeek
+        habitToSave.applicableDayIndexes = applicableDayIndexes
         habitToSave.checkInCooldownDays = Int32(checkInCooldownDays)
 
         return habitToSave
@@ -485,6 +485,7 @@ extension AdminView {
 // MARK: - Data Export Methods
 extension AdminView {
     private struct ExportHabit: Codable {
+        // TODO: add support for both inactiveDaysOfWeek and applicableDayIndexes/applicableDaysOfWeekBitmask. May need to split export and import structs?
         let uuid: String
         let createdAt: Int
         let name: String
@@ -492,7 +493,7 @@ extension AdminView {
         let frequencyPerWeek: Int
         let checkIns: [ExportCheckIn]
         let reminders: [ExportReminder]
-        let inactiveDaysOfWeek: [Int]
+        let applicableDayIndexes: [Int]
         let checkInCooldownDays: Int
 
         init(habit: Habit) {
@@ -507,7 +508,7 @@ extension AdminView {
             self.reminders = (habit.reminders as? Set<Reminder> ?? [])
                 .sorted { $0.createdAt! < $1.createdAt! }
                 .map { ExportReminder(reminder: $0) }
-            self.inactiveDaysOfWeek = habit.inactiveDaysOfWeek
+            self.applicableDayIndexes = habit.applicableDayIndexes
             self.checkInCooldownDays = Int(habit.checkInCooldownDays)
         }
     }
@@ -586,7 +587,7 @@ extension AdminView {
                 frequencyPerWeek: importedHabit.frequencyPerWeek,
                 createdAt: Date(timeIntervalSince1970: Double(importedHabit.createdAt)),
                 order: importedHabit.order,
-                inactiveDaysOfWeek: importedHabit.inactiveDaysOfWeek,
+                applicableDayIndexes: importedHabit.applicableDayIndexes,
                 checkInCooldownDays: importedHabit.checkInCooldownDays
             )
             importedHabit.checkIns.forEach { importedCheckIn in
