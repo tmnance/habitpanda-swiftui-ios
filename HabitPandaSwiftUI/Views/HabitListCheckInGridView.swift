@@ -345,13 +345,13 @@ extension HabitListCheckInGridView {
         dateOffset: DateOffset
     ) -> some View {
         ZStack {
-            if let checkInSuccesses = habitDayReport[.success], let checkInCount = checkInSuccesses.count, checkInCount > 0 {
+            if let checkInSuccesses = habitDayReport[.success], checkInSuccesses.count > 0 {
                 Image("checkmark")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 25, height: 33.5)
                     .padding(.bottom, 5)
-                Text(checkInCount > 1 ? "\(checkInCount)" : "")
+                Text(checkInSuccesses.count > 1 ? "\(checkInSuccesses.count)" : "")
                     .foregroundColor(Color(Constants.Colors.listCheckmark))
                     .font(.system(size: 10))
                     .frame(width: 25, height: 33.5, alignment: .bottomTrailing)
