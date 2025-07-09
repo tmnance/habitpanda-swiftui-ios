@@ -19,6 +19,10 @@ extension TimeWindow {
         }
     }
 
+    var displayName: String {
+        name ?? ""
+    }
+
     // MARK: - Instance Methods
     func isActiveOnDay(_ dayIndex: Int) -> Bool {
         return (applicableDaysOfWeekBitmask & (1 << dayIndex)) != 0

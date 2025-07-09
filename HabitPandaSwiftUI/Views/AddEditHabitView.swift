@@ -21,6 +21,7 @@ struct AddEditHabitView: View {
     @State private var frequencyOverflow = ""
     @State private var selectedCheckInType: CheckInType = .defaultValue
     @State private var selectedApplicableDaysOfWeek: Set<DayOfWeek.Day> = DayOfWeek.WeekSubset.all.days
+    @State private var selectedTimeWindows: Set<TimeWindow> = []
     @State private var isCheckInCooldownActive = false
     @State private var checkInCooldownDays: Int = 1
     @FocusState private var focusedField: Field?
@@ -142,6 +143,20 @@ struct AddEditHabitView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Group {
+                            Text("Applicable Time Windows").font(.title2)
+                            Text("(limit this habit to certain times of day)").font(.footnote)
+                        }
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
+                        TimeWindowPicker(showAllButton: true, selectedTimeWindows: $selectedTimeWindows)
+                            .onChange(of: selectedTimeWindows) {
+                                hideKeyboard()
+                            }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Group {
                             HStack {
                                 Text("Check In Cooldown").font(.title2)
                                 Toggle("Check In Cooldown Active", isOn: $isCheckInCooldownActive)
@@ -236,6 +251,15 @@ struct AddEditHabitView: View {
 //            } else {
 //                DayOfWeek.WeekSubset.all.days
 //            }
+
+            selectedTimeWindows = {
+                guard let habitToEdit else { return [] }
+                if !habitToEdit.useTimeWindows {
+                    return []
+                }
+                return habitToEdit.timeWindows as? Set<TimeWindow> ?? []
+            }()
+
             isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
             checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
         }

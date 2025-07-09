@@ -228,7 +228,7 @@ struct PersistenceController {
         let defaultTimeWindows: [(name: String, dayIndexes: [Int], order: Int)] = [
             ("Morning", Array(0...6), 0),
             ("Afternoon", Array(0...6), 1),
-            ("Evening", Array(0...6), 2)
+            ("Evening", Array(0...6), 2),
         ]
 
         for timeWindowData in defaultTimeWindows {

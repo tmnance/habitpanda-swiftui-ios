@@ -16,9 +16,11 @@
         <attribute name="frequencyPerWeek" attributeType="Integer 32" defaultValueString="1" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="useTimeWindows" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="uuid" attributeType="UUID" usesScalarValueType="NO"/>
         <relationship name="checkIns" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="CheckIn" inverseName="habit" inverseEntity="CheckIn"/>
         <relationship name="reminders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Reminder" inverseName="habit" inverseEntity="Reminder"/>
+        <relationship name="timeWindows" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TimeWindow" inverseName="habits" inverseEntity="TimeWindow"/>
     </entity>
     <entity name="Reminder" representedClassName="Reminder" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
@@ -34,5 +36,6 @@
         <attribute name="name" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="uuid" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <relationship name="habits" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Habit" inverseName="timeWindows" inverseEntity="Habit"/>
     </entity>
 </model>

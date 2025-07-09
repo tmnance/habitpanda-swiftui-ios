@@ -13,6 +13,7 @@
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
 		1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */; };
 		1C8D24BE291D5D0500ED1296 /* FancyToastModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */; };
+		1C8EDB042D81CAD5007022FD /* TimeWindowPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */; };
 		1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F43082916E6D9007B8219 /* AboutView.swift */; };
 		1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */; };
@@ -54,6 +55,7 @@
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastView.swift; sourceTree = "<group>"; };
 		1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastModifier.swift; sourceTree = "<group>"; };
+		1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeWindowPicker.swift; sourceTree = "<group>"; };
 		1C9F43082916E6D9007B8219 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		1CA0B5FF28F60680002103EA /* HabitPandaSwiftUI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HabitPandaSwiftUI.xcdatamodel; sourceTree = "<group>"; };
 		1CA0B60128F60ED4002103EA /* HabitDetailsSummaryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsSummaryTabView.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */,
 				1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */,
 				1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */,
+				1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -314,6 +317,7 @@
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
+				1C8EDB042D81CAD5007022FD /* TimeWindowPicker.swift in Sources */,
 				1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */,
 				1CDA4CDC28F11A57007D02F3 /* HabitDetailsView.swift in Sources */,
 				1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */,
