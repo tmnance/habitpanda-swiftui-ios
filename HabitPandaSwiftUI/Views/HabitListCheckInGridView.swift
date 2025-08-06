@@ -299,13 +299,18 @@ extension HabitListCheckInGridView {
     @ViewBuilder func habitRowTitle(habit: Habit) -> some View {
         HStack(spacing: 0) {
             NavigationLink(value: habit) {
-                Text(habit.name ?? "")
-                    .font(.system(size: 15))
-                    .lineLimit(2)
-                    .frame(height: Constants.minTappableDimension)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
-                    .padding(.leading, 10)
+                HStack(spacing: 0) {
+                    TimeWindowShortDisplayView(timeWindows: habit.timeWindows as? Set<TimeWindow>)
+                        .padding(.horizontal, 4)
+                        .frame(width: 50)
+
+                    Text(habit.name ?? "")
+                        .font(.system(size: 15))
+                        .lineLimit(2)
+                        .frame(height: Constants.minTappableDimension)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                }
             }
             .contextMenu {
                 // TODO: refactor this into a cleaner place?

@@ -40,9 +40,14 @@ struct HabitDetailsView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Text(habit.name ?? "")
-                    .font(.system(size: 20))
-                    .lineLimit(3)
+                HStack(spacing: 0) {
+                    TimeWindowShortDisplayView(timeWindows: habit.timeWindows as? Set<TimeWindow>)
+                        .padding(.trailing, 4)
+                        .frame(width: 40)
+                    Text(habit.name ?? "")
+                        .font(.system(size: 20))
+                        .lineLimit(3)
+                }
                 Spacer()
                 Menu {
                     // TODO: clean up / refactor the below to be more DRY

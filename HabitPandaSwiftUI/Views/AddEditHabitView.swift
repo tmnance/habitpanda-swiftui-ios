@@ -246,17 +246,9 @@ struct AddEditHabitView: View {
                     return DayOfWeek.WeekSubset.all.days
                 }
             }()
-//            selectedApplicableDaysOfWeek = if (let applicableDayIndexes = habitToEdit?.applicableDayIndexes) {
-//                Set(applicableDayIndexes.compactMap { DayOfWeek.Day(rawValue: $0) })
-//            } else {
-//                DayOfWeek.WeekSubset.all.days
-//            }
 
             selectedTimeWindows = {
                 guard let habitToEdit else { return [] }
-                if !habitToEdit.useTimeWindows {
-                    return []
-                }
                 return habitToEdit.timeWindows as? Set<TimeWindow> ?? []
             }()
 
@@ -307,6 +299,19 @@ struct AddEditHabitView: View {
             .map { $0.rawValue }
             .sorted()
         habitToSave.checkInCooldownDays = Int32(isCheckInCooldownActive ? checkInCooldownDays : 0)
+
+        let previousTimeWindows: Set<TimeWindow> = isNew ?
+            [] :
+            (habitToSave.timeWindows as? Set<TimeWindow> ?? [])
+        let timeWindowsToAdd: Set<TimeWindow> = isNew || previousTimeWindows.isEmpty ?
+            selectedTimeWindows :
+            selectedTimeWindows.subtracting(previousTimeWindows)
+        let timeWindowsToRemove: Set<TimeWindow> = previousTimeWindows.isEmpty ?
+            [] :
+            previousTimeWindows.subtracting(selectedTimeWindows)
+
+        timeWindowsToAdd.forEach { habitToSave.addToTimeWindows($0) }
+        timeWindowsToRemove.forEach { habitToSave.removeFromTimeWindows($0) }
 
         do {
             try PersistenceController.save(context: viewContext)

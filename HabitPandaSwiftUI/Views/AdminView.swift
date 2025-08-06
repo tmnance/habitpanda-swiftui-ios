@@ -270,12 +270,18 @@ extension AdminView {
     private func createSeedTestHabits(useLargeDataSet: Bool = false) {
         deleteAllHabits()
 
+        let timeWindows = TimeWindow.getAll(context: viewContext)
+        let TW_MORNING = timeWindows.first(where: { $0.name == "Morning" })
+        let TW_AFTERNOON = timeWindows.first(where: { $0.name == "Afternoon" })
+        let TW_EVENING = timeWindows.first(where: { $0.name == "Evening" })
+
         var seedHabits: [[String:Any]] = [
             [
                 "name": "Call mom",
                 "frequencyPerWeek": 1,
                 //                 98765432109876543210
                 "checkInHistory": "    X      X      X ",
+                "timeWindows": [TW_MORNING, TW_AFTERNOON],
             ],
             [
                 "name": "Do some form of exercise",
@@ -283,6 +289,7 @@ extension AdminView {
                 //                 98765432109876543210
                 "checkInHistory": " X X X  X X X  X  X ",
                 "checkInCooldownDays": 1,
+                "timeWindows": [],
             ],
             [
                 "name": "Have a no-TV night",
@@ -291,6 +298,7 @@ extension AdminView {
                 "checkInHistory": " X  X      X      X ",
                 //                     SMTWTFS
                 "applicableDaysOfWeek": " XXXXX ",
+                "timeWindows": [TW_EVENING],
             ],
             [
                 "name": "Make the bed every morning",
@@ -311,31 +319,37 @@ extension AdminView {
                         "frequencyDays": " XXXXX ",
                     ],
                 ],
+                "timeWindows": [TW_MORNING],
             ],
             [
                 "name": "Read for fun or growth 20 minutes",
                 "frequencyPerWeek": 5,
                 //                 98765432109876543210
                 "checkInHistory": " X X X X XXXX X XX X",
+                "timeWindows": [],
             ],
             [
                 "name": "Take daily vitamins",
                 "frequencyPerWeek": 7,
                 //                 98765432109876543210
                 "checkInHistory": "XX XXXXXXXXXX XXXXXX",
+                "timeWindows": [TW_MORNING],
             ],
         ]
 
         if useLargeDataSet {
+            let allTimeWindows = [TW_MORNING, TW_AFTERNOON, TW_EVENING]
             for i in 0..<14 {
                 let frequencyPerWeek = i + 1
                 let checkInHistory = Array(repeating: "", count: 30)
                     .map { _ in ["X", " "][Int.random(in: 0...frequencyPerWeek) == 0 ? 0 : 1] }
                     .joined(separator: "")
+                let twCount = Int.random(in: 0...3)
                 seedHabits.append([
                     "name": "Test Habit \(i + 1)",
                     "frequencyPerWeek": frequencyPerWeek,
                     "checkInHistory": checkInHistory,
+                    "timeWindows": twCount == 0 ? [] : Array(allTimeWindows.shuffled().prefix(twCount)),
                 ])
             }
         }
@@ -363,6 +377,9 @@ extension AdminView {
                 applicableDayIndexes: applicableDayIndexes,
                 checkInCooldownDays: seedHabit["checkInCooldownDays"] as? Int ?? 0
             )
+            if let timeWindows = (seedHabit["timeWindows"] as? [TimeWindow?] ?? [])?.compactMap({ $0 }), timeWindows.count > 0 {
+                newHabit.timeWindows = NSSet(array: timeWindows)
+            }
 
             Array(seedHabit["checkInHistory"] as? String ?? "").reversed().enumerated()
                 .forEach { dayOffset, checkInState in

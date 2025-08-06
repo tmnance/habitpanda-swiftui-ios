@@ -146,7 +146,6 @@ struct HabitDetailsCheckInsTabView: View {
                 .padding(.vertical)
             }
         }
-
     }
 
     private func getTitleText(checkIn: CheckIn) -> String {

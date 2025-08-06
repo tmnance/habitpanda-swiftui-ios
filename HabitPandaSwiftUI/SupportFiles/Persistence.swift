@@ -15,6 +15,12 @@ struct PersistenceController {
 
         let viewContext = result.container.viewContext
 
+        result.insertInitialTimeWindows(context: viewContext)
+        let timeWindows = TimeWindow.getAll(context: viewContext)
+        let TW_MORNING = timeWindows.first(where: { $0.name == "Morning" })
+        let TW_AFTERNOON = timeWindows.first(where: { $0.name == "Afternoon" })
+        let TW_EVENING = timeWindows.first(where: { $0.name == "Evening" })
+
         let habit1 = Habit(context: viewContext)
         habit1.createdAt = Date()
         habit1.uuid = UUID()
@@ -26,6 +32,7 @@ struct PersistenceController {
             .map { $0.rawValue }
             .sorted()
         habit1.checkInCooldownDays = Int32(0)
+        habit1.timeWindows = NSSet(array: [TW_MORNING, TW_AFTERNOON].compactMap { $0 })
 
         [-8, -4, -4, 0].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -77,6 +84,7 @@ struct PersistenceController {
             .map { $0.rawValue }
             .sorted()
         habit2.checkInCooldownDays = Int32(0)
+        habit2.timeWindows = NSSet(array: [TW_AFTERNOON].compactMap { $0 })
 
         [-16].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -123,6 +131,7 @@ struct PersistenceController {
             .map { $0.rawValue }
             .sorted()
         habit4.checkInCooldownDays = Int32(0)
+        habit4.timeWindows = NSSet(array: [TW_MORNING, TW_EVENING].compactMap { $0 })
 
         [-16].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
@@ -225,16 +234,17 @@ struct PersistenceController {
     }
 
     private func insertInitialTimeWindows(context: NSManagedObjectContext) {
-        let defaultTimeWindows: [(name: String, dayIndexes: [Int], order: Int)] = [
-            ("Morning", Array(0...6), 0),
-            ("Afternoon", Array(0...6), 1),
-            ("Evening", Array(0...6), 2),
+        let defaultTimeWindows: [(name: String, emoji: String, dayIndexes: [Int], order: Int)] = [
+            ("Morning", "🌅", Array(0...6), 0),
+            ("Afternoon", "🌤️", Array(0...6), 1),
+            ("Evening", "🌙", Array(0...6), 2),
         ]
 
         for timeWindowData in defaultTimeWindows {
             let timeWindow = TimeWindow(context: context)
             timeWindow.uuid = UUID()
             timeWindow.name = timeWindowData.name
+            timeWindow.emoji = timeWindowData.emoji
             timeWindow.applicableDayIndexes = timeWindowData.dayIndexes
             timeWindow.order = Int32(timeWindowData.order)
         }

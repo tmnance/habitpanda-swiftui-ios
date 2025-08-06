@@ -23,6 +23,10 @@ extension TimeWindow {
         name ?? ""
     }
 
+    var displayEmoji: String {
+        emoji ?? "❓"
+    }
+
     // MARK: - Instance Methods
     func isActiveOnDay(_ dayIndex: Int) -> Bool {
         return (applicableDaysOfWeekBitmask & (1 << dayIndex)) != 0

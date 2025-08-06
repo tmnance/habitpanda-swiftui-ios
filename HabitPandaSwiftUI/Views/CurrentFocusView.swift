@@ -26,7 +26,7 @@ struct CurrentFocusView: View {
                     Spacer()
                 } else {
                     ForEach(timeWindows, id: \.self) { timeWindow in
-                        Text("\(timeWindow.name ?? "") (\(timeWindow.order))")
+                        Text("\(timeWindow.displayEmoji) \(timeWindow.displayName) (\(timeWindow.order))")
                     }
                 }
             }
