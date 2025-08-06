@@ -68,7 +68,7 @@ struct HabitListView: View {
             .navigationTitle("HabitPanda 🐼")
             .navigationBarTitleDisplayMode(.inline)
             .fullScreenCover(isPresented: $isAddHabitViewPresented) {
-                AddEditHabitView()
+                HabitAddEditView()
             }
             .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
                 HabitReorderView()
@@ -77,11 +77,9 @@ struct HabitListView: View {
     }
 }
 
-struct HabitListView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            HabitListView()
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+#Preview {
+    NavigationStack {
+        HabitListView()
     }
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

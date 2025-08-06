@@ -478,18 +478,17 @@ extension HabitListCheckInGridView {
 }
 
 
-struct HabitListCheckInGridView_Previews: PreviewProvider {
-    static var previews: some View {
-        let currentDate = Date().stripTime()
-        let startDate = Calendar.current.date(
-            byAdding: .day,
-            value: -1 * (HabitListView.daysToDisplay - 1),
-            to: currentDate
-        )!
-        let endDate = currentDate
-        NavigationStack {
-            HabitListCheckInGridView(startDate: startDate, endDate: endDate)
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+// MARK: - Previews
+#Preview {
+    let currentDate = Date().stripTime()
+    let startDate = Calendar.current.date(
+        byAdding: .day,
+        value: -1 * (HabitListView.daysToDisplay - 1),
+        to: currentDate
+    )!
+    let endDate = currentDate
+    NavigationStack {
+        HabitListCheckInGridView(startDate: startDate, endDate: endDate)
     }
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

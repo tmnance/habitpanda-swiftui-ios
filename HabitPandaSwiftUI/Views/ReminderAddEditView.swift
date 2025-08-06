@@ -1,5 +1,5 @@
 //
-//  AddEditReminderView.swift
+//  ReminderAddEditView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/23/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddEditReminderView: View {
+struct ReminderAddEditView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.managedObjectContext) private var viewContext
 
@@ -119,9 +119,7 @@ struct AddEditReminderView: View {
     }
 }
 
-struct AddReminderView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddEditReminderView(habit: Habit.example, reminderToEdit: .constant(nil))
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    ReminderAddEditView(habit: Habit.example, reminderToEdit: .constant(nil))
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

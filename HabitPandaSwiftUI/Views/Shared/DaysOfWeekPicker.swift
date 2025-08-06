@@ -99,33 +99,32 @@ struct DaysOfWeekPicker: View {
     }
 }
 
-struct DaysOfWeekPicker_Previews: PreviewProvider {
-    struct Container: View {
-        @State var selectedDays: Set<DayOfWeek.Day> = []
-        var weekSubsetOptions: [DaysOfWeekPicker.WeekSubsetOption]? = nil
-        var body: some View {
-            if let weekSubsetOptions {
-                DaysOfWeekPicker(
-                    selectedDays: $selectedDays,
-                    weekSubsetOptions: weekSubsetOptions
-                )
-            } else {
-                DaysOfWeekPicker(selectedDays: $selectedDays)
-            }
+private struct DaysOfWeekPickerPreviewContainer: View {
+    @State var selectedDays: Set<DayOfWeek.Day> = []
+    var weekSubsetOptions: [DaysOfWeekPicker.WeekSubsetOption]? = nil
+
+    var body: some View {
+        if let weekSubsetOptions {
+            DaysOfWeekPicker(
+                selectedDays: $selectedDays,
+                weekSubsetOptions: weekSubsetOptions
+            )
+        } else {
+            DaysOfWeekPicker(selectedDays: $selectedDays)
         }
     }
+}
 
-    static var previews: some View {
-        VStack(spacing: 20) {
-            Container(selectedDays: [.sat, .sun])
-            Container().padding(.horizontal)
-            Container(
-                weekSubsetOptions: [
-                    DaysOfWeekPicker.WeekSubsetOption(.weekdays),
-                    DaysOfWeekPicker.WeekSubsetOption(.weekends),
-                    DaysOfWeekPicker.WeekSubsetOption(.custom),
-                ]
-            )
-        }
+#Preview {
+    VStack(spacing: 20) {
+        DaysOfWeekPickerPreviewContainer(selectedDays: [.sat, .sun])
+        DaysOfWeekPickerPreviewContainer().padding(.horizontal)
+        DaysOfWeekPickerPreviewContainer(
+            weekSubsetOptions: [
+                DaysOfWeekPicker.WeekSubsetOption(.weekdays),
+                DaysOfWeekPicker.WeekSubsetOption(.weekends),
+                DaysOfWeekPicker.WeekSubsetOption(.custom),
+            ]
+        )
     }
 }

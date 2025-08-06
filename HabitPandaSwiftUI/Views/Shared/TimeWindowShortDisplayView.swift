@@ -32,3 +32,17 @@ struct TimeWindowShortDisplayView: View {
         }
     }
 }
+
+#Preview {
+    let viewContext = PersistenceController.preview.container.viewContext
+    let timeWindows = TimeWindow.getAll(context: viewContext)
+
+    VStack(spacing: 20) {
+        ForEach(0..<timeWindows.count, id: \.self) { i in
+            TimeWindowShortDisplayView(
+                timeWindows: NSSet(array: Array(timeWindows[..<i])) as? Set<TimeWindow>
+            )
+        }
+    }
+    .environment(\.managedObjectContext, viewContext)
+}

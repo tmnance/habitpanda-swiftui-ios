@@ -174,17 +174,17 @@ struct HabitDetailsView: View {
 
             switch selectedTab {
             case .summary:
-                HabitDetailsSummaryTabView(habit: habit)
+                HabitDetailsSummaryView(habit: habit)
             case .checkIns:
-                HabitDetailsCheckInsTabView(habit: habit)
+                HabitDetailsCheckInsView(habit: habit)
             case .reminders:
-                HabitDetailsRemindersTabView(habit: habit)
+                HabitDetailsRemindersView(habit: habit)
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .toastView(toast: $toast)
         .fullScreenCover(isPresented: $isEditHabitViewPresented) {
-            AddEditHabitView(habitToEdit: habit)
+            HabitAddEditView(habitToEdit: habit)
         }
         // date change redraws view
         .id("habitDetails-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
@@ -232,11 +232,9 @@ struct HabitDetailsView: View {
     }
 }
 
-struct HabitDetailsView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            HabitDetailsView(habit: Habit.example)
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+#Preview {
+    NavigationStack {
+        HabitDetailsView(habit: Habit.example)
     }
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

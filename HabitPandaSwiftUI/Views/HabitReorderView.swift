@@ -88,9 +88,7 @@ struct HabitReorderView: View {
     }
 }
 
-struct ReorderHabitsView_Previews: PreviewProvider {
-    static var previews: some View {
-        HabitReorderView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    HabitReorderView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

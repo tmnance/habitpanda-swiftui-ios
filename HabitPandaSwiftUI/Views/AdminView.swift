@@ -637,10 +637,7 @@ extension AdminView {
     }
 }
 
-
-struct AdminView_Previews: PreviewProvider {
-    static var previews: some View {
-        AdminView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    AdminView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

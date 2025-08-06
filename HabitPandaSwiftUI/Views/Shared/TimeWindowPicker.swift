@@ -82,30 +82,28 @@ struct TimeWindowPicker: View {
     }
 }
 
-struct TimeWindowPicker_Previews: PreviewProvider {
-    struct Container: View {
-        @State var selectedTimeWindows: Set<TimeWindow> = []
-        @State var showAllButton: Bool = false
-        var body: some View {
-            TimeWindowPicker(
-                showAllButton: showAllButton,
-                selectedTimeWindows: $selectedTimeWindows
-            )
-        }
+private struct TimeWindowPickerPreviewContainer: View {
+    @State var selectedTimeWindows: Set<TimeWindow> = []
+    @State var showAllButton: Bool = false
+    var body: some View {
+        TimeWindowPicker(
+            showAllButton: showAllButton,
+            selectedTimeWindows: $selectedTimeWindows
+        )
     }
+}
 
-    static var previews: some View {
-        let viewContext = PersistenceController.preview.container.viewContext
-        let timeWindows = TimeWindow.getAll(context: viewContext)
+#Preview {
+    let viewContext = PersistenceController.preview.container.viewContext
+    let timeWindows = TimeWindow.getAll(context: viewContext)
 
-        VStack(spacing: 20) {
-            Container(
-                selectedTimeWindows: Set(
-                    [timeWindows.first, timeWindows.last].compactMap { $0 }
-                )
+    VStack(spacing: 20) {
+        TimeWindowPickerPreviewContainer(
+            selectedTimeWindows: Set(
+                [timeWindows.first, timeWindows.last].compactMap { $0 }
             )
-            Container(showAllButton: true).padding(.horizontal)
-        }
-        .environment(\.managedObjectContext, viewContext)
+        )
+        TimeWindowPickerPreviewContainer(showAllButton: true).padding(.horizontal)
     }
+    .environment(\.managedObjectContext, viewContext)
 }

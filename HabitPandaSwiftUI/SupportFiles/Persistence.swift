@@ -203,7 +203,9 @@ struct PersistenceController {
                 fatalError(error.localizedDescription)
             }
         }
-        seedInitialDataIfNeeded()
+        if !inMemory {
+            seedInitialDataIfNeeded()
+        }
     }
 
     static func save(context: NSManagedObjectContext) throws {

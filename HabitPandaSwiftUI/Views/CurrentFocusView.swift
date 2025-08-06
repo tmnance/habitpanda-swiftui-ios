@@ -36,11 +36,9 @@ struct CurrentFocusView: View {
     }
 }
 
-struct CurrentFocusView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            CurrentFocusView()
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+#Preview {
+    NavigationStack {
+        CurrentFocusView()
     }
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

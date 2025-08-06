@@ -68,11 +68,9 @@ struct AboutView: View {
     }
 }
 
-struct AboutView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            AboutView()
-        }
-        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+#Preview {
+    NavigationStack {
+        AboutView()
     }
+    .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

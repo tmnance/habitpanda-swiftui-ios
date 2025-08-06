@@ -1,5 +1,5 @@
 //
-//  AddEditHabitView.swift
+//  HabitAddEditView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/7/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AddEditHabitView: View {
+struct HabitAddEditView: View {
     private enum Field: Hashable {
         case name, frequencyOverflow
     }
@@ -322,9 +322,7 @@ struct AddEditHabitView: View {
     }
 }
 
-struct AddHabitView_Previews: PreviewProvider {
-    static var previews: some View {
-        AddEditHabitView()
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    HabitAddEditView()
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

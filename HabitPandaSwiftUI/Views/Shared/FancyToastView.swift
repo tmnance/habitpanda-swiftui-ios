@@ -85,22 +85,20 @@ struct FancyToastView: View {
     }
 }
 
-struct FancyToastView_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack {
-            ForEach([
-                FancyToastStyle.error,
-                FancyToastStyle.warning,
-                FancyToastStyle.info,
-                FancyToastStyle.success
-            ], id: \.self) { type in
-                FancyToastView(
-                    type: type,
-                    title: type.defaultTitle,
-                    message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    onCancelTapped: (type == .error ? {} : nil)
-                )
-            }
+#Preview {
+    VStack {
+        ForEach([
+            FancyToastStyle.error,
+            FancyToastStyle.warning,
+            FancyToastStyle.info,
+            FancyToastStyle.success
+        ], id: \.self) { type in
+            FancyToastView(
+                type: type,
+                title: type.defaultTitle,
+                message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                onCancelTapped: (type == .error ? {} : nil)
+            )
         }
     }
 }

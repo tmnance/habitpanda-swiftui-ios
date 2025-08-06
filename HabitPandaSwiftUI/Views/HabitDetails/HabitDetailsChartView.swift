@@ -1,5 +1,5 @@
 //
-//  HabitDetailsSummaryTabChartView.swift
+//  HabitDetailsChartView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 11/1/22.
@@ -8,7 +8,7 @@
 import SwiftUI
 import Charts
 
-struct HabitDetailsSummaryTabChartView: View {
+struct HabitDetailsChartView: View {
     @Environment(\.managedObjectContext) private var viewContext
     static let maxYAxisGridLines = 7.0
 
@@ -120,7 +120,7 @@ struct HabitDetailsSummaryTabChartView: View {
         .chartYAxis{
             AxisMarks(
                 position: .leading,
-                values: .stride(by: ceil((chartData.maxYAxisValue - chartData.minYAxisValue) / HabitDetailsSummaryTabChartView.maxYAxisGridLines))
+                values: .stride(by: ceil((chartData.maxYAxisValue - chartData.minYAxisValue) / HabitDetailsChartView.maxYAxisGridLines))
             ) { value in
                 AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 1))
                     .foregroundStyle(Color(Constants.Colors.chartGrid))
@@ -154,7 +154,7 @@ struct HabitDetailsSummaryTabChartView: View {
 
 
 // MARK: - Rolling average calculation
-extension HabitDetailsSummaryTabChartView {
+extension HabitDetailsChartView {
     private func getCheckInFrequencyRollingAverageData(
         fromStartDate startDate: Date? = nil,
         toEndDate endDate: Date? = nil,
@@ -233,10 +233,7 @@ extension HabitDetailsSummaryTabChartView {
     }
 }
 
-
-struct HabitSummaryChartView_Previews: PreviewProvider {
-    static var previews: some View {
-        HabitDetailsSummaryTabChartView(habit: Habit.example)
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    HabitDetailsChartView(habit: Habit.example)
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

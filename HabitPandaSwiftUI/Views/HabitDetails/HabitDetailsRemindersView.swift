@@ -1,5 +1,5 @@
 //
-//  HabitDetailsRemindersTabView.swift
+//  HabitDetailsRemindersView.swift
 //  HabitPandaSwiftUI
 //
 //  Created by Tim Nance on 10/11/22.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HabitDetailsRemindersTabView: View {
+struct HabitDetailsRemindersView: View {
     @Environment(\.managedObjectContext) private var viewContext
 
     @ObservedObject var habit: Habit
@@ -59,7 +59,7 @@ struct HabitDetailsRemindersTabView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
             .fullScreenCover(isPresented: $isAddEditReminderViewPresented) {
-                AddEditReminderView(habit: habit, reminderToEdit: self.$reminderToEdit)
+                ReminderAddEditView(habit: habit, reminderToEdit: self.$reminderToEdit)
             }
         }
         .onAppear {
@@ -77,9 +77,7 @@ struct HabitDetailsRemindersTabView: View {
     }
 }
 
-struct HabitRemindersTabView_Previews: PreviewProvider {
-    static var previews: some View {
-        HabitDetailsRemindersTabView(habit: Habit.example)
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    HabitDetailsRemindersView(habit: Habit.example)
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }

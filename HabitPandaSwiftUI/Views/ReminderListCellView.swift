@@ -39,13 +39,11 @@ struct ReminderListCellView: View {
     }
 }
 
-struct ReminderListCellView_Previews: PreviewProvider {
-    static var previews: some View {
-        ReminderListCellView(
-            reminder: Reminder.example,
-            onEdit: { _ in },
-            onRemove: { _ in }
-        )
-            .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
+#Preview {
+    ReminderListCellView(
+        reminder: Reminder.example,
+        onEdit: { _ in },
+        onRemove: { _ in }
+    )
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
