@@ -20,8 +20,8 @@ struct AddEditHabitView: View {
     @State private var frequencySliderValue = Float(Constants.Habit.defaultFrequencyPerWeek)
     @State private var frequencyOverflow = ""
     @State private var selectedCheckInType: CheckInType = .defaultValue
-    @State private var isDaysOffActive = false
-    @State private var selectedInactiveDaysOfWeek: Set<DayOfWeek.Day> = []
+    @State private var selectedApplicableDaysOfWeek: Set<DayOfWeek.Day> = DayOfWeek.WeekSubset.all.days
+    @State private var selectedTimeWindows: Set<TimeWindow> = []
     @State private var isCheckInCooldownActive = false
     @State private var checkInCooldownDays: Int = 1
     @FocusState private var focusedField: Field?
@@ -129,29 +129,30 @@ struct AddEditHabitView: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Group {
-                            HStack {
-                                Text("Days Off").font(.title2)
-                                Toggle("Days Off Active", isOn: $isDaysOffActive)
-                                    .labelsHidden()
-                            }
-                            Text("(optional off days for this habit)").font(.footnote)
+                            Text("Days Active").font(.title2)
+                            Text("(days this habit is relevant)").font(.footnote)
                         }
                         .onTapGesture {
                             hideKeyboard()
                         }
-                        if isDaysOffActive {
-                            DaysOfWeekPicker(
-                                selectedDays: $selectedInactiveDaysOfWeek,
-                                weekSubsetOptions: [
-                                    DaysOfWeekPicker.WeekSubsetOption(.weekdays),
-                                    DaysOfWeekPicker.WeekSubsetOption(.weekends),
-                                    DaysOfWeekPicker.WeekSubsetOption(.custom),
-                                ]
-                            )
-                                .onChange(of: selectedInactiveDaysOfWeek) {
-                                    hideKeyboard()
-                                }
+                        DaysOfWeekPicker(selectedDays: $selectedApplicableDaysOfWeek)
+                            .onChange(of: selectedApplicableDaysOfWeek) {
+                                hideKeyboard()
+                            }
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Group {
+                            Text("Applicable Time Windows").font(.title2)
+                            Text("(limit this habit to certain times of day)").font(.footnote)
                         }
+                        .onTapGesture {
+                            hideKeyboard()
+                        }
+                        TimeWindowPicker(showAllButton: true, selectedTimeWindows: $selectedTimeWindows)
+                            .onChange(of: selectedTimeWindows) {
+                                hideKeyboard()
+                            }
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -238,9 +239,19 @@ struct AddEditHabitView: View {
                 }
             }
 
-            isDaysOffActive = (habitToEdit?.inactiveDaysOfWeek ?? []).count > 0
-            selectedInactiveDaysOfWeek = Set((habitToEdit?.inactiveDaysOfWeek ?? [])
-                .compactMap { DayOfWeek.Day(rawValue: $0) })
+            selectedApplicableDaysOfWeek = {
+                if let applicableDayIndexes = habitToEdit?.applicableDayIndexes {
+                    return Set(applicableDayIndexes.compactMap { DayOfWeek.Day(rawValue: $0) })
+                } else {
+                    return DayOfWeek.WeekSubset.all.days
+                }
+            }()
+
+            selectedTimeWindows = {
+                guard let habitToEdit else { return [] }
+                return habitToEdit.timeWindows as? Set<TimeWindow> ?? []
+            }()
+
             isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
             checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
         }
@@ -253,7 +264,7 @@ struct AddEditHabitView: View {
     func isValidInput() -> Bool {
         return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
             (!isSliderOverflowActive || Int(frequencyOverflow) ?? 0 > 0) &&
-            selectedInactiveDaysOfWeek.count < 7
+            selectedApplicableDaysOfWeek.count > 0
     }
 
     func getFrequencyPerWeekDisplayText() -> String {
@@ -284,13 +295,23 @@ struct AddEditHabitView: View {
         habitToSave.name = name.trimmingCharacters(in: .whitespacesAndNewlines)
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.checkInTypeRaw = selectedCheckInType.rawValue
-        habitToSave.inactiveDaysOfWeek = (isDaysOffActive ?
-            selectedInactiveDaysOfWeek
-                .map { $0.rawValue }
-                .sorted() :
-            []
-        )
+        habitToSave.applicableDayIndexes = selectedApplicableDaysOfWeek
+            .map { $0.rawValue }
+            .sorted()
         habitToSave.checkInCooldownDays = Int32(isCheckInCooldownActive ? checkInCooldownDays : 0)
+
+        let previousTimeWindows: Set<TimeWindow> = isNew ?
+            [] :
+            (habitToSave.timeWindows as? Set<TimeWindow> ?? [])
+        let timeWindowsToAdd: Set<TimeWindow> = isNew || previousTimeWindows.isEmpty ?
+            selectedTimeWindows :
+            selectedTimeWindows.subtracting(previousTimeWindows)
+        let timeWindowsToRemove: Set<TimeWindow> = previousTimeWindows.isEmpty ?
+            [] :
+            previousTimeWindows.subtracting(selectedTimeWindows)
+
+        timeWindowsToAdd.forEach { habitToSave.addToTimeWindows($0) }
+        timeWindowsToRemove.forEach { habitToSave.removeFromTimeWindows($0) }
 
         do {
             try PersistenceController.save(context: viewContext)

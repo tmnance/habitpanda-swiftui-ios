@@ -18,9 +18,19 @@ struct HabitPandaSwiftUIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $router.path) {
+            TabView {
                 HabitListView()
+                    .tabItem {
+                        Label("All Habits", systemImage: "list.bullet.rectangle")
+                    }
+                CurrentFocusView()
+                    .tabItem {
+                        Label("Current Focus", systemImage: "clock")
+                    }
             }
+//            NavigationStack(path: $router.path) {
+//                HabitListView()
+//            }
             .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
             .environmentObject(router)
             .onAppear {

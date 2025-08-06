@@ -9,10 +9,12 @@
 /* Begin PBXBuildFile section */
 		1C23BD87297F3BBD00B6F08F /* DaysOfWeekPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */; };
 		1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */; };
+		1C73BFD42E4399DF00295A2A /* TimeWindowShortDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C73BFD32E4399DF00295A2A /* TimeWindowShortDisplayView.swift */; };
 		1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* AddEditReminderView.swift */; };
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
 		1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */; };
 		1C8D24BE291D5D0500ED1296 /* FancyToastModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */; };
+		1C8EDB042D81CAD5007022FD /* TimeWindowPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */; };
 		1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CC628F09D04007D02F3 /* HabitListView.swift */; };
 		1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C9F43082916E6D9007B8219 /* AboutView.swift */; };
 		1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B5FE28F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld */; };
@@ -24,6 +26,8 @@
 		1CA0B613290056EB002103EA /* NotificationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B612290056EB002103EA /* NotificationHelper.swift */; };
 		1CA0B6152901CF00002103EA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B6142901CF00002103EA /* AppDelegate.swift */; };
 		1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CA0B61629045F2C002103EA /* ReminderListCellView.swift */; };
+		1CB577692D5BA40A00186ABA /* TimeWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB577682D5BA40600186ABA /* TimeWindow.swift */; };
+		1CB5776B2D5BAD3000186ABA /* CurrentFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */; };
 		1CBA7F82291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */; };
 		1CC0B2542912CAF6003198E1 /* HabitListCheckInGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0B2532912CAF6003198E1 /* HabitListCheckInGridView.swift */; };
 		1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDA4CB328F096AD007D02F3 /* HabitPandaSwiftUIApp.swift */; };
@@ -48,10 +52,12 @@
 		1C23BD85297F2E8900B6F08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysOfWeekPicker.swift; sourceTree = "<group>"; };
 		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
+		1C73BFD32E4399DF00295A2A /* TimeWindowShortDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeWindowShortDisplayView.swift; sourceTree = "<group>"; };
 		1C8515952905A572009FC9B3 /* AddEditReminderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditReminderView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastView.swift; sourceTree = "<group>"; };
 		1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FancyToastModifier.swift; sourceTree = "<group>"; };
+		1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeWindowPicker.swift; sourceTree = "<group>"; };
 		1C9F43082916E6D9007B8219 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		1CA0B5FF28F60680002103EA /* HabitPandaSwiftUI.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = HabitPandaSwiftUI.xcdatamodel; sourceTree = "<group>"; };
 		1CA0B60128F60ED4002103EA /* HabitDetailsSummaryTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsSummaryTabView.swift; sourceTree = "<group>"; };
@@ -62,6 +68,8 @@
 		1CA0B612290056EB002103EA /* NotificationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHelper.swift; sourceTree = "<group>"; };
 		1CA0B6142901CF00002103EA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CA0B61629045F2C002103EA /* ReminderListCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListCellView.swift; sourceTree = "<group>"; };
+		1CB577682D5BA40600186ABA /* TimeWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeWindow.swift; sourceTree = "<group>"; };
+		1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentFocusView.swift; sourceTree = "<group>"; };
 		1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsSummaryTabChartView.swift; sourceTree = "<group>"; };
 		1CC0B2532912CAF6003198E1 /* HabitListCheckInGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitListCheckInGridView.swift; sourceTree = "<group>"; };
 		1CDA4CB028F096AD007D02F3 /* HabitPandaSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitPandaSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +110,8 @@
 				1C8D24BD291D5D0500ED1296 /* FancyToastModifier.swift */,
 				1C8D24BB291D47FD00ED1296 /* FancyToastView.swift */,
 				1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */,
+				1C8EDB032D81CAD5007022FD /* TimeWindowPicker.swift */,
+				1C73BFD32E4399DF00295A2A /* TimeWindowShortDisplayView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -149,6 +159,7 @@
 				1CDA4CDD28F33C5C007D02F3 /* CheckIn.swift */,
 				1CDA4CCD28F0AB2C007D02F3 /* Habit.swift */,
 				1CDA4CDF28F34270007D02F3 /* Reminder.swift */,
+				1CB577682D5BA40600186ABA /* TimeWindow.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -161,6 +172,7 @@
 				1CDA4CCB28F0A103007D02F3 /* AddEditHabitView.swift */,
 				1C8515952905A572009FC9B3 /* AddEditReminderView.swift */,
 				1CDA4CD328F0C4FE007D02F3 /* AdminView.swift */,
+				1CB5776A2D5BAD2A00186ABA /* CurrentFocusView.swift */,
 				1CA0B60328F60EDF002103EA /* HabitDetailsCheckInsTabView.swift */,
 				1CA0B60528F60EE9002103EA /* HabitDetailsRemindersTabView.swift */,
 				1CBA7F81291151F400DA56AA /* HabitDetailsSummaryTabChartView.swift */,
@@ -240,7 +252,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1400;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1640;
 				TargetAttributes = {
 					1CDA4CAF28F096AD007D02F3 = {
 						CreatedOnToolsVersion = 14.0.1;
@@ -291,10 +303,12 @@
 				1CA0B61729045F2C002103EA /* ReminderListCellView.swift in Sources */,
 				1C8D24BC291D47FD00ED1296 /* FancyToastView.swift in Sources */,
 				1CDA4CE328F3B02D007D02F3 /* Date+Rounding.swift in Sources */,
+				1CB577692D5BA40A00186ABA /* TimeWindow.swift in Sources */,
 				1CDA4CCA28F09D67007D02F3 /* Persistence.swift in Sources */,
 				1CDA4CE028F34270007D02F3 /* Reminder.swift in Sources */,
 				1CDA4CE528F3B05E007D02F3 /* DateHelper.swift in Sources */,
 				1CDA4CE728F3B071007D02F3 /* DayOfWeek.swift in Sources */,
+				1CB5776B2D5BAD3000186ABA /* CurrentFocusView.swift in Sources */,
 				1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */,
 				1C9F43092916E6D9007B8219 /* AboutView.swift in Sources */,
 				1CA0B60628F60EE9002103EA /* HabitDetailsRemindersTabView.swift in Sources */,
@@ -306,7 +320,9 @@
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
+				1C8EDB042D81CAD5007022FD /* TimeWindowPicker.swift in Sources */,
 				1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */,
+				1C73BFD42E4399DF00295A2A /* TimeWindowShortDisplayView.swift in Sources */,
 				1CDA4CDC28F11A57007D02F3 /* HabitDetailsView.swift in Sources */,
 				1C8515962905A572009FC9B3 /* AddEditReminderView.swift in Sources */,
 				1CDA4CDE28F33C5C007D02F3 /* CheckIn.swift in Sources */,
@@ -358,6 +374,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -420,6 +437,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -450,7 +468,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HabitPandaSwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HabitPandaSwiftUI/Info.plist;
@@ -459,7 +476,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -482,7 +499,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HabitPandaSwiftUI/Preview Content\"";
-				DEVELOPMENT_TEAM = 4B74LG3RTF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HabitPandaSwiftUI/Info.plist;
@@ -491,7 +507,7 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

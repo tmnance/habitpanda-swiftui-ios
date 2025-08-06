@@ -23,7 +23,10 @@ struct HabitReorderView: View {
                 } else {
                     List {
                         ForEach(habits) { habit in
-                            HStack {
+                            HStack(spacing: 4) {
+                                TimeWindowShortDisplayView(timeWindows: habit.timeWindows as? Set<TimeWindow>)
+                                    .frame(width: 36)
+
                                 Text(habit.name ?? "")
                                 Spacer()
                                 Image(systemName: "line.horizontal.3")

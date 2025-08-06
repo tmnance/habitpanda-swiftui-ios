@@ -270,12 +270,18 @@ extension AdminView {
     private func createSeedTestHabits(useLargeDataSet: Bool = false) {
         deleteAllHabits()
 
+        let timeWindows = TimeWindow.getAll(context: viewContext)
+        let TW_MORNING = timeWindows.first(where: { $0.name == "Morning" })
+        let TW_AFTERNOON = timeWindows.first(where: { $0.name == "Afternoon" })
+        let TW_EVENING = timeWindows.first(where: { $0.name == "Evening" })
+
         var seedHabits: [[String:Any]] = [
             [
                 "name": "Call mom",
                 "frequencyPerWeek": 1,
                 //                 98765432109876543210
                 "checkInHistory": "    X      X      X ",
+                "timeWindows": [TW_MORNING, TW_AFTERNOON],
             ],
             [
                 "name": "Do some form of exercise",
@@ -283,6 +289,7 @@ extension AdminView {
                 //                 98765432109876543210
                 "checkInHistory": " X X X  X X X  X  X ",
                 "checkInCooldownDays": 1,
+                "timeWindows": [],
             ],
             [
                 "name": "Have a no-TV night",
@@ -290,7 +297,8 @@ extension AdminView {
                 //                 98765432109876543210
                 "checkInHistory": " X  X      X      X ",
                 //                     SMTWTFS
-                "inactiveDaysOfWeek": "X     X",
+                "applicableDaysOfWeek": " XXXXX ",
+                "timeWindows": [TW_EVENING],
             ],
             [
                 "name": "Make the bed every morning",
@@ -311,31 +319,37 @@ extension AdminView {
                         "frequencyDays": " XXXXX ",
                     ],
                 ],
+                "timeWindows": [TW_MORNING],
             ],
             [
                 "name": "Read for fun or growth 20 minutes",
                 "frequencyPerWeek": 5,
                 //                 98765432109876543210
                 "checkInHistory": " X X X X XXXX X XX X",
+                "timeWindows": [],
             ],
             [
                 "name": "Take daily vitamins",
                 "frequencyPerWeek": 7,
                 //                 98765432109876543210
                 "checkInHistory": "XX XXXXXXXXXX XXXXXX",
+                "timeWindows": [TW_MORNING],
             ],
         ]
 
         if useLargeDataSet {
+            let allTimeWindows = [TW_MORNING, TW_AFTERNOON, TW_EVENING]
             for i in 0..<14 {
                 let frequencyPerWeek = i + 1
                 let checkInHistory = Array(repeating: "", count: 30)
                     .map { _ in ["X", " "][Int.random(in: 0...frequencyPerWeek) == 0 ? 0 : 1] }
                     .joined(separator: "")
+                let twCount = Int.random(in: 0...3)
                 seedHabits.append([
                     "name": "Test Habit \(i + 1)",
                     "frequencyPerWeek": frequencyPerWeek,
                     "checkInHistory": checkInHistory,
+                    "timeWindows": twCount == 0 ? [] : Array(allTimeWindows.shuffled().prefix(twCount)),
                 ])
             }
         }
@@ -347,7 +361,7 @@ extension AdminView {
         )!
 
         seedHabits.enumerated().forEach { i, seedHabit in
-            let inactiveDaysOfWeek = Array(seedHabit["inactiveDaysOfWeek"] as? String ?? "")
+            let applicableDayIndexes = Array(seedHabit["applicableDaysOfWeek"] as? String ?? "XXXXXXX")
                 .enumerated()
                 .filter { $0.1 != " " }
                 .map { $0.0 as Int }
@@ -360,9 +374,12 @@ extension AdminView {
                     to: createdAtDate
                 )!,
                 order: i,
-                inactiveDaysOfWeek: inactiveDaysOfWeek,
+                applicableDayIndexes: applicableDayIndexes,
                 checkInCooldownDays: seedHabit["checkInCooldownDays"] as? Int ?? 0
             )
+            if let timeWindows = (seedHabit["timeWindows"] as? [TimeWindow?] ?? [])?.compactMap({ $0 }), timeWindows.count > 0 {
+                newHabit.timeWindows = NSSet(array: timeWindows)
+            }
 
             Array(seedHabit["checkInHistory"] as? String ?? "").reversed().enumerated()
                 .forEach { dayOffset, checkInState in
@@ -418,7 +435,7 @@ extension AdminView {
         frequencyPerWeek: Int,
         createdAt: Date,
         order: Int,
-        inactiveDaysOfWeek: [Int] = [],
+        applicableDayIndexes: [Int] = [],
         checkInCooldownDays: Int = 0
     ) -> Habit {
         let habitToSave = Habit(context: viewContext)
@@ -427,7 +444,7 @@ extension AdminView {
         habitToSave.name = name
         habitToSave.frequencyPerWeek = Int32(frequencyPerWeek)
         habitToSave.order = Int32(order)
-        habitToSave.inactiveDaysOfWeek = inactiveDaysOfWeek
+        habitToSave.applicableDayIndexes = applicableDayIndexes
         habitToSave.checkInCooldownDays = Int32(checkInCooldownDays)
 
         return habitToSave
@@ -485,6 +502,7 @@ extension AdminView {
 // MARK: - Data Export Methods
 extension AdminView {
     private struct ExportHabit: Codable {
+        // TODO: add support for both inactiveDaysOfWeek and applicableDayIndexes/applicableDaysOfWeekBitmask. May need to split export and import structs?
         let uuid: String
         let createdAt: Int
         let name: String
@@ -492,7 +510,7 @@ extension AdminView {
         let frequencyPerWeek: Int
         let checkIns: [ExportCheckIn]
         let reminders: [ExportReminder]
-        let inactiveDaysOfWeek: [Int]
+        let applicableDayIndexes: [Int]
         let checkInCooldownDays: Int
 
         init(habit: Habit) {
@@ -507,7 +525,7 @@ extension AdminView {
             self.reminders = (habit.reminders as? Set<Reminder> ?? [])
                 .sorted { $0.createdAt! < $1.createdAt! }
                 .map { ExportReminder(reminder: $0) }
-            self.inactiveDaysOfWeek = habit.inactiveDaysOfWeek
+            self.applicableDayIndexes = habit.applicableDayIndexes
             self.checkInCooldownDays = Int(habit.checkInCooldownDays)
         }
     }
@@ -586,7 +604,7 @@ extension AdminView {
                 frequencyPerWeek: importedHabit.frequencyPerWeek,
                 createdAt: Date(timeIntervalSince1970: Double(importedHabit.createdAt)),
                 order: importedHabit.order,
-                inactiveDaysOfWeek: importedHabit.inactiveDaysOfWeek,
+                applicableDayIndexes: importedHabit.applicableDayIndexes,
                 checkInCooldownDays: importedHabit.checkInCooldownDays
             )
             importedHabit.checkIns.forEach { importedCheckIn in

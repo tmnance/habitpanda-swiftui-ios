@@ -38,18 +38,18 @@ struct DayOfWeek {
 
     // Enum for subsets of days, like weekdays, weekends, etc.
     enum WeekSubset: Int {
-        case daily = 0, weekdays = 1, weekends = 2, custom = 3
+        case all = 0, weekdays = 1, weekends = 2, custom = 3
         var description: String {
             switch self {
-            case .daily: return "Daily"
+            case .all: return "All"
             case .weekdays: return "Weekdays"
-            case .weekends: return "Weekend"
+            case .weekends: return "Weekends"
             case .custom: return "Custom"
             }
         }
         var days: Set<Day> {
             switch self {
-            case .daily: return Set(Day.allCases)
+            case .all: return Set(Day.allCases)
             case .weekdays: return [.mon, .tue, .wed, .thu, .fri]
             case .weekends: return [.sat, .sun]
             case .custom: return []

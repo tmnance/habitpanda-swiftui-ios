@@ -31,7 +31,7 @@ struct DaysOfWeekPicker: View {
     }()
     @Binding var selectedDays: Set<DayOfWeek.Day>
     var weekSubsetOptions: [WeekSubsetOption] = [
-        WeekSubsetOption(.daily),
+        WeekSubsetOption(.all),
         WeekSubsetOption(.weekdays),
         WeekSubsetOption(.weekends),
         WeekSubsetOption(.custom),
@@ -87,8 +87,8 @@ struct DaysOfWeekPicker: View {
             return .custom
         }
         switch currentActiveDaySet {
-        case DayOfWeek.WeekSubset.daily.days:
-            return .daily
+        case DayOfWeek.WeekSubset.all.days:
+            return .all
         case DayOfWeek.WeekSubset.weekdays.days:
             return .weekdays
         case DayOfWeek.WeekSubset.weekends.days:
