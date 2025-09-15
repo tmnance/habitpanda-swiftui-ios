@@ -221,7 +221,8 @@ struct HabitAddEditView: View {
                 self.timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { _ in
                     focusedField = .name
                     if focusedField == .name {
-                        self.timer?.invalidate()
+                        timer?.invalidate()
+                        timer = nil
                     }
                 }
             case .edit:
@@ -254,6 +255,11 @@ struct HabitAddEditView: View {
 
             isCheckInCooldownActive = (habitToEdit?.checkInCooldownDays ?? 0) > 0
             checkInCooldownDays = max(Int(habitToEdit?.checkInCooldownDays ?? 0), 1)
+        }
+        .onDisappear {
+            // Clean up timer to prevent memory leaks
+            timer?.invalidate()
+            timer = nil
         }
     }
 

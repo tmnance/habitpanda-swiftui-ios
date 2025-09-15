@@ -16,7 +16,7 @@ struct ReminderListCellView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            Text(TimeOfDay.getDisplayDate(hour: Int(reminder.hour), minute: Int(reminder.minute)))
+            Text(TimeOfDay.getDisplayTime(hour: Int(reminder.hour), minute: Int(reminder.minute)))
                 .frame(width: 90, alignment: .leading)
 
             HStack(spacing: 0) {
