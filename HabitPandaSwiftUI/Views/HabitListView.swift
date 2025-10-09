@@ -26,53 +26,40 @@ struct HabitListView: View {
         let endDate = currentDate
 
         NavigationStack(path: $router.path) {
-            VStack {
-                HabitListCheckInGridView(startDate: startDate, endDate: endDate)
+            HabitListCheckInGridView(startDate: startDate, endDate: endDate)
                 // date change redraws view
-                    .id("checkInGrid-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
-                    .onNewDay {
-                        withAnimation {
-                            currentDate = Date().stripTime()
-                        }
+                .id("checkInGrid-\(currentDate.formatted(.dateTime.month(.twoDigits).day(.twoDigits)))")
+                .onNewDay {
+                    withAnimation {
+                        currentDate = Date().stripTime()
                     }
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                    }) {
+                }
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
                         NavigationLink(destination: AboutView()) {
                             Text("About")
-                                .frame(minWidth: Constants.minTappableDimension)
-                                .frame(height: Constants.minTappableDimension)
+                        }
+                    }
+
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Reorder Habits", systemImage: "arrow.up.arrow.down") {
+                            isReorderHabitsViewPresented.toggle()
+                        }
+                    }
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Add Habit", systemImage: "plus") {
+                            isAddHabitViewPresented.toggle()
                         }
                     }
                 }
-
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isReorderHabitsViewPresented.toggle()
-                    }) {
-                        Label("Reorder Habits", systemImage: "arrow.up.arrow.down")
-                    }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
-                    Button(action: {
-                        isAddHabitViewPresented.toggle()
-                    }) {
-                        Label("Add Habit", systemImage: "plus")
-                    }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
+                .navigationTitle("HabitPanda 🐼")
+                .navigationBarTitleDisplayMode(.inline)
+                .fullScreenCover(isPresented: $isAddHabitViewPresented) {
+                    HabitAddEditView()
                 }
-            }
-            .navigationTitle("HabitPanda 🐼")
-            .navigationBarTitleDisplayMode(.inline)
-            .fullScreenCover(isPresented: $isAddHabitViewPresented) {
-                HabitAddEditView()
-            }
-            .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
-                HabitReorderView()
-            }
+                .fullScreenCover(isPresented: $isReorderHabitsViewPresented) {
+                    HabitReorderView()
+                }
         }
     }
 }

@@ -84,8 +84,8 @@ struct HabitDetailsChartView: View {
                 .lineStyle(.init(lineWidth: 2, lineCap: .round, dash: [10, 10]))
                 .foregroundStyle(Color(Constants.Colors.tint2))
                 .annotation(position: .overlay, alignment: .leading) {
-                    Group {
-                        Text("🎯").baselineOffset(1) +
+                    HStack(alignment: .firstTextBaseline, spacing: 0) {
+                        Text("🎯").baselineOffset(1)
                         Text("\(habit.frequencyPerWeek)x/wk")
                     }
                     .foregroundColor(Color(Constants.Colors.subText))

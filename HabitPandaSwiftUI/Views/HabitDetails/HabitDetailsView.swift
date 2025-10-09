@@ -198,8 +198,6 @@ struct HabitDetailsView: View {
                 Button("Edit") {
                     isEditHabitViewPresented.toggle()
                 }
-                .frame(minWidth: Constants.minTappableDimension)
-                .frame(height: Constants.minTappableDimension)
             }
         }
         .navigationTitle("Habit Details")

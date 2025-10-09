@@ -54,24 +54,20 @@ struct ReminderAddEditView: View {
             }
             .padding(.horizontal, 20)
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", systemImage: "xmark", role: .cancel) {
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", systemImage: "checkmark", role: .confirm) {
                         save()
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                     .disabled(selectedFrequencyDays.count == 0)
                 }
             }
-            .navigationTitle(interactionMode == .add ? "Add a New Reminder" : "Edit Reminder")
+            .navigationTitle("\(interactionMode == .add ? "Add" : "Edit") Reminder")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {

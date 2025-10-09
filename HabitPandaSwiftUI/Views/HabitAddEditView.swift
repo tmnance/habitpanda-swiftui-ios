@@ -193,24 +193,20 @@ struct HabitAddEditView: View {
                 .textFieldStyle(.roundedBorder)
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", systemImage: "xmark", role: .cancel) {
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Save") {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", systemImage: "checkmark", role: .confirm) {
                         save()
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                     .disabled(!isValidInput())
                 }
             }
-            .navigationTitle(interactionMode == .add ? "Create a New Habit" : "Edit Habit")
+            .navigationTitle("\(interactionMode == .add ? "Add" : "Edit") Habit")
             .navigationBarTitleDisplayMode(.inline)
         }
         .onAppear {

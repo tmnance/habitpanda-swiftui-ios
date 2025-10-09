@@ -41,12 +41,14 @@ struct HabitListCheckInGridView: View {
     }
 
     var body: some View {
-        VStack {
+        ZStack(alignment: .topLeading) {
             if habits.isEmpty {
-                Text("🥺")
-                Text("No habits found").font(.title2)
-                Text("Tap the + button above to create your first habit!").font(.footnote)
-                Spacer()
+                VStack {
+                    Text("🥺")
+                    Text("No habits found").font(.title2)
+                    Text("Tap the + button above to create your first habit!").font(.footnote)
+                    Spacer()
+                }
             } else {
                 GeometryReader { geometry in
                     ScrollViewReader { proxy in
@@ -89,8 +91,16 @@ struct HabitListCheckInGridView: View {
                 .onAppear {
                     buildHabitCheckInMaps()
                 }
+
+                // mask out any content showing above the frozen header when scrolling
+                Rectangle()
+                    .foregroundStyle(.background)
+                    .frame(height: 200)
+                    .frame(maxWidth: .infinity)
+                    .offset(x: 0, y: -200)
             }
         }
+        .scrollEdgeEffectStyle(.hard, for: .top)
         .toastView(toast: $toast)
     }
 }

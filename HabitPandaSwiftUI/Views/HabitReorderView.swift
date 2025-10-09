@@ -50,20 +50,16 @@ struct HabitReorderView: View {
                 )
             }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Cancel") {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", systemImage: "xmark", role: .cancel) {
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Done") {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", systemImage: "checkmark", role: .confirm) {
                         updateHabitOrder()
                         dismiss()
                     }
-                    .frame(minWidth: Constants.minTappableDimension)
-                    .frame(height: Constants.minTappableDimension)
                 }
             }
             .navigationTitle("Reorder Habits")
