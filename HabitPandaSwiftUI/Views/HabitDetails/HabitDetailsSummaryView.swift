@@ -17,7 +17,7 @@ struct HabitDetailsSummaryView: View {
     var body: some View {
         ScrollView(.vertical) {
             VStack {
-                Text("7-Day Rolling Average")
+                Text("7-Day Rolling Sum")
                     .font(.system(size: 20))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
