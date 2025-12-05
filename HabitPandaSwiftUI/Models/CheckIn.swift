@@ -83,9 +83,9 @@ extension CheckIn {
         }
 
         if let types {
-            let uuidArgs = types.map { $0.rawValue as CVarArg }
-            if uuidArgs.count > 0 {
-                predicates.append(NSPredicate(format: "typeRaw IN %@", argumentArray: [uuidArgs]))
+            let typeArgs = types.map { $0.rawValue as CVarArg }
+            if typeArgs.count > 0 {
+                predicates.append(NSPredicate(format: "typeRaw IN %@", argumentArray: [typeArgs]))
             }
         }
 

@@ -17,13 +17,8 @@ struct HabitDetailsSummaryView: View {
     var body: some View {
         ScrollView(.vertical) {
             VStack {
-                Text("7-Day Rolling Sum")
-                    .font(.system(size: 20))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-
-                HabitDetailsChartView(habit: habit)
-                    .padding(EdgeInsets(top: 0, leading: 4, bottom: 16, trailing: 16))
+                HabitDetailsChartWrapperView(habit: habit)
+                    .padding(.bottom, 16)
 
                 Button(action: {
                     showDeleteHabitAlert = true

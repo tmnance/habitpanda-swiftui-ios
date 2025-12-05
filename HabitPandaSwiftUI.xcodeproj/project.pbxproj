@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1C23BD87297F3BBD00B6F08F /* DaysOfWeekPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */; };
 		1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */; };
+		1C55CEAA2EE372D700B02BE6 /* HabitDetailsChartWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C55CEA92EE372D400B02BE6 /* HabitDetailsChartWrapperView.swift */; };
 		1C73BFD42E4399DF00295A2A /* TimeWindowShortDisplayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C73BFD32E4399DF00295A2A /* TimeWindowShortDisplayView.swift */; };
 		1C8515962905A572009FC9B3 /* ReminderAddEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C8515952905A572009FC9B3 /* ReminderAddEditView.swift */; };
 		1C8D24B7291C548000ED1296 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */; };
@@ -53,6 +54,7 @@
 		1C23BD85297F2E8900B6F08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysOfWeekPicker.swift; sourceTree = "<group>"; };
 		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
+		1C55CEA92EE372D400B02BE6 /* HabitDetailsChartWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitDetailsChartWrapperView.swift; sourceTree = "<group>"; };
 		1C73BFD32E4399DF00295A2A /* TimeWindowShortDisplayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeWindowShortDisplayView.swift; sourceTree = "<group>"; };
 		1C8515952905A572009FC9B3 /* ReminderAddEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderAddEditView.swift; sourceTree = "<group>"; };
 		1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 			children = (
 				1CBA7F81291151F400DA56AA /* HabitDetailsChartView.swift */,
 				1CCE2B282EE1CB9700EFDEA1 /* HabitDetailsChartViewModel.swift */,
+				1C55CEA92EE372D400B02BE6 /* HabitDetailsChartWrapperView.swift */,
 				1CA0B60328F60EDF002103EA /* HabitDetailsCheckInsView.swift */,
 				1CA0B60528F60EE9002103EA /* HabitDetailsRemindersView.swift */,
 				1CA0B60128F60ED4002103EA /* HabitDetailsSummaryView.swift */,
@@ -331,6 +334,7 @@
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
+				1C55CEAA2EE372D700B02BE6 /* HabitDetailsChartWrapperView.swift in Sources */,
 				1C8EDB042D81CAD5007022FD /* TimeWindowPicker.swift in Sources */,
 				1CCE2B292EE1CB9700EFDEA1 /* HabitDetailsChartViewModel.swift in Sources */,
 				1C9B9DC5290AF71200D70916 /* HabitListView.swift in Sources */,

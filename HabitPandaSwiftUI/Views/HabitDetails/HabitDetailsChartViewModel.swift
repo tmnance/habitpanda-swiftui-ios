@@ -10,8 +10,10 @@ import CoreData
 import Charts
 
 final class HabitDetailsChartViewModel: ObservableObject {
-    @Published private(set) var chartData: ChartData = .init(rollingSumPoints: [], minYAxisValue: 0, maxYAxisValue: 3)
+    @Published private(set) var chartData: ChartData = .init(rollingSumPoints: [], yMin: 0, yMax: 3)
     private var loadTask: Task<Void, Never>?
+
+    deinit { loadTask?.cancel() }
 
     struct RollingSumPoint: Identifiable, Equatable, Sendable {
         var id: Date { date }
@@ -20,41 +22,65 @@ final class HabitDetailsChartViewModel: ObservableObject {
     }
     struct ChartData: Equatable, Sendable {
         let rollingSumPoints: [RollingSumPoint]
-        let minYAxisValue: Int
-        let maxYAxisValue: Int
+        let yMin: Int
+        let yMax: Int
     }
 
-    func load(habit: Habit, numDates: Int, dayWindow: Int = 7, checkIns: [CheckIn], calendar: Calendar) {
+    func reset(target: Int) {
+        self.chartData = ChartData(
+            rollingSumPoints: [],
+            yMin: 0,
+            yMax: max(3, target + 1)
+        )
+    }
+
+    func loadRange(
+        startDate: Date,
+        endDate: Date,
+        checkInDates: [Date],
+//        hasCheckInsBeforeRange: Bool,
+        target: Int,
+//        targetRangeDayCount: Int,
+        rollingWindowDayCount: Int,
+        calendar: Calendar
+    ) {
         loadTask?.cancel()
         loadTask = Task {
-            let today = Date().stripTime()
-            guard let first = habit.getFirstCheckInDate() else {
-                let maxY = max(3, Int(habit.frequencyPerWeek) + 1)
-                await MainActor.run {
-                    self.chartData = ChartData(rollingSumPoints: [], minYAxisValue: 0, maxYAxisValue: maxY)
-                }
-                return
-            }
+            guard !Task.isCancelled else { return }
+//            guard let firstCheckInDate = checkInDates.first else {
+//                let maxY = max(3, target + 1)
+//                await MainActor.run {
+//                    reset(target: target)
+//                }
+//                return
+//            }
 
-            let startDate = max(first, calendar.date(byAdding: .day, value: -(numDates - 1), to: today)!.stripTime())
-            let endDate = today
+//            let today = Date().stripTime()
+//            let startDate = (hasCheckInsBeforeRange ?
+//                             calendar.date(byAdding: .day, value: -(targetRangeDayCount - 1), to: today)! :
+//                                firstCheckInDate)
+//            let endDate = today
             let rollingSumPoints = computeRollingSumPoints(
                 startDate: startDate,
                 endDate: endDate,
-                dayWindow: dayWindow,
-                checkIns: checkIns,
+                rollingWindowDayCount: rollingWindowDayCount,
+                checkInDates: checkInDates,
                 calendar: calendar
             )
             let rollingSumValues = rollingSumPoints.map { $0.rollingSum }
-            let minYAxisValue = max(0, min(Int(habit.frequencyPerWeek), rollingSumValues.min() ?? 0) - 1)
-            let maxYAxisValue = max(Int(habit.frequencyPerWeek), rollingSumValues.max() ?? 0) + 1
+            let yMin = max(0, min(target, rollingSumValues.min() ?? 0) - 1)
+            let yMax = max(target, rollingSumValues.max() ?? 0) + 1
 
             await MainActor.run {
                 self.chartData = ChartData(
                     rollingSumPoints: rollingSumPoints,
-                    minYAxisValue: minYAxisValue,
-                    maxYAxisValue: maxYAxisValue
+                    yMin: yMin,
+                    yMax: yMax
                 )
+                print("loaded")
+                print("checkInDates: \(checkInDates)")
+                print("\(rollingSumPoints)")
+
             }
         }
     }
@@ -62,8 +88,8 @@ final class HabitDetailsChartViewModel: ObservableObject {
     private func computeRollingSumPoints(
         startDate: Date,
         endDate: Date,
-        dayWindow: Int,
-        checkIns: [CheckIn],
+        rollingWindowDayCount: Int,
+        checkInDates: [Date],
         calendar: Calendar
     ) -> [RollingSumPoint] {
         let intervalDayCount = (calendar.dateComponents(
@@ -72,17 +98,17 @@ final class HabitDetailsChartViewModel: ObservableObject {
             to: endDate
         ).day ?? 0) + 1
         let startDateOffsetCheckInCountMap = getStartDateOffsetCheckInCountMap(
-            fromStartDate: startDate,
-            forCheckIns: checkIns,
+            startDate: startDate,
+            checkInDates: checkInDates,
             calendar: calendar
         )
 
         var rollingSumPoints: [RollingSumPoint] = []
         var rollingSum = 0
 
-        for startDateOffset in (1 - dayWindow)..<intervalDayCount {
+        for startDateOffset in (1 - rollingWindowDayCount)..<intervalDayCount {
             if startDateOffset >= 1 {
-                rollingSum -= startDateOffsetCheckInCountMap[startDateOffset - dayWindow] ?? 0
+                rollingSum -= startDateOffsetCheckInCountMap[startDateOffset - rollingWindowDayCount] ?? 0
             }
             rollingSum += startDateOffsetCheckInCountMap[startDateOffset] ?? 0
             // skip over negative
@@ -91,7 +117,7 @@ final class HabitDetailsChartViewModel: ObservableObject {
                     RollingSumPoint(
                         date: calendar.date(
                             byAdding: .day,
-                            value: startDateOffset + 1,
+                            value: startDateOffset,
                             to: startDate
                         )!,
                         rollingSum: rollingSum
@@ -104,14 +130,13 @@ final class HabitDetailsChartViewModel: ObservableObject {
     }
 
     private func getStartDateOffsetCheckInCountMap(
-        fromStartDate startDate: Date,
-        forCheckIns checkIns: [CheckIn],
+        startDate: Date,
+        checkInDates: [Date],
         calendar: Calendar
     ) -> [Int: Int] {
         var startDateOffsetCheckInCountMap: [Int: Int] = [:]
 
-        checkIns.forEach { checkIn in
-            let checkInDate = checkIn.checkInDate!.stripTime()
+        checkInDates.forEach { checkInDate in
             let startDateOffset = calendar.dateComponents(
                 [.day],
                 from: startDate,
