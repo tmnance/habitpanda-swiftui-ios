@@ -65,6 +65,14 @@ struct HabitDetailsChartWrapperView: View {
             }
             .padding()
 
+            HabitDetailsChartView(
+                habit: habit,
+                rangeStartDate: rangeStartDate,
+                rangeEndDate: rangeEndDate,
+                rollingWindowDayCount: rollingWindowDayCount,
+                earliestCheckInDate: earliestCheckInDate
+            )
+
             let showPrevious = {
                 guard let earliestCheckInDate = earliestCheckInDate else {
                     return false
@@ -73,41 +81,56 @@ struct HabitDetailsChartWrapperView: View {
             }()
             let showNext = (rangeEndDate < today)
             if showPrevious || showNext {
-                HStack {
+                HStack(spacing: 12) {
+                    Spacer()
+
                     Button(action: {
                         self.rangeStartDate = Calendar.current.date(byAdding: .day, value: -(targetRangeDayCount), to: rangeStartDate)!
                         self.rangeEndDate = Calendar.current.date(byAdding: .day, value: -(targetRangeDayCount), to: rangeEndDate)!
                     }) {
-                        Text("Prev")
+                        HStack(spacing: 4) {
+                            Image(systemName: "chevron.left")
+                            Text("Prev")
+                        }
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(.horizontal, 10)
+                        .frame(height: Constants.comfortableTappableDimension)
+                        .contentShape(Rectangle())
                     }
                     .disabled(!showPrevious)
-//                    Button(action: {
-//                        self.rangeStartDate = Calendar.current.date(byAdding: .day, value: -(targetRangeDayCount - 1), to: today)!
-//                        self.rangeEndDate = today
-//                    }) {
-//                        Text("Today")
-//                    }
-//                    .disabled(rangeEndDate == today)
+
+                    Button(action: {
+                        self.rangeStartDate = Calendar.current.date(byAdding: .day, value: -(targetRangeDayCount - 1), to: today)!
+                        self.rangeEndDate = today
+                    }) {
+                        Text("Today")
+                            .font(.system(size: 16, weight: .semibold))
+                            .padding(.horizontal, 10)
+                            .frame(height: Constants.comfortableTappableDimension)
+                            .contentShape(Rectangle())
+                    }
+                    .disabled(!showNext)
+
                     Button(action: {
                         self.rangeStartDate = Calendar.current.date(byAdding: .day, value: (targetRangeDayCount), to: rangeStartDate)!
                         self.rangeEndDate = Calendar.current.date(byAdding: .day, value: (targetRangeDayCount), to: rangeEndDate)!
                     }) {
-                        Text("Next")
+                        HStack(spacing: 4) {
+                            Text("Next")
+                            Image(systemName: "chevron.right")
+                        }
+                        .font(.system(size: 16, weight: .semibold))
+                        .padding(.horizontal, 10)
+                        .frame(height: Constants.comfortableTappableDimension)
+                        .contentShape(Rectangle())
                     }
                     .disabled(!showNext)
+
+                    Spacer()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal)
             }
-
-            HabitDetailsChartView(
-                habit: habit,
-                rangeStartDate: rangeStartDate,
-                rangeEndDate: rangeEndDate,
-                rollingWindowDayCount: rollingWindowDayCount,
-                earliestCheckInDate: earliestCheckInDate
-            )
-                .padding(.bottom, 16)
         }
         .onNewDay {
             today = Date().stripTime()

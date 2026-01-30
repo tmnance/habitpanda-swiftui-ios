@@ -34,7 +34,7 @@ struct PersistenceController {
         habit1.checkInCooldownDays = Int32(0)
         habit1.timeWindows = NSSet(array: [TW_MORNING, TW_AFTERNOON].compactMap { $0 })
 
-        [-8, -4, -4, 0].forEach { dateOffset in
+        [-15, -14, -12, -8, -4, -4, 0].forEach { dateOffset in
             let checkIn = CheckIn(context: viewContext)
             checkIn.createdAt = Calendar.current.date(
                 byAdding: .day,

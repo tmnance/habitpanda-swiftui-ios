@@ -38,28 +38,13 @@ final class HabitDetailsChartViewModel: ObservableObject {
         startDate: Date,
         endDate: Date,
         checkInDates: [Date],
-//        hasCheckInsBeforeRange: Bool,
         target: Int,
-//        targetRangeDayCount: Int,
         rollingWindowDayCount: Int,
         calendar: Calendar
     ) {
         loadTask?.cancel()
         loadTask = Task {
             guard !Task.isCancelled else { return }
-//            guard let firstCheckInDate = checkInDates.first else {
-//                let maxY = max(3, target + 1)
-//                await MainActor.run {
-//                    reset(target: target)
-//                }
-//                return
-//            }
-
-//            let today = Date().stripTime()
-//            let startDate = (hasCheckInsBeforeRange ?
-//                             calendar.date(byAdding: .day, value: -(targetRangeDayCount - 1), to: today)! :
-//                                firstCheckInDate)
-//            let endDate = today
             let rollingSumPoints = computeRollingSumPoints(
                 startDate: startDate,
                 endDate: endDate,
@@ -77,10 +62,6 @@ final class HabitDetailsChartViewModel: ObservableObject {
                     yMin: yMin,
                     yMax: yMax
                 )
-                print("loaded")
-                print("checkInDates: \(checkInDates)")
-                print("\(rollingSumPoints)")
-
             }
         }
     }
