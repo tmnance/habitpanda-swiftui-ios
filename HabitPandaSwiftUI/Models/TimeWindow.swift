@@ -83,6 +83,63 @@ extension TimeWindow {
         }
         return timeWindow
     }
+
+    // MARK: - Date/DayIndex Helpers
+    static func dayIndex(for date: Date, calendar: Calendar = .current) -> Int {
+        // Match existing convention used elsewhere: 0 = Sun
+        return (calendar.component(.weekday, from: date) + 6) % 7
+    }
+
+    func isActive(on date: Date, calendar: Calendar = .current) -> Bool {
+        let idx = Self.dayIndex(for: date, calendar: calendar)
+        return self.isActiveOnDay(idx)
+    }
+
+    // MARK: - Active Windows Convenience
+    static func activeWindows(on date: Date, context: NSManagedObjectContext) -> [TimeWindow] {
+        let idx = dayIndex(for: date)
+        return getAll(forDayIndex: idx, context: context)
+    }
+
+    static func firstActiveWindow(on date: Date, context: NSManagedObjectContext) -> TimeWindow? {
+        return activeWindows(on: date, context: context).sorted { $0.order < $1.order }.first
+    }
+
+    static func lastActiveWindow(on date: Date, context: NSManagedObjectContext) -> TimeWindow? {
+        return activeWindows(on: date, context: context).sorted { $0.order < $1.order }.last
+    }
+
+    // MARK: - Previous / Next Helpers
+    func getPreviousTimeWindow(on date: Date, allowDayWrap: Bool, context: NSManagedObjectContext, calendar: Calendar = .current) -> TimeWindow? {
+        let todays = Self.activeWindows(on: date, context: context).sorted { $0.order < $1.order }
+        // Prefer previous by order on the same day
+        if let prev = todays.filter({ $0.order < self.order }).last {
+            return prev
+        }
+        // If none and wrapping allowed, choose the last active window from yesterday
+        guard allowDayWrap, let y = calendar.date(byAdding: .day, value: -1, to: date) else { return nil }
+        return Self.lastActiveWindow(on: y, context: context)
+    }
+
+    func getNextTimeWindow(on date: Date, allowDayWrap: Bool, context: NSManagedObjectContext, calendar: Calendar = .current) -> TimeWindow? {
+        let todays = Self.activeWindows(on: date, context: context).sorted { $0.order < $1.order }
+        // Prefer next by order on the same day
+        if let next = todays.first(where: { $0.order > self.order }) {
+            return next
+        }
+        // If none and wrapping allowed, choose the first active window from tomorrow
+        guard allowDayWrap, let t = calendar.date(byAdding: .day, value: 1, to: date) else { return nil }
+        return Self.firstActiveWindow(on: t, context: context)
+    }
+
+    // Convenience overloads defaulting to today
+    func getPreviousTimeWindow(allowDayWrap: Bool, context: NSManagedObjectContext) -> TimeWindow? {
+        return getPreviousTimeWindow(on: Date().today(), allowDayWrap: allowDayWrap, context: context)
+    }
+
+    func getNextTimeWindow(allowDayWrap: Bool, context: NSManagedObjectContext) -> TimeWindow? {
+        return getNextTimeWindow(on: Date().today(), allowDayWrap: allowDayWrap, context: context)
+    }
 }
 
 // MARK: - Xcode preview content

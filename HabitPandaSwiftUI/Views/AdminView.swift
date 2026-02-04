@@ -125,6 +125,19 @@ struct AdminView: View {
                         )
                     }
                 }
+
+                Section() {
+                    Button("Clear Most Recent Time Window State") {
+                        showConfirmPrompt(
+                            text: "Clear Most Recent Time Window State",
+                            message: "This will clear the most recent completion state (date + time window).",
+                            confirmCallback: {
+                                clearMostRecentTimeWindowStore()
+                                showToast("Most Recent Time Window state cleared")
+                            }
+                        )
+                    }
+                }
             }
         }
         .alert(
@@ -495,6 +508,10 @@ extension AdminView {
         } catch {
             print(error.localizedDescription)
         }
+    }
+
+    private func clearMostRecentTimeWindowStore() {
+        MostRecentTimeWindowStore.shared.reset()
     }
 }
 

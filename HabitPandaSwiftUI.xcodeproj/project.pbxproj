@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1C043F102F33C88300FFBFCB /* MostRecentTimeWindowStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C043F0F2F33C88300FFBFCB /* MostRecentTimeWindowStore.swift */; };
 		1C23BD87297F3BBD00B6F08F /* DaysOfWeekPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */; };
 		1C3BC4B52923F7360096C7CA /* NewDayModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */; };
 		1C55CEAA2EE372D700B02BE6 /* HabitDetailsChartWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C55CEA92EE372D400B02BE6 /* HabitDetailsChartWrapperView.swift */; };
@@ -52,6 +53,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1C043F0F2F33C88300FFBFCB /* MostRecentTimeWindowStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MostRecentTimeWindowStore.swift; sourceTree = "<group>"; };
 		1C23BD85297F2E8900B6F08F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1C23BD86297F3BBD00B6F08F /* DaysOfWeekPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysOfWeekPicker.swift; sourceTree = "<group>"; };
 		1C3BC4B42923F7360096C7CA /* NewDayModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDayModifier.swift; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 				1C8D24B6291C548000ED1296 /* LaunchScreen.storyboard */,
 				1CA0B6142901CF00002103EA /* AppDelegate.swift */,
 				1CDA4CD128F0C2F7007D02F3 /* Constants.swift */,
+				1C043F0F2F33C88300FFBFCB /* MostRecentTimeWindowStore.swift */,
 				1CDA4CC928F09D67007D02F3 /* Persistence.swift */,
 				1CA0B61029005657002103EA /* ReminderNotificationService.swift */,
 				1CA0B60E28FF2D6E002103EA /* Router.swift */,
@@ -336,6 +339,7 @@
 				1C8D24BE291D5D0500ED1296 /* FancyToastModifier.swift in Sources */,
 				1CA0B60428F60EDF002103EA /* HabitDetailsCheckInsView.swift in Sources */,
 				1CDA4CB428F096AD007D02F3 /* HabitPandaSwiftUIApp.swift in Sources */,
+				1C043F102F33C88300FFBFCB /* MostRecentTimeWindowStore.swift in Sources */,
 				1CA0B60F28FF2D6E002103EA /* Router.swift in Sources */,
 				1CA0B60028F60680002103EA /* HabitPandaSwiftUI.xcdatamodeld in Sources */,
 				1C55CEAA2EE372D700B02BE6 /* HabitDetailsChartWrapperView.swift in Sources */,

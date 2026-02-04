@@ -15,6 +15,7 @@ extension Date {
     func rounded(minutes: TimeInterval, rounding: DateRoundingType = .round) -> Date {
         return rounded(seconds: minutes * 60, rounding: rounding)
     }
+
     func rounded(seconds: TimeInterval, rounding: DateRoundingType = .round) -> Date {
         var roundedInterval: TimeInterval = 0
         switch rounding  {
@@ -26,6 +27,14 @@ extension Date {
             roundedInterval = floor(timeIntervalSinceReferenceDate / seconds) * seconds
         }
         return Date(timeIntervalSinceReferenceDate: roundedInterval)
+    }
+
+    func today() -> Date {
+        return Date().stripTime()
+    }
+
+    func yesterday() -> Date {
+        return Calendar.current.date(byAdding: .day, value: -1, to: today())!
     }
 
     func stripTime() -> Date {
