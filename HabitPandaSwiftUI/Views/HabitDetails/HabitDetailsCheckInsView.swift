@@ -44,7 +44,7 @@ struct HabitDetailsCheckInsView: View {
                             Text(getTitleText(checkIn: checkIn))
                                 .font(.system(size: 17))
                             Text(getSubTitleText(checkIn: checkIn))
-                                .foregroundColor(Color(Constants.Colors.subText))
+                                .foregroundColor(Constants.Colors.subText)
                                 .font(.system(size: 13))
                         }
                         .padding(.vertical, 2)
@@ -59,13 +59,13 @@ struct HabitDetailsCheckInsView: View {
                 }) {
                     Text("Bulk Delete Check-Ins")
                         .font(.system(size: 15))
-                        .foregroundColor(Color(Constants.Colors.deleteButtonText))
+                        .foregroundColor(Constants.Colors.deleteButtonText)
                         .frame(maxWidth: .infinity)
                         .padding(12)
                         .frame(height: Constants.comfortableTappableDimension)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(Constants.Colors.deleteButtonBorder), lineWidth: 1)
+                                .stroke(Constants.Colors.deleteButtonBorder, lineWidth: 1)
                         )
                 }
                 .padding()//.horizontal, 16)
@@ -114,13 +114,13 @@ struct HabitDetailsCheckInsView: View {
                     }) {
                         Text("Cancel")
                             .font(.system(size: 15))
-                            .foregroundColor(Color(Constants.Colors.checkInButtonText))
+                            .foregroundColor(Constants.Colors.checkInButtonText)
                             .frame(maxWidth: .infinity)
                             .padding(12)
                             .frame(height: Constants.comfortableTappableDimension)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color(Constants.Colors.checkInButtonBorder), lineWidth: 1)
+                                    .stroke(Constants.Colors.checkInButtonBorder, lineWidth: 1)
                             )
                     }
 
@@ -132,13 +132,13 @@ struct HabitDetailsCheckInsView: View {
                     }) {
                         Text("Confirm")
                             .font(.system(size: 15))
-                            .foregroundColor(Color(Constants.Colors.deleteButtonText))
+                            .foregroundColor(Constants.Colors.deleteButtonText)
                             .frame(maxWidth: .infinity)
                             .padding(12)
                             .frame(height: Constants.comfortableTappableDimension)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 10)
-                                    .stroke(Color(Constants.Colors.deleteButtonBorder), lineWidth: 1)
+                                    .stroke(Constants.Colors.deleteButtonBorder, lineWidth: 1)
                             )
                     }
                 }

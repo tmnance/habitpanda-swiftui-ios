@@ -199,10 +199,11 @@ extension CheckIn {
     }
 
     func getAddedVsCheckInDateDayOffset() -> Int {
+        guard let checkInDate = checkInDate, let createdAt = createdAt else { return 0 }
         return Calendar.current.dateComponents(
             [.day],
-            from: checkInDate!,
-            to: createdAt!
+            from: checkInDate,
+            to: createdAt
         ).day ?? 0
     }
 }

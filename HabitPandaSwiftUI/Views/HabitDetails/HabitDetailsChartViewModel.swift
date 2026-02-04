@@ -6,9 +6,8 @@
 //
 
 import SwiftUI
-import CoreData
-import Charts
 
+@MainActor
 final class HabitDetailsChartViewModel: ObservableObject {
     @Published private(set) var chartData: ChartData = .init(rollingSumPoints: [], yMin: 0, yMax: 3)
     private var loadTask: Task<Void, Never>?
@@ -27,6 +26,7 @@ final class HabitDetailsChartViewModel: ObservableObject {
     }
 
     func reset(target: Int) {
+        loadTask?.cancel()
         self.chartData = ChartData(
             rollingSumPoints: [],
             yMin: 0,
@@ -56,6 +56,8 @@ final class HabitDetailsChartViewModel: ObservableObject {
             let yMin = max(0, min(target, rollingSumValues.min() ?? 0) - 1)
             let yMax = max(target, rollingSumValues.max() ?? 0) + 1
 
+            guard !Task.isCancelled else { return }
+
             await MainActor.run {
                 self.chartData = ChartData(
                     rollingSumPoints: rollingSumPoints,
@@ -66,7 +68,7 @@ final class HabitDetailsChartViewModel: ObservableObject {
         }
     }
 
-    private func computeRollingSumPoints(
+    nonisolated private func computeRollingSumPoints(
         startDate: Date,
         endDate: Date,
         rollingWindowDayCount: Int,
@@ -94,23 +96,21 @@ final class HabitDetailsChartViewModel: ObservableObject {
             rollingSum += startDateOffsetCheckInCountMap[startDateOffset] ?? 0
             // skip over negative
             if startDateOffset >= 0 {
-                rollingSumPoints.append(
-                    RollingSumPoint(
-                        date: calendar.date(
-                            byAdding: .day,
-                            value: startDateOffset,
-                            to: startDate
-                        )!,
-                        rollingSum: rollingSum
+                if let pointDate = calendar.date(byAdding: .day, value: startDateOffset, to: startDate) {
+                    rollingSumPoints.append(
+                        RollingSumPoint(
+                            date: pointDate,
+                            rollingSum: rollingSum
+                        )
                     )
-                )
+                }
             }
         }
 
         return rollingSumPoints
     }
 
-    private func getStartDateOffsetCheckInCountMap(
+    nonisolated private func getStartDateOffsetCheckInCountMap(
         startDate: Date,
         checkInDates: [Date],
         calendar: Calendar

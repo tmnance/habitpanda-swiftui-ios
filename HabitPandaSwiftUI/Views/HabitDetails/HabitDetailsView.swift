@@ -50,112 +50,28 @@ struct HabitDetailsView: View {
                 }
                 Spacer()
                 Menu {
-                    // TODO: clean up / refactor the below to be more DRY
-                    if (habit.checkInType.options.count <= 1) { // no need for submenus
-                        Section(header: Text("Select a Check-in Date")) {
-                            ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                                Button(action: {
-                                    withAnimation {
-                                        // TODO: add ability to select check in value for multi-select types
-                                        habit.addCheckIn(forDate: date, context: viewContext) { error in
-                                            if let error {
-                                                toast = FancyToast.errorMessage(error.localizedDescription)
-                                                return
-                                            }
-                                            toast = FancyToast(
-                                                type: .success,
-                                                message: "Check-in added",
-                                                duration: 2,
-                                                tapToDismiss: true
-                                            )
-                                        }
-                                    }
-                                }) {
-                                    Label(
-                                        DateHelper.getDateString(date),
-                                        systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                                    )
-                                }
-                            }
+                    CheckInMenuContent(
+                        habit: habit,
+                        checkInDateOptions: checkInDateOptions,
+                        showSnooze: (!anyCheckInsToday() && !isTodayOff()),
+                        afterSuccess: { /* no-op; view updates via Core Data */ },
+                        onSuccessToast: { message in
+                            toast = FancyToast(type: .success, message: message, duration: 2, tapToDismiss: true)
+                        },
+                        onErrorToast: { message in
+                            toast = FancyToast.errorMessage(message)
                         }
-                    }
-                    else { // has submenus
-                        Section(header: Text("Select a Check-in Date")) {
-                            ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                                Menu {
-                                    Section(header: Text("Select a Check-in Value")) {
-                                        ForEach(habit.checkInType.options, id: \.self) { option in
-                                            Button(action: {
-                                                withAnimation {
-                                                    // TODO: add ability to select check in value for multi-select types
-                                                    habit.addCheckIn(
-                                                        forDate: date,
-                                                        value: option,
-                                                        context: viewContext
-                                                    ) { error in
-                                                        if let error {
-                                                            toast = FancyToast.errorMessage(error.localizedDescription)
-                                                            return
-                                                        }
-                                                        toast = FancyToast(
-                                                            type: .success,
-                                                            message: "Check-in added",
-                                                            duration: 2,
-                                                            tapToDismiss: true
-                                                        )
-                                                    }
-                                                }
-                                            }) {
-                                                Text(option)
-                                            }
-                                        }
-                                    }
-                                }
-                                label : {
-                                    Label(
-                                        DateHelper.getDateString(date),
-                                        systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    if !anyCheckInsToday() && !isTodayOff() {
-                        Button(action: {
-                            withAnimation {
-                                habit.addDayOffCheckIn(
-                                    forDate: Date().stripTime(),
-                                    context: viewContext
-                                ) { error in
-                                    if let error {
-                                        toast = FancyToast.errorMessage(error.localizedDescription)
-                                        return
-                                    }
-                                    toast = FancyToast(
-                                        type: .success,
-                                        message: "Snoozed habit for today",
-                                        duration: 2,
-                                        tapToDismiss: true
-                                    )
-                                }
-                            }
-                        }) {
-                            Label(
-                                "Snooze for today",
-                                systemImage: "zzz"
-                            )
-                        }
-                    }
+                    )
                 }
                 label: {
                     Text("Check In!")
                         .font(.system(size: 15))
-                        .foregroundColor(Color(Constants.Colors.checkInButtonText))
+                        .foregroundColor(Constants.Colors.checkInButtonText)
                         .padding(12)
                         .frame(height: Constants.comfortableTappableDimension)
                         .overlay(
                             RoundedRectangle(cornerRadius: 15)
-                                .stroke(Color(Constants.Colors.checkInButtonBorder), lineWidth: 1)
+                                .stroke(Constants.Colors.checkInButtonBorder, lineWidth: 1)
                         )
                 }
                 // fixes layout bug with keyboard dismiss on the habit edit view
@@ -213,12 +129,10 @@ struct HabitDetailsView: View {
             if mostRecentCheckIn.checkInDate == currentDate {
                 return mostRecentCheckIn.type == .dayOff
             }
-            if habit.checkInCooldownDays > 0 &&
-                Calendar.current.dateComponents(
-                    [.day],
-                    from: mostRecentCheckIn.checkInDate!,
-                    to: currentDate
-                ).day! <= habit.checkInCooldownDays {
+            if habit.checkInCooldownDays > 0,
+               let lastDate = mostRecentCheckIn.checkInDate,
+               let dayDelta = Calendar.current.dateComponents([.day], from: lastDate, to: currentDate).day,
+               dayDelta <= habit.checkInCooldownDays {
                 return true
             }
         }
@@ -236,3 +150,4 @@ struct HabitDetailsView: View {
     }
     .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
+

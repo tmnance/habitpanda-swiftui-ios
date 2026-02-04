@@ -34,7 +34,6 @@ struct HabitDetailsChartView: View {
     @ObservedObject private var habit: Habit
     private var rangeStartDate: Date
     private var rangeEndDate: Date
-    private var targetRangeDayCount: Int
     private var rollingWindowDayCount: Int
     private var earliestCheckInDate: Date?
 
@@ -52,11 +51,6 @@ struct HabitDetailsChartView: View {
         self.habit = habit
         self.rangeStartDate = rangeStartDate
         self.rangeEndDate = rangeEndDate
-        self.targetRangeDayCount = Calendar.current.dateComponents(
-            [.day],
-            from: rangeStartDate,
-            to: rangeEndDate
-        ).day ?? 0
         self.rollingWindowDayCount = rollingWindowDayCount
         self.earliestCheckInDate = earliestCheckInDate
         _checkInsForRangeIncludingWindow = FetchRequest(
@@ -89,7 +83,7 @@ struct HabitDetailsChartView: View {
                             y: .value("Rolling Sum", point.rollingSum)
                         )
                         .lineStyle(.init(lineWidth: 4, lineCap: .round))
-                        .foregroundStyle(Color(Constants.Colors.tint))
+                        .foregroundStyle(Constants.Colors.tint)
                     }
                     targetRuleMark
 
@@ -101,13 +95,13 @@ struct HabitDetailsChartView: View {
                             y: .value("Rolling Sum", point.rollingSum)
                         )
                         .lineStyle(.init(lineWidth: 4, lineCap: .round))
-                        .foregroundStyle(Color(Constants.Colors.tint))
+                        .foregroundStyle(Constants.Colors.tint)
                         AreaMark(
                             x: .value("Date", point.date),
                             yStart: .value("Chart Cutoff", vm.chartData.yMin),
                             yEnd: .value("Rolling Sum", point.rollingSum)
                         )
-                        .foregroundStyle(Color(Constants.Colors.tint).opacity(0.15))
+                        .foregroundStyle(Constants.Colors.tint.opacity(0.15))
                     }
                     targetRuleMark
                 }
@@ -117,11 +111,11 @@ struct HabitDetailsChartView: View {
             .chartXAxis {
                 AxisMarks(preset: .aligned, values: .automatic(desiredCount: Self.maxXAxisGridLines)) { value in
                     AxisGridLine(centered: false, stroke: StrokeStyle(lineWidth: 1, dash: [10, 10]))
-                        .foregroundStyle(Color(Constants.Colors.chartGrid))
+                        .foregroundStyle(Constants.Colors.chartGrid)
                     AxisValueLabel(centered: false) {
                         if let dateValue = value.as(Date.self) {
                             Text(Self.xAxisDateLabelFormatter.string(from: dateValue))
-                                .foregroundColor(Color(Constants.Colors.labelText))
+                                .foregroundColor(Constants.Colors.labelText)
                                 .font(.system(size: 10))
                                 .multilineTextAlignment(.center)
                         }
@@ -131,11 +125,11 @@ struct HabitDetailsChartView: View {
             .chartYAxis {
                 AxisMarks(position: .leading, values: .automatic(desiredCount: Self.maxYAxisGridLines)) { value in
                     AxisGridLine(centered: true, stroke: StrokeStyle(lineWidth: 1))
-                        .foregroundStyle(Color(Constants.Colors.chartGrid))
+                        .foregroundStyle(Constants.Colors.chartGrid)
                     AxisValueLabel {
                         if let intValue = value.as(Int.self) {
                             Text("\(intValue)")
-                                .foregroundColor(Color(Constants.Colors.labelText))
+                                .foregroundColor(Constants.Colors.labelText)
                                 .font(.system(size: 10))
                         }
                     }
@@ -180,13 +174,13 @@ struct HabitDetailsChartView: View {
     var targetRuleMark: some ChartContent {
         RuleMark(y: .value("🎯\(habit.frequencyPerWeek)x/wk", habit.frequencyPerWeek))
             .lineStyle(.init(lineWidth: 2, lineCap: .round, dash: [10, 10]))
-            .foregroundStyle(Color(Constants.Colors.tint2))
+            .foregroundStyle(Constants.Colors.tint2)
             .annotation(position: .overlay, alignment: .leading) {
                 HStack(alignment: .firstTextBaseline, spacing: 0) {
                     Text("🎯").baselineOffset(1)
                     Text("\(habit.frequencyPerWeek)x/wk")
                 }
-                .foregroundColor(Color(Constants.Colors.subText))
+                .foregroundColor(Constants.Colors.subText)
                 .font(.system(size: 12))
                 .padding(EdgeInsets(top: 0, leading: 4, bottom: 2, trailing: 4))
                 .background(Color(.systemBackground).opacity(0.8))
@@ -201,7 +195,7 @@ struct HabitDetailsChartView: View {
                     .padding(8)
                     .background(Color(.systemBackground))
             }
-            .foregroundStyle(Color(Constants.Colors.clear))
+            .foregroundStyle(Constants.Colors.clear)
     }
 }
 

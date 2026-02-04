@@ -24,9 +24,9 @@ struct TimeWindowShortDisplayView: View {
                     .font(.system(size: 14))
                     .minimumScaleFactor(0.2)
                     .allowsTightening(true).lineLimit(1)
-                    .foregroundColor(Color(Constants.Colors.labelText))
+                    .foregroundColor(Constants.Colors.labelText)
                     .padding(3)
-                    .background(Color(Constants.Colors.tint2))
+                    .background(Constants.Colors.tint2)
                     .cornerRadius(4)
             }
         }

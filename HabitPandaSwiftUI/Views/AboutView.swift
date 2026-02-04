@@ -37,11 +37,11 @@ struct AboutView: View {
                 #endif
             }
             .listStyle(.insetGrouped)
-            .foregroundColor(Color(Constants.Colors.labelText))
+            .foregroundColor(Constants.Colors.labelText)
 //            .scrollContentBackground(.hidden)
             Text(getVersionText())
                 .font(.system(size: 17.0))
-                .foregroundColor(Color(Constants.Colors.subText))
+                .foregroundColor(Constants.Colors.subText)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 .padding(20)
         }

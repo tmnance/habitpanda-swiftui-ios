@@ -25,13 +25,13 @@ struct HabitDetailsSummaryView: View {
                 }) {
                     Text("Delete Habit")
                         .font(.system(size: 15))
-                        .foregroundColor(Color(Constants.Colors.deleteButtonText))
+                        .foregroundColor(Constants.Colors.deleteButtonText)
                         .frame(maxWidth: .infinity)
                         .padding(12)
                         .frame(height: Constants.comfortableTappableDimension)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(Constants.Colors.deleteButtonBorder), lineWidth: 1)
+                                .stroke(Constants.Colors.deleteButtonBorder, lineWidth: 1)
                         )
                 }
                 .padding()//.horizontal, 16)
@@ -40,7 +40,7 @@ struct HabitDetailsSummaryView: View {
                     content: {
                         Alert(
                             title: Text("Confirm Delete"),
-                            message: Text("Are you sure you want to delete your habit named \"\(habit.name!)\"?"),
+                            message: Text("Are you sure you want to delete your habit named \"\(habit.name ?? "")\"?"),
                             primaryButton: .default(
                                 Text("Cancel")
                             ),

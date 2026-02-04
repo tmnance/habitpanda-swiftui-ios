@@ -8,6 +8,13 @@
 import SwiftUI
 
 struct HabitListCheckInGridView: View {
+    private static let headerDateFormatter: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = .current
+        df.dateFormat = "EEE'\n'M'/'d"
+        return df
+    }()
+
     typealias DateOffset = Int
     typealias HabitDayReport = [CheckInType: [String?]]
     @Environment(\.managedObjectContext) private var viewContext
@@ -111,7 +118,7 @@ extension HabitListCheckInGridView {
     @ViewBuilder func rowDivider() -> some View {
         Divider()
             .frame(maxWidth: .infinity, maxHeight:1)
-            .background(Color(Constants.Colors.listBorder))
+            .background(Constants.Colors.listBorder)
     }
 
     func addCheckInToHabitDayReport(
@@ -205,7 +212,7 @@ extension HabitListCheckInGridView {
         return getHabitDayReport(habit: habit, dateOffset: dateCount - 1).count > 0
     }
 
-    func getCellBgColor(forIndex index: Int) -> UIColor {
+    func getCellBgColor(forIndex index: Int) -> Color {
         let saturdayOffset = (index + dateListSaturdayOffset) % 7
         let isWeekend = saturdayOffset <= 1
 
@@ -239,13 +246,11 @@ extension HabitListCheckInGridView {
             .font(.system(size: 15))
             .multilineTextAlignment(.center)
             .frame(width: 50, height: 50)
-            .background(Color(getCellBgColor(forIndex: dateOffset)))
+            .background(getCellBgColor(forIndex: dateOffset))
     }
 
     private func getHeaderDisplayDate(_ date: Date) -> String {
-        let df = DateFormatter()
-        df.dateFormat = "EEE'\n'M'/'d"
-        return df.string(from: date)
+        return Self.headerDateFormatter.string(from: date)
     }
 }
 
@@ -323,84 +328,25 @@ extension HabitListCheckInGridView {
                 }
             }
             .contextMenu {
-                // TODO: refactor this into a cleaner place?
-                // TODO: clean up / refactor the below to be more DRY
-
-                if (habit.checkInType.options.count <= 1) { // no need for submenus
-                    ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                        Button(action: {
-                            withAnimation {
-                                habit.addCheckIn(forDate: date, context: viewContext) { error in
-                                    if let error {
-                                        toast = FancyToast.errorMessage(error.localizedDescription)
-                                        return
-                                    }
-                                    buildHabitCheckInMaps()
-                                    toast = FancyToast(
-                                        type: .success,
-                                        message: "Check-in added",
-                                        duration: 2,
-                                        tapToDismiss: true
-                                    )
-                                }
-                            }
-                        }) {
-                            Label(
-                                "Check in \(DateHelper.getDateString(date))",
-                                systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                            )
-                        }
+                CheckInMenuContent(
+                    habit: habit,
+                    checkInDateOptions: checkInDateOptions,
+                    showSnooze: !anyCheckInsToday(habit: habit),
+                    afterSuccess: { buildHabitCheckInMaps() },
+                    onSuccessToast: { message in
+                        toast = FancyToast(type: .success, message: message, duration: 2, tapToDismiss: true)
+                    },
+                    onErrorToast: { message in
+                        toast = FancyToast.errorMessage(message)
                     }
-                }
-                else { // has submenus
-                    ForEach(Array(checkInDateOptions.enumerated()), id: \.element) { i, date in
-                        Menu {
-                            Section(header: Text("Select a Check-in Value")) {
-                                checkInValues(habit: habit, date: date)
-                            }
-                        }
-                        label : {
-                            Label(
-                                "Check in \(DateHelper.getDateString(date))",
-                                systemImage: i == 0 ? "calendar" : "calendar.badge.clock"
-                            )
-                        }
-                    }
-                }
-                if !anyCheckInsToday(habit: habit) {
-                    Button(action: {
-                        withAnimation {
-                            habit.addDayOffCheckIn(
-                                forDate: checkInDateOptions[0],
-                                context: viewContext
-                            ) { error in
-                                if let error {
-                                    toast = FancyToast.errorMessage(error.localizedDescription)
-                                    return
-                                }
-                                buildHabitCheckInMaps()
-                                toast = FancyToast(
-                                    type: .success,
-                                    message: "Snoozed habit for today",
-                                    duration: 2,
-                                    tapToDismiss: true
-                                )
-                            }
-                        }
-                    }) {
-                        Label(
-                            "Snooze for today",
-                            systemImage: "zzz"
-                        )
-                    }
-                }
+                )
             }
             Text("🎯\n\(habit.frequencyPerWeek)x/wk")
                 .font(.system(size: 13, weight: .thin))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 10)
         }
-        .background(Color(Constants.Colors.listRowOverlayBg))
+        .background(Constants.Colors.listRowOverlayBg)
     }
 
     @ViewBuilder func habitDayContentCell(
@@ -446,7 +392,7 @@ extension HabitListCheckInGridView {
             }
         }
         .frame(width: 50, height: 88, alignment: .bottom)
-        .background(Color(getCellBgColor(forIndex: dateOffset)))
+        .background(getCellBgColor(forIndex: dateOffset))
     }
 
     @ViewBuilder func habitDayContentCellSuccess(_ count: Int) -> some View {
@@ -502,3 +448,4 @@ extension HabitListCheckInGridView {
     }
     .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
+

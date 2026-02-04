@@ -33,33 +33,34 @@ extension Habit {
     }
 
     func getFirstCheckInDate() -> Date? {
-        guard let context = managedObjectContext else { return nil }
+        guard let context = managedObjectContext, let habitUUID = uuid else { return nil }
         let checkIns = CheckIn.getAll(
             sortedBy: [("checkInDate", .asc)],
-            forHabitUUIDs: [uuid!],
+            forHabitUUIDs: [habitUUID],
             withLimit: 1,
             context: context
         )
-        return checkIns.first?.checkInDate!.stripTime()
+        return checkIns.first?.checkInDate?.stripTime()
     }
 
     func getLastCheckInDate() -> Date? {
-        guard let context = managedObjectContext else { return nil }
+        guard let context = managedObjectContext, let habitUUID = uuid else { return nil }
         let checkIns = CheckIn.getAll(
             sortedBy: [("checkInDate", .desc)],
-            forHabitUUIDs: [uuid!],
+            forHabitUUIDs: [habitUUID],
             withLimit: 1,
             context: context
         )
-        return checkIns.first?.checkInDate!.stripTime()
+        return checkIns.first?.checkInDate?.stripTime()
     }
 
     func getCheckInCount(
         throughDate: Date? = nil,
         context: NSManagedObjectContext
     ) -> Int {
+        guard let habitUUID = uuid else { return 0 }
         return CheckIn.getAll(
-            forHabitUUIDs: [uuid!],
+            forHabitUUIDs: [habitUUID],
             toEndDate: throughDate?.stripTime(),
             context: context
         ).count
@@ -70,9 +71,13 @@ extension Habit {
         context: NSManagedObjectContext,
         completionHandler: ((Error?) -> Void)? = nil
     ) {
+        guard let habitUUID = uuid else {
+            completionHandler?(nil)
+            return
+        }
         do {
             try CheckIn.getAll(
-                forHabitUUIDs: [uuid!],
+                forHabitUUIDs: [habitUUID],
                 toEndDate: throughDate?.stripTime(),
                 context: context
             ).forEach { checkInToDelete in
@@ -89,8 +94,9 @@ extension Habit {
         ofType types: [CheckInType]? = nil,
         context: NSManagedObjectContext
     ) -> [CheckIn] {
+        guard let habitUUID = uuid else { return [] }
         return CheckIn.getAll(
-            forHabitUUIDs: [uuid!],
+            forHabitUUIDs: [habitUUID],
             fromStartDate: date,
             toEndDate: date,
             ofType: types,

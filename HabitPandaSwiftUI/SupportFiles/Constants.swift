@@ -5,7 +5,6 @@
 //  Created by Tim Nance on 10/7/22.
 //
 
-import UIKit
 import SwiftUI
 
 struct Constants {
@@ -13,40 +12,40 @@ struct Constants {
     static let comfortableTappableDimension: CGFloat = 46
 
     struct Colors {
-        static let clear = UIColor.clear
-        static let labelText = UIColor(named: "labelText")!
+        static let clear = Color.clear
+        static let labelText = Color("labelText")
 
-        static let mainViewBg = UIColor(named: "mainViewBg")!
+        static let mainViewBg = Color("mainViewBg")
 
-        static let tint = UIColor(named: "tint")!
-        static let textForTintBackground = UIColor(named: "textForTintBackground")!
+        static let tint = Color("tint")
+        static let textForTintBackground = Color("textForTintBackground")
 
-        static let tint2 = UIColor(named: "tint2")!
-        static let disabledText = UIColor(named: "disabledText")!
-        static let subText = UIColor(named: "subText")!
+        static let tint2 = Color("tint2")
+        static let disabledText = Color("disabledText")
+        static let subText = Color("subText")
 
-        static let popupOverlayBg = UIColor(named: "popupOverlayBg")!
-        static let popupButtonSeparator = UIColor(named: "popupButtonSeparator")!
+        static let popupOverlayBg = Color("popupOverlayBg")
+        static let popupButtonSeparator = Color("popupButtonSeparator")
 
-        static let chartGrid = UIColor(named: "chartGrid")!
+        static let chartGrid = Color("chartGrid")
 
-        static let listWeekdayBg1 = UIColor(named: "listWeekdayBg1")!
-        static let listWeekdayBg2 = UIColor(named: "listWeekdayBg2")!
-        static let listWeekendBg = UIColor(named: "listWeekendBg")!
-        static let listCheckmark = UIColor(named: "listCheckmark")!
-        static let listRowOverlayBg = UIColor(named: "listRowOverlayBg")!
-        static let listBorder = UIColor(named: "listBorder")!
+        static let listWeekdayBg1 = Color("listWeekdayBg1")
+        static let listWeekdayBg2 = Color("listWeekdayBg2")
+        static let listWeekendBg = Color("listWeekendBg")
+        static let listCheckmark = Color("listCheckmark")
+        static let listRowOverlayBg = Color("listRowOverlayBg")
+        static let listBorder = Color("listBorder")
 
-        static let checkInButtonBorder = UIColor(named: "checkInButtonBorder")!
-        static let checkInButtonText = UIColor(named: "checkInButtonText")!
-        static let deleteButtonBorder = UIColor(named: "deleteButtonBorder")!
-        static let deleteButtonText = UIColor(named: "deleteButtonText")!
+        static let checkInButtonBorder = Color("checkInButtonBorder")
+        static let checkInButtonText = Color("checkInButtonText")
+        static let deleteButtonBorder = Color("deleteButtonBorder")
+        static let deleteButtonText = Color("deleteButtonText")
 
         static let toastText = Color("toastText")
         static let toastBg = Color("toastBg")
         static let toastShadow = Color("toastShadow")
         static let toastAccentSuccess = Color("toastAccentSuccess")
-        static let toastAccentError = Color("toastAccentSuccess")
+        static let toastAccentError = Color("toastAccentError")
         static let toastAccentWarning = Color("toastAccentWarning")
         static let toastAccentInfo = Color("toastAccentInfo")
     }

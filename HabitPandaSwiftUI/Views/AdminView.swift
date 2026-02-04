@@ -242,10 +242,10 @@ extension AdminView {
     }
 
     private func getAppVersionString() -> String {
-        let dictionary = Bundle.main.infoDictionary!
-        let version = dictionary["CFBundleShortVersionString"] as! String
-        let build = dictionary["CFBundleVersion"] as! String
-        let appName = dictionary["CFBundleName"] as! String
+        let dictionary = Bundle.main.infoDictionary ?? [:]
+        let version = dictionary["CFBundleShortVersionString"] as? String ?? "?"
+        let build = dictionary["CFBundleVersion"] as? String ?? "?"
+        let appName = dictionary["CFBundleName"] as? String ?? "App"
 
         return "**App version:** \(appName) v\(version) (Build \(build))\n" +
             "- buildDate = \(getDateAsString(buildDate))"
@@ -641,3 +641,4 @@ extension AdminView {
     AdminView()
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
+
