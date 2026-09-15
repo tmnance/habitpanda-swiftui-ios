@@ -5,6 +5,7 @@
 //  Created by Tim Nance on 11/2/22.
 //
 
+import CoreData
 import SwiftUI
 
 struct HabitListCheckInGridView: View {
@@ -448,4 +449,3 @@ extension HabitListCheckInGridView {
     }
     .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
 }
-

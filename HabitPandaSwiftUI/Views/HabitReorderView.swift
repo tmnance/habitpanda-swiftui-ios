@@ -5,6 +5,7 @@
 //  Created by Tim Nance on 10/7/22.
 //
 
+import CoreData
 import SwiftUI
 
 struct HabitReorderView: View {

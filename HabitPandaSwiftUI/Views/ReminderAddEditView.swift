@@ -5,6 +5,7 @@
 //  Created by Tim Nance on 10/23/22.
 //
 
+import CoreData
 import SwiftUI
 
 struct ReminderAddEditView: View {

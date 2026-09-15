@@ -5,6 +5,7 @@
 //  Created by Tim Nance on 8/6/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct TimeWindowShortDisplayView: View {

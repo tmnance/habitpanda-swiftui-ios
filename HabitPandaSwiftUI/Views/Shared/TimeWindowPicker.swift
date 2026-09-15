@@ -5,6 +5,7 @@
 //  Created by Tim Nance on 3/12/25.
 //
 
+import CoreData
 import SwiftUI
 
 struct TimeWindowPicker: View {
